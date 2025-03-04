@@ -1,0 +1,21 @@
+Gene	Fold Changes	P-value
+(comb.)	Full Name	Refseq	Probeset
+BMC	MDACC-1	MDACC-1	Comb.
+ALDH3A1	6.9	9.4	4.0	6.2	0.0000	aldehyde dehydrogenase 3
+family, memberA1	NM_000691	205623_at
+CYP1B1	4.2	5.7	6.7	4.9	0.0000	cytochrome P450, member
+1B1	NM_000104	202436_s_at
+MUC5AC	2.2	9.6	3.0	3.5	0.0000	mucin 5AC, oligomeric
+mucus/gel-forming	XM_001130382	214385_s_at
+AKR1C2	3.3	4.2	3.5	3.5	0.0000	aldo-keto reductase family 1,
+member C2	NM_001354	209699_x_at
+AKR1B10	3.2	4.2	3.8	3.5	0.0000	aldo-keto reductase family 1,
+member B10	NM_020299	206561_s_at
+AKR1C1	2.8	4.0	3.3	3.2	0.0000	aldo-keto reductase family 1,
+member C1	NM_001353	204151_x_at
+NQO1	2.8	2.3	2.4	2.6	0.0001	NAD(P)H dehydrogenase,
+quinone 1	NM_000903	210519_s_at
+AKR1C3	2.5	2.1	3.1	2.5	0.0000	aldo-keto reductase family 1,
+member C3	NM_003739	209160_at
+SCGB1A1	−2.0	−2.4	−2.6	−2.4	0.0001	secretoglobin, family 1A,
+member 1 (uteroglobin)	NM_003357	205725_at

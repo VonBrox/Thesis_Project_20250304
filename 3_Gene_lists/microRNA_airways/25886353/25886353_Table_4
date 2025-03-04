@@ -1,0 +1,16 @@
+Healthy smokers after 3-month smoking cessation vs healthy nonsmokers
+Probeset ID	Fold-change 2	p value 3
+Persistently up-regulated		
+    hsa-miR-634_st	2.8	3.0x10-3
+    hsa-miR-133b_st	2.8	1.8x10-2
+    hsa-miR-133a_st	2.0	2.7x10-2
+    hsa-miR-1226-star_st	1.8	3.2x10-2
+    hsa-miR-487b_st	1.8	1.3x10-2
+    hsa-miR-1260_st	1.6	2.6x10-2
+    hsa-miR-550_st	1.5	3.3x10-2
+Persistently down-regulated		
+    hsa-miR-1246_st	-3.2	1.0x10-3
+    hsa-miR-3201_st	-1.8	3.8x10-2
+    hsa-miR-218_st	-1.7	1.1x10-2
+    hsa-miR-224-star_st	-1.6	7.4x10-3
+    hsa-miR-1975_st	-1.5	1.6x10-3

@@ -1,0 +1,55 @@
+Gene	Gene Name	Functional Category	PÊValue	BH-Corrected PÊValue* 	Fold Change*à
+ME1	Malic enzyme 1	Oxidant related	<1___10_16	<1___10_16	4.34
+PIR	Pirin	Oxidant related	1.11___10_16	8.92___10_14	2.93
+SLC2A1	Solute carrier family 2 member 1	Transport	1.11___10_16	8.92___10_14	1.59
+TRIM16	Tripartite motif-containing 16	Transcription	2.22___10_16	1.53___10_13	2.27
+NPAS3	Neuronal PAS domain protein 3	Transcription	4.44___10_16	2.79___10_13	_2.12
+CYP4X1	Cytochrome P450 family 4 subfamily X member 1	Oxidant related	1.33___10_15	8.03___10_13	_1.70
+WNK4	WNK lysine-deficient protein kinase 4	Signal transduction	1.33___10_14	5.67___10_12	_2.34
+RTN4RL1	Reticulon 4 receptor-like 1	Metabolism	5.13___10_14	1.85___10_11	_1.93
+GALNT6	Polypeptide N-acetylgalactosaminyl transferase 6	Metabolism	2.03___10_13	6.11___10_11	2.07
+S100A10	S100 calcium binding protein A10	Signal transduction	2.39___10_12	4.94___10_10	1.82
+NAV1	Neuron navigator 1	Unknown	3.11___10_12	5.78___10_10	1.84
+NOL3	Nucleolar protein 3	Metabolism	3.57___10_12	6.22___10_10	1.51
+CLDN10	Claudin 10	Transport	9.96___10_12	1.45___10_9	2.45
+KDELR3	KDEL endoplasmic reticulum protein retention receptor 3	Transport	1.56___10_11	2.18___10_9	2
+FAM110C	"Family with sequence similarity 110, member C"	Cell cycle	6.26___10_11	6.97___10_9	1.68
+CHST15	Carbohydrate sulfotransferase 15	Metabolism	9.70___10_11	1.02___10_8	1.58
+GALNT7	GalNAc transferase 7	Metabolism	2.25___10_10	2.17___10_8	1.55
+FHOD3	Formin homology 2 domain containing 3	Growth/proliferation	3.31___10_10	2.75___10_8	_1.89
+CYP1B1	"Cytochrome P450, family 1, subfamily B, polypeptide 1"	Oxidant related	4.04___10_10	3.25___10_8	76.06
+PLAG1	PLAG1 zinc finger	Transcription	4.62___10_10	3.59___10_8	_1.51
+SLC29A1	"Solute carrier family 29, member 1"	Transport	1.02___10_9	6.79___10_8	_1.72
+KCNK6	Potassium two pore domain channel subfamily K member 6	Signal transduction	1.47___10_9	9.18___10_8	1.64
+LOC102724094	LOC102724094	Unknown	1.87___10_9	1.13___10_7	2.22
+LOC105378604	Uncharacterized LOC105378604	Unknown	3.66___10_9	2.00___10_7	_1.68
+MSRB1	LDL receptor-related protein 4	Oxidant related	4.13___10_9	2.17___10_7	1.62
+PEG10	Paternally expressed 10	Apoptosis	4.20___10_9	2.19___10_7	_1.74
+S100A14	S100 calcium binding protein A14	Apoptosis	5.89___10_9	2.65___10_7	1.63
+LRP4	Low-density lipoprotein receptor-related protein 4	Development	1.35___10_8	5.63___10_7	1.86
+TMCC3	Transmembrane and coiled-coil domain family 3	Unknown	1.45___10_8	5.85___10_7	2.01
+LOC284825	Long intergenic nonprotein coding RNA 1697	Unknown	1.60___10_8	6.36___10_7	6.35
+KCNB1	Potassium voltage-gated channel subfamily B member 1	Transport	1.65___10_8	6.44___10_7	_1.66
+CDC42EP5	CDC42 effector protein 5	Growth/proliferation	2.13___10_8	7.88___10_7	1.87
+DPP10	Dipeptidylpeptidase 10	Proteolysis	2.48___10_8	8.93___10_7	1.83
+FOXA2	Forkhead box A2	Transcription	4.87___10_8	1.56___10_6	_1.67
+LHX6	LIM homeobox 6	Growth/proliferation	5.72___10_8	1.76___10_6	1.85
+SIX3	SIX homeobox 3	Regulation	5.73___10_8	1.76___10_6	2.67
+GAD1	Glutamate decarboxylase 1	Metabolism	1.16___10_7	3.20___10_6	4.79
+LFNG	LFNG O-fucosylpeptide 3-_-N-acetylglucosaminyltransferase	Signal transduction	2.01___10_7	4.93___10_6	1.63
+DPP10-AS1	DPP10 antisense RNA 1	Unknown	2.33___10_7	5.58___10_6	1.75
+MATN2	Matrilin 2	Growth/proliferation	2.60___10_7	6.08___10_6	2.42
+NR4A3	Nuclear receptor subfamily 4 group A member 3	Transcription	3.07___10_7	7.01___10_6	1.87
+LOC100507560	Uncharacterized LOC100507560	Metabolism	2.85___10_6	4.56___10_5	_1.73
+PRKCB	"Protein kinase C, _"	Signal transduction	5.15___10_6	7.42___10_5	_3.07
+PDGFRL	Platelet-derived growth factor receptor-like	Proteolysis	5.29___10_6	7.59___10_5	1.8
+GSTM3	Glutathione S-transferase mu 3	Metabolism	2.16___10_5	0.0002	1.8
+UCHL1	Ubiquitin C-terminal hydrolase L1	Proteolysis	2.76___10_5		
+CCEPR	Cervical carcinoma expressed PCNA regulatory LncRNA	Unknown	3.99___10_5	0.0004	1.52
+KRT40	Keratin 40	Unknown	6.32___10_5	0.0006	1.68
+DAPK1	Death-associated protein kinase 1	Apoptosis	0.0002	0.001	_1.62
+FAM3B	"Family with sequence similarity 3, member B"	Apoptosis	0.0002	0.002	1.52
+DNAJC12	"DnaJ homolog, subfamily C, member 12"	Transport	0.0003	0.002	1.7
+DEFB1	"Defensin, _1"	Immune response	0.0007	0.004	2.29
+KIAA1211	KIAA1211	Unknown	0.002	0.01	1.62
+CDH2	Cadherin 2	Adhesion	0.004	0.02	1.92

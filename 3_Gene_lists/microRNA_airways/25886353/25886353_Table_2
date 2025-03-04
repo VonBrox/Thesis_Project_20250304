@@ -1,0 +1,38 @@
+Healthy smokers vs healthy nonsmokers
+Probeset ID	Fold-change 2	p value 3
+Up-regulated		
+    hsa-miR-143_st	9.1	1.0x10-3
+    hsa-miR-145_st	8.0	1.2x10-3
+    hsa-miR-133b_st	6.7	8.9x10-5
+    hsa-miR-214_st	5.7	1.6x10-3
+    hsa-miR-634_st	5.3	2.0x10-5
+    hsa-miR-126_st	5.0	7.6x10-4
+    hsa-miR-139-5p_st	4.5	1.6x10-4
+    hsa-miR-199a-3p_st	3.9	3.3x10-3
+    hsa-miR-199a-5p_st	3.7	9.1x10-3
+    hsa-miR-133a_st	3.7	1.9x10-4
+    hsa-miR-195_st	2.7	8.9x10-4
+    hsa-miR-181c_st	2.7	1.3x10-3
+    hsa-miR-675_st	2.6	1.2x10-4
+    hsa-miR-127-3p_st	2.3	5.8x10-3
+    hsa-let-7b-star_st	2.1	4.2x10-3
+    hsa-miR-1260_st	2.1	1.2x10-3
+    hsa-miR-1226-star_st	2.1	9.3x10-3
+    hsa-miR-636_st	2.0	2.2x10-4
+    hsa-miR-193b-star_st	2.0	2.6x10-3
+    hsa-miR-487b_st	2.0	4.3x10-3
+    hsa-miR-193b_st	1.9	6.6x10-3
+    hsa-miR-138-1-star_st	1.8	4.2x10-3
+    hsa-miR-181a_st	1.7	5.4x10-7
+    hsa-miR-550_st	1.7	8.2x10-3
+    hsa-miR-181b_st	1.5	3.1x10-4
+Down-regulated		
+    hsa-miR-449b_st	-1.6	3.1x10-3
+    hsa-miR-224-star_st	-1.6	4.5x10-3
+    hsa-miR-1975_st	-1.8	1.4x10-4
+    hsa-miR-1979_st	-1.9	2.1x10-4
+    hsa-miR-218_st	-2.0	1.7x10-3
+    hsa-miR-146a_st	-2.1	2.9x10-3
+    hsa-miR-203_st	-2.1	5.6x10-4
+    hsa-miR-3201_st	-2.2	6.3x10-3
+    hsa-miR-1246_st	-3.8	2.7x10-4
