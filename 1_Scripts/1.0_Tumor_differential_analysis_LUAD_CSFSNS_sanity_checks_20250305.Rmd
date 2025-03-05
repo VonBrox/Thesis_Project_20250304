@@ -26,12 +26,12 @@ library(dplyr, verbose = FALSE)
 
 ```{r}
 
-getGEOSuppFiles("GSE63127")
-
-library(affy)
-raw_data <- ReadAffy(celfile.path = "GSE63127")
-norm_data <- rma(raw_data)  
-exprs_matrix <- exprs(norm_data)  
+# getGEOSuppFiles("GSE63127")
+# 
+# library(affy)
+# raw_data <- ReadAffy(celfile.path = "GSE63127")
+# norm_data <- rma(raw_data)  
+# exprs_matrix <- exprs(norm_data)  
 
 
 ```
@@ -567,7 +567,7 @@ v_A1
 ```{r}
 
 # Change date suffix as appropriate if changes are made
-#write.table(GSE63127_CS_NS_limma, "../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20241204.txt", sep = '\t')
+#write.table(GSE63127_CS_NS_limma, "../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250305.txt", sep = '\t')
 
 ```
 
