@@ -992,27 +992,29 @@ data_methylation_hm450_tumor_normal_matched <- cbind(Gene = data_methylation_hm4
 
 ```
 
-### 3.2.2 Giving suffixes to duplicate genes
+### 3.2.2 Handling duplicate genes
 ```{r}
-# I want to make the gene names into row names, but I cannot because some gene names appear twice.
-# So, I will rename them with indexes _1 and _2 and figure out  why they appeared twice later.
+library(dplyr)
 
-#Checking rows of the gene names with duplicates:
-checking_dups <- data_methylation_hm450_tumor_normal_matched[data_methylation_hm450_tumor_normal_matched$Gene %in% c("AGER", "CX3CR1", "F2R", "GADL1", "GCOM1", "KLK10", "PALM2AKAP2", "QSOX1", "RCC1"),]
+# Step 1: Identify rows with duplicate Gene values
+duplicates <- data_methylation_hm450_tumor_normal_matched %>%
+  group_by(Gene) %>%
+  filter(n() > 1)
 
-# I see that these are not identical rows - the methylation values are different. So, I will go ahead and add indexes.
-checking_dups <- checking_dups[order(checking_dups$Gene),]#Sort by gene name
+# Step 2: Remove the row with the smallest row sum for each duplicate gene
+rows_to_remove <- duplicates %>%
+  rowwise() %>%
+  mutate(row_sum = sum(c_across(where(is.numeric)))) %>%  # Compute row sum for numeric columns
+  group_by(Gene) %>%
+  slice_min(row_sum, with_ties = FALSE) %>%  # Select the row with the smallest sum
+  ungroup()
 
-checking_dups <- cbind(rownames(checking_dups), checking_dups[,1]) #Make table of just the gene names and row names of the original file
+# Step 3: Remove these rows from the original dataframe
+data_methylation_hm450_tumor_normal_matched <- anti_join(data_methylation_hm450_tumor_normal_matched, rows_to_remove, by = colnames(data_methylation_hm450_tumor_normal_matched))
 
-checking_dups[,2] <- paste(checking_dups[,2],1:2,sep="_") # Add a suffix to the gene names
-
-#Replace the gene names in the T-NM matched file with the suffixed gene names
-data_methylation_hm450_tumor_normal_matched[checking_dups[,1],1] <- checking_dups[,2]
-
-#Now that there are no longer duplicates, make the gene names column into the row names and remove the gene names column.
-rownames(data_methylation_hm450_tumor_normal_matched) <- data_methylation_hm450_tumor_normal_matched[,1]
-data_methylation_hm450_tumor_normal_matched <- data_methylation_hm450_tumor_normal_matched[,-1]
+# Now make the gene names into row names
+rownames(data_methylation_hm450_tumor_normal_matched) <- data_methylation_hm450_tumor_normal_matched$Gene
+data_methylation_hm450_tumor_normal_matched$Gene <- NULL
 
 ```
 
