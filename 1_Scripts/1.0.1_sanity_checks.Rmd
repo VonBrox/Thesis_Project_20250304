@@ -1,0 +1,233 @@
+---
+title: "2.2.4_sanity_checks"
+output: html_document
+date: "2025-02-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This will include sanity checks to validate the inputs to the main part of my analysis with corroborating sources in literature.
+
+## Reading in data
+```{r}
+
+## Reading in TCGA LUAD T vs NM DEGs for which I used limma and included all smoking statuses
+TCGA_LUAD_limma_DEG_CSFSNS <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250221.txt")
+
+## Reading in the list from GEPIA, which used TCGA-LUAD paired T vs NM samples and for which I set basically no cutoff (0.01 log2FC cutoff and 0.5 FDR cutoff): obtained from  http://gepia2.cancer-pku.cn/#degenes
+## Paper on GEPIA2: PMID is 31114875
+GEPIA_LUAD_T_N_DEG <- read.table("../4_TCGA_data/GEPIA_LUAD_T_N_DEG.txt", header = T)
+colnames(GEPIA_LUAD_T_N_DEG)[1] <- "Gene"
+
+
+## Reading in the list from xenabrowser https://xenabrowser.net/ (I did this a looong time ago so might want to redo it):
+xena_LUAD_T_N_DEG <- read.table("../4_TCGA_data/DGE_LUAD_TvsNM_limma_xena.txt", header = T)
+colnames(xena_LUAD_T_N_DEG)[1] <- "Gene"
+colnames(xena_LUAD_T_N_DEG)[2] <- "log2FC"
+colnames(xena_LUAD_T_N_DEG)[6] <- "FDR"
+
+## Reading in the list from publication PMID 26292924
+PMID26292924_LUAD_LUSC_FDRs <- read.table("../4_TCGA_data/PMID26292924_LUAD_LUSC_FDRs.txt", header = T)
+
+```
+
+## Comparing TE with GEPIA list
+```{r}
+
+#### Comparing number of rows with given cutoffs
+
+### T-E
+FDR_cutoff_TE = 0.001
+log2FC_cutoff_TE = 0.75
+
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
+nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,])
+
+### GEPIA
+FDR_cutoff_GEPIA = 0.001
+log2FC_cutoff_GEPIA = 0.75
+
+print(paste0("GEPIA DEGs meeting FDR cutoff ", FDR_cutoff_GEPIA, " and log2FC cutoff ", log2FC_cutoff_GEPIA))
+nrow(GEPIA_LUAD_T_N_DEG[GEPIA_LUAD_T_N_DEG$FDR<FDR_cutoff_GEPIA
+                              & abs(GEPIA_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_GEPIA,])
+
+
+
+
+## Combine the tables of TE and GEPIA
+TE_GEPIA_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  inner_join(., GEPIA_LUAD_T_N_DEG, by = "Gene", suffix = c("_TE", "_GEPIA"))
+
+## Make a version where all the cutoffs are met
+TE_GEPIA_comparison_filtered <- TE_GEPIA_comparison %>%
+  filter(., abs(log2FC_TE) >= log2FC_cutoff_TE & abs(log2FC_GEPIA) >= log2FC_cutoff_GEPIA & FDR_TE <= FDR_cutoff_TE & FDR_GEPIA <= FDR_cutoff_GEPIA)
+
+### Plot the log2FC values from both for all genes
+ggplot(TE_GEPIA_comparison, aes(x = log2FC_TE, y = log2FC_GEPIA)) +
+  geom_point()
+## Looks kinda correlated
+
+
+### Plot the log2FC values for the genes meeting cutoffs
+ggplot(TE_GEPIA_comparison_filtered, aes(x = log2FC_TE, y = log2FC_GEPIA)) +
+  geom_point() # Most of the signs are matching apart from a handful so that's good at least
+
+
+## Trying out filtering both by only really stringent FDRs and see how well they correlate then
+FDR_cutoff_TE_2 <- 10^-20
+FDR_cutoff_GEPIA_2 <- 10^-20
+
+TE_GEPIA_comparison_filtered_2 <- TE_GEPIA_comparison %>%
+  filter(., FDR_TE <= FDR_cutoff_TE_2 & FDR_GEPIA <= FDR_cutoff_GEPIA_2)
+
+ggplot(TE_GEPIA_comparison_filtered_2, aes(x = log2FC_TE, y = log2FC_GEPIA)) +
+  geom_point() ## It does get tighter as you increast the FDR to really high levels but it's still not perfect correlation. However, I think this is all reassuring enough that my method is at least acceptable.
+
+
+
+
+```
+
+## Comparing TE with xenabrowser list:
+```{r}
+
+#### Comparing number of rows with given cutoffs
+
+### T-E
+FDR_cutoff_TE = 0.001
+log2FC_cutoff_TE = 0.75
+
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
+nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,])
+
+### xena
+FDR_cutoff_xena = 0.001
+log2FC_cutoff_xena = 0.75
+
+print(paste0("xena DEGs meeting FDR cutoff ", FDR_cutoff_xena, " and log2FC cutoff ", log2FC_cutoff_xena))
+nrow(xena_LUAD_T_N_DEG[xena_LUAD_T_N_DEG$FDR<FDR_cutoff_xena
+                              & abs(xena_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_xena,])
+
+
+
+## Combine the tables of TE and xena
+TE_xena_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  inner_join(., xena_LUAD_T_N_DEG, by = "Gene", suffix = c("_TE", "_xena"))
+
+## Make a version where all the cutoffs are met
+TE_xena_comparison_filtered <- TE_xena_comparison %>%
+  filter(., abs(log2FC_TE) >= log2FC_cutoff_TE & abs(log2FC_xena) >= log2FC_cutoff_xena & FDR_TE <= FDR_cutoff_TE & FDR_xena <= FDR_cutoff_xena)
+
+### Plot the log2FC values from both for all genes
+ggplot(TE_xena_comparison, aes(x = log2FC_TE, y = log2FC_xena)) +
+  geom_point()
+## Looks quite correlated
+
+
+### Plot the log2FC values for the genes meeting cutoffs
+ggplot(TE_xena_comparison_filtered, aes(x = log2FC_TE, y = log2FC_xena)) +
+  geom_point() # Most of the signs are matching apart from a handful so that's good at least
+
+
+## Trying out filtering both by only really stringent FDRs and see how well they correlate then
+FDR_cutoff_TE_2 <- 10^-20
+FDR_cutoff_xena_2 <- 10^-20
+
+TE_xena_comparison_filtered_2 <- TE_xena_comparison %>%
+  filter(., FDR_TE <= FDR_cutoff_TE_2 & FDR_xena <= FDR_cutoff_xena_2)
+
+ggplot(TE_xena_comparison_filtered_2, aes(x = log2FC_TE, y = log2FC_xena)) +
+  geom_point() ## It does get tighter as you increast the FDR to really high levels but it's still not perfect correlation. However, I think this is all reassuring enough that my method is at least acceptable.
+
+```
+
+
+## Comparing TE with PMID 26292924 list
+```{r}
+
+#### Comparing number of rows with given cutoffs
+
+### T-E
+FDR_cutoff_TE = 0.001
+
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE))
+nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE,])
+
+### 26292924
+FDR_cutoff_26292924 = 0.001
+
+print(paste0("26292924 DEGs meeting FDR cutoff ", FDR_cutoff_26292924))
+nrow(PMID26292924_LUAD_LUSC_FDRs[PMID26292924_LUAD_LUSC_FDRs$FDR_LUAD<FDR_cutoff_26292924,])
+
+## Well this study used edgeR rather than limma, so it could explain this difference somewhat.
+
+## Plotting FDRs to look for commonality
+
+## Combine the tables of TE and 26292924 LUAD
+PMID26292924_LUAD_FDRs <- PMID26292924_LUAD_LUSC_FDRs %>%
+  select(LUAD, FDR_LUAD) %>%
+  rename(., LUAD = "Gene", FDR_LUAD = "FDR")
+PMID26292924_LUAD_FDRs$FDR <- as.numeric(PMID26292924_LUAD_FDRs$FDR)
+
+TE_26292924_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  inner_join(., PMID26292924_LUAD_FDRs, by = "Gene", suffix = c("_TE", "_26292924"))
+
+### Plot the FDR values from both for all genes
+ggplot(TE_26292924_comparison, aes(x = FDR_TE, y = FDR_26292924)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10()
+# Well it at least looks like there is sort of a general trend of agreement here. Big FDR in one is big FDR in the other.
+# I could plot the ranks instead as well perhaps
+
+```
+
+I could look for another study I guess.
+UALCAN database shows similar top genes.
+I think this should be enough evidence to show that the TE calculation is fine.
+
+Now I want to do sanity checks for TM.
+I couldn't see a way to do it on xena, gepia2, or ualcan.
+I can find a big study hopefully.
+The thing suggested by deboer was to just try comparing TE and TM without any filters, and you'd hope to see an inverse relationship overall probably... not fully formulated that thought yet.
+
+Note: I should double check in all my 3 versions of the analysis that I am pulling in the right version of the methylation data for the subsequent intersections. Should organize that out better etc.
+
+## Read in TM
+```{r}
+# T-M
+TCGA_LUAD_limma_DMG <- read.table("../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_20241203.txt")
+## Should double check this is the right version with CS FS NS and not just CS FS
+```
+
+## Compare TE and TM
+```{r}
+
+TE_TM_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  inner_join(., TCGA_LUAD_limma_DMG , by = "Gene", suffix = c("_TE", "_TM"))
+
+ggplot(TE_TM_comparison, aes(x = log2FC_TE, y = log2FC_TM)) +
+  geom_point()
+
+## Sort of a rough inverse correlation emerging there
+## What if I push the FDR
+
+FDR_cutoff_TE <- 10^-10
+FDR_cutoff_TM <- 10^-10
+
+TE_TM_comparison_filtered <- TE_TM_comparison %>%
+  filter(FDR_TE <= FDR_cutoff_TE & FDR_TM <= FDR_cutoff_TM)
+
+ggplot(TE_TM_comparison_filtered, aes(x = log2FC_TE, y = log2FC_TM)) +
+  geom_point()
+
+# I think the inverse correlation gets better as you push up the FDR. Note I am not filtering for sign at all here. Interesting.
+
+```
+
+
+
