@@ -614,8 +614,6 @@ query <- GDCquery(project = "TCGA-LUAD",
 #GDCdownload(query, directory = "../../GDC_data") 
 data <- GDCprepare(query, directory = "../../GDC_data")
 
-# GDCdownload(query)
-# data <- GDCprepare(query)
 
 ```
 
@@ -637,8 +635,8 @@ query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
   filter(data_format == "BCR XML")
 
 ## Download data
-GDCdownload(query_clinical)
-clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient")
+#GDCdownload(query_clinical, directory = "../../GDC_data")
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient", directory = "../../GDC_data")
 
 head(clinical_data)
 
@@ -825,13 +823,27 @@ design <- model.matrix(~0 + groups)
 # "Condition" should indicate Tumor/Normal status
 colnames(design) <- c("Normal", "Tumor")
 
-# Filter out rows with less than 10 total counts in the smallest sample group size (114/2 = 57)
-cpm_values <- cpm(counts_matched_T_NM)
-keep <- rowSums(cpm_values >= 1) >= 57
-counts_matched_T_NM_check <- counts_matched_T_NM[keep,]
 
-keep <- filterByExpr(counts_matched_T_NM, min.count=20)
-counts_matched_T_NM_check <- counts_matched_T_NM[keep,]
+
+### Low read counts filtering methods ###
+
+#  Method 1: Filter out rows with less than 20 total counts in the smallest sample group size (114/2 = 57)
+keep <- rowSums(counts_matched_T_NM >= 10) >= 57
+
+# Method 2: Use CPM with the same approach
+#cpm_values <- cpm(counts_matched_T_NM)
+keep <- rowSums(cpm_values >= 1) >= 57
+
+# Method 3: Use the filterByExpr package 
+
+keep <- filterByExpr(counts_matched_T_NM, design = design, min.count=20, min.total.count = 15, min.prop = 1)
+
+# For testing
+counts_matched_T_NM_checking <- counts_matched_T_NM[keep,]
+
+# For truly filtering
+#counts_matched_T_NM <- counts_matched_T_NM[keep,]
+###
 
 
 

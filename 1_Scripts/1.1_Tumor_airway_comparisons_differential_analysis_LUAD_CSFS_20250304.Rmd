@@ -1035,7 +1035,7 @@ methyl_beta <- data_methylation_hm450_tumor_normal_matched
 # Convert to M values
 methyl_M=log2(data_methylation_hm450_tumor_normal_matched/(1-data_methylation_hm450_tumor_normal_matched))
 
-## Plot a histograk of the M values
+## Plot a histogram of the M values
 hist(as.matrix(methyl_M),
      main = "Distribution of M-values in TCGA-LUAD methylation",
      xlab = "M-value",
@@ -1065,8 +1065,6 @@ legend("bottomleft",
        )  
 
 ## Very good tumor-normal separation
-
-
 
 ```
 
