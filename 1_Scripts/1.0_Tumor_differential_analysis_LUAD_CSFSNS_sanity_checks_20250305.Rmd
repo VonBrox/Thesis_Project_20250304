@@ -611,7 +611,7 @@ query <- GDCquery(project = "TCGA-LUAD",
                   sample.type = c("Primary Tumor", "Solid Tissue Normal"),
                   workflow.type = "STAR - Counts")
 
-GDCdownload(query, directory = "../../GDC_data")  # Change to an absolute path
+#GDCdownload(query, directory = "../../GDC_data") 
 data <- GDCprepare(query, directory = "../../GDC_data")
 
 # GDCdownload(query)
