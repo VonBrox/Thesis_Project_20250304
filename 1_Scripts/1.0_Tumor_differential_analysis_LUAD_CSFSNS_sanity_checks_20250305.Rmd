@@ -823,56 +823,19 @@ design <- model.matrix(~0 + groups)
 # "Condition" should indicate Tumor/Normal status
 colnames(design) <- c("Normal", "Tumor")
 
+### Low read counts filtering #####
+keep <- filterByExpr(counts_matched_T_NM, design = design) # new method
+#keep <- rowSums(counts_matched_T_NM >= 10) >= 57 # old method
+counts_matched_T_NM_filtered <- counts_matched_T_NM[keep,] 
 
-
-### Low read counts filtering methods ###
-
-#  Method 1: Filter out rows with less than 20 total counts in the smallest sample group size (114/2 = 57)
-keep <- rowSums(counts_matched_T_NM >= 10) >= 57
-
-# Method 2: Use CPM with the same approach
-#cpm_values <- cpm(counts_matched_T_NM)
-keep <- rowSums(cpm_values >= 1) >= 57
-
-# Method 3: Use the filterByExpr package 
-
-keep <- filterByExpr(counts_matched_T_NM, design = design, min.count=20, min.total.count = 15, min.prop = 1)
-
-# For testing
-counts_matched_T_NM_checking <- counts_matched_T_NM[keep,]
-
-# For truly filtering
-#counts_matched_T_NM <- counts_matched_T_NM[keep,]
-###
-
+print(paste0("genes kept: ", nrow(counts_matched_T_NM_filtered)))
+hist(log2(cpm(counts_matched_T_NM_filtered ) + 1), main = "Distribution of log2(CPM+1) values", breaks = 50)
+#####
 
 
 # Use voom to transform the counts
-voom_data <- voom(counts_matched_T_NM, design)
-
-
-#######
-##### 2025/02/20 
-## I want to try PCA here again to make sure the T vs NM separation is still good after previous few steps
-
-colz3 <- as.numeric(as.factor(groups)) # Get color values from group
-plotMDS(voom_data$E,
-        gene.selection = "common",
-        main = "PCA for TCGA-LUAD expression after outlier removal",
-        col = colz3,
-        pch = 1
-)
-legend("bottomleft", 
-       legend = c("Tumor", "Normal"), 
-       col = colz2, # Colors: only for smoking status
-       pch = c(15, 15),                
-       text.col = "black"
-       )
-
-## Yes the separation looks great
-
-######
-######
+voom_data <- voom(counts_matched_T_NM_filtered, design)
+#voom_data <- voom(counts_matched_T_NM_check, design)
 
 
 # Fit the model
@@ -912,7 +875,7 @@ TCGA_LUAD_limma_DEG <- TCGA_LUAD_limma_DEG %>%
 TCGA_LUAD_limma_DEG$Gene <- gene_info_sorted$gene_name
 
 # Save output
-write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250221.txt", sep = '\t')
+write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250306.txt", sep = '\t')
 
 ```
 
@@ -1126,7 +1089,7 @@ TCGA_LUAD_limma_DMG <- TCGA_LUAD_DMG
 nrow(TCGA_LUAD_limma_DMG)
 
 ### Saving output
-write.table(TCGA_LUAD_limma_DMG, "../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFSNS_20250225.txt", sep = '\t')
+#write.table(TCGA_LUAD_limma_DMG, "../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFSNS_20250225.txt", sep = '\t')
 
 ```
 
