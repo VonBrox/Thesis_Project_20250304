@@ -14,7 +14,7 @@ This will include sanity checks to validate the inputs to the main part of my an
 ```{r}
 
 ## Reading in TCGA LUAD T vs NM DEGs for which I used limma and included all smoking statuses
-TCGA_LUAD_limma_DEG_CSFSNS <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250221.txt")
+TCGA_LUAD_limma_DEG_CSFSNS <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250306.txt")
 
 ## Reading in the list from GEPIA, which used TCGA-LUAD paired T vs NM samples and for which I set basically no cutoff (0.01 log2FC cutoff and 0.5 FDR cutoff): obtained from  http://gepia2.cancer-pku.cn/#degenes
 ## Paper on GEPIA2: PMID is 31114875
@@ -35,7 +35,7 @@ PMID26292924_LUAD_LUSC_FDRs <- read.table("../4_TCGA_data/PMID26292924_LUAD_LUSC
 
 ## Comparing TE with GEPIA list
 ```{r}
-
+library(ggplot2)
 #### Comparing number of rows with given cutoffs
 
 ### T-E
@@ -94,11 +94,13 @@ ggplot(TE_GEPIA_comparison_filtered_2, aes(x = log2FC_TE, y = log2FC_GEPIA)) +
 ## Comparing TE with xenabrowser list:
 ```{r}
 
+library(eulerr)
+
 #### Comparing number of rows with given cutoffs
 
 ### T-E
 FDR_cutoff_TE = 0.001
-log2FC_cutoff_TE = 0.75
+log2FC_cutoff_TE = 1
 
 print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
 nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
@@ -106,12 +108,21 @@ nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
 
 ### xena
 FDR_cutoff_xena = 0.001
-log2FC_cutoff_xena = 0.75
+log2FC_cutoff_xena = 1
 
 print(paste0("xena DEGs meeting FDR cutoff ", FDR_cutoff_xena, " and log2FC cutoff ", log2FC_cutoff_xena))
 nrow(xena_LUAD_T_N_DEG[xena_LUAD_T_N_DEG$FDR<FDR_cutoff_xena
                               & abs(xena_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_xena,])
 
+### Venn diagram
+
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS$Gene), xena_LUAD = unique(xena_LUAD_T_N_DEG$Gene)))
+
+plot(gene_sets, 
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
 
 
 ## Combine the tables of TE and xena
@@ -170,7 +181,7 @@ nrow(PMID26292924_LUAD_LUSC_FDRs[PMID26292924_LUAD_LUSC_FDRs$FDR_LUAD<FDR_cutoff
 ## Combine the tables of TE and 26292924 LUAD
 PMID26292924_LUAD_FDRs <- PMID26292924_LUAD_LUSC_FDRs %>%
   select(LUAD, FDR_LUAD) %>%
-  rename(., LUAD = "Gene", FDR_LUAD = "FDR")
+  rename(., Gene = "LUAD",  FDR = "FDR_LUAD")
 PMID26292924_LUAD_FDRs$FDR <- as.numeric(PMID26292924_LUAD_FDRs$FDR)
 
 TE_26292924_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
