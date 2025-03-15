@@ -828,10 +828,17 @@ keep <- filterByExpr(counts_matched_T_NM, design = design) # new method
 #keep <- rowSums(counts_matched_T_NM >= 10) >= 57 # old method
 counts_matched_T_NM_filtered <- counts_matched_T_NM[keep,] 
 
-print(paste0("genes kept: ", nrow(counts_matched_T_NM_filtered)))
-hist(log2(cpm(counts_matched_T_NM_filtered ) + 1), main = "Distribution of log2(CPM+1) values", breaks = 50)
-#####
+# xenabrowser method
+# counts_matched_T_NM_filtered <- t(scale(t(counts_matched_T_NM)))  # z-Normalize by row (genes)
+# low_expression_threshold <- 0.3
+# counts_matched_T_NM_filtered <- counts_matched_T_NM_filtered[rowSums(counts_matched_T_NM_filtered) > 0, ]
+# mask_low_vals <- rowSums(counts_matched_T_NM_filtered > low_expression_threshold) > 2
+# counts_matched_T_NM_filtered <- na.omit(counts_matched_T_NM_filtered[mask_low_vals, ])
+###
 
+print(paste0("genes kept: ", nrow(counts_matched_T_NM_filtered)))
+#hist(log2(cpm(counts_matched_T_NM_filtered ) + 1), main = "Distribution of log2(CPM+1) values", breaks = 50)
+#####
 
 # Use voom to transform the counts
 voom_data <- voom(counts_matched_T_NM_filtered, design)
@@ -875,7 +882,7 @@ TCGA_LUAD_limma_DEG <- TCGA_LUAD_limma_DEG %>%
 TCGA_LUAD_limma_DEG$Gene <- gene_info_sorted$gene_name
 
 # Save output
-write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250306.txt", sep = '\t')
+#write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250306.txt", sep = '\t')
 
 ```
 

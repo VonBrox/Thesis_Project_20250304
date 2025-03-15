@@ -16,7 +16,7 @@ This will include sanity checks to validate the inputs to the main part of my an
 ## Reading in TCGA LUAD T vs NM DEGs for which I used limma and included all smoking statuses
 TCGA_LUAD_limma_DEG_CSFSNS <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250306.txt")
 
-## Reading in the list from GEPIA, which used TCGA-LUAD paired T vs NM samples and for which I set basically no cutoff (0.01 log2FC cutoff and 0.5 FDR cutoff): obtained from  http://gepia2.cancer-pku.cn/#degenes
+## Reading in the list from GEPIA, which used TCGA-LUAD paired T vs NM samples and for which I basically set no cutoff (0.01 log2FC cutoff and 0.5 FDR cutoff): obtained from  http://gepia2.cancer-pku.cn/#degenes
 ## Paper on GEPIA2: PMID is 31114875
 GEPIA_LUAD_T_N_DEG <- read.table("../4_TCGA_data/GEPIA_LUAD_T_N_DEG.txt", header = T)
 colnames(GEPIA_LUAD_T_N_DEG)[1] <- "Gene"
@@ -28,6 +28,11 @@ colnames(xena_LUAD_T_N_DEG)[1] <- "Gene"
 colnames(xena_LUAD_T_N_DEG)[2] <- "log2FC"
 colnames(xena_LUAD_T_N_DEG)[6] <- "FDR"
 
+# Read in 250 most up and down regulated genes in LUAD tumor from UALCAN
+
+UALCAN_LUAD_NOS_Up_reg_top250 <- read.table("../4_TCGA_data/UALCAN_LUAD-NOS-Up-reg-top250.txt", header = TRUE)
+UALCAN_LUAD_NOS_Down_reg_top250 <- read.table("../4_TCGA_data/UALCAN_LUAD-NOS-Down-reg-top250.txt", header = TRUE)
+
 ## Reading in the list from publication PMID 26292924
 PMID26292924_LUAD_LUSC_FDRs <- read.table("../4_TCGA_data/PMID26292924_LUAD_LUSC_FDRs.txt", header = T)
 
@@ -36,26 +41,45 @@ PMID26292924_LUAD_LUSC_FDRs <- read.table("../4_TCGA_data/PMID26292924_LUAD_LUSC
 ## Comparing TE with GEPIA list
 ```{r}
 library(ggplot2)
+library(eulerr)
+library(dplyr)
 #### Comparing number of rows with given cutoffs
 
 ### T-E
 FDR_cutoff_TE = 0.001
-log2FC_cutoff_TE = 0.75
-
+log2FC_cutoff_TE = 1
+TCGA_LUAD_limma_DEG_CSFSNS_filter <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,]
 print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
-nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
-                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,])
+nrow(TCGA_LUAD_limma_DEG_CSFSNS_filter)
 
 ### GEPIA
 FDR_cutoff_GEPIA = 0.001
-log2FC_cutoff_GEPIA = 0.75
+log2FC_cutoff_GEPIA = 1
+GEPIA_LUAD_T_N_DEG_filter <- GEPIA_LUAD_T_N_DEG[GEPIA_LUAD_T_N_DEG$FDR<FDR_cutoff_GEPIA
+                              & abs(GEPIA_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_GEPIA,]
 
 print(paste0("GEPIA DEGs meeting FDR cutoff ", FDR_cutoff_GEPIA, " and log2FC cutoff ", log2FC_cutoff_GEPIA))
-nrow(GEPIA_LUAD_T_N_DEG[GEPIA_LUAD_T_N_DEG$FDR<FDR_cutoff_GEPIA
-                              & abs(GEPIA_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_GEPIA,])
+nrow(GEPIA_LUAD_T_N_DEG_filter)
 
 
+### Venn diagram pre-filter
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS$Gene), GEPIA_LUAD = unique(GEPIA_LUAD_T_N_DEG$Gene)))
+plot(main = "All genes",
+     gene_sets,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
 
+### Venn diagram post-filter
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS_filter$Gene), GEPIA_LUAD = unique(GEPIA_LUAD_T_N_DEG_filter$Gene)))
+plot(main = "Filtered genes",
+     gene_sets,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
 
 ## Combine the tables of TE and GEPIA
 TE_GEPIA_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
@@ -87,7 +111,19 @@ ggplot(TE_GEPIA_comparison_filtered_2, aes(x = log2FC_TE, y = log2FC_GEPIA)) +
   geom_point() ## It does get tighter as you increast the FDR to really high levels but it's still not perfect correlation. However, I think this is all reassuring enough that my method is at least acceptable.
 
 
+###
 
+# I am curious about why so many transcripts are not shared between them, so I want to take a look at these.
+
+## Get genes from my limma and not GEPIA
+TE_GEPIA_unshared_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  anti_join(., GEPIA_LUAD_T_N_DEG, by = "Gene")
+
+## Get genes from GEPIA and not my limma
+GEPIA_TE_unshared_comparison <- GEPIA_LUAD_T_N_DEG  %>%
+  anti_join(., TCGA_LUAD_limma_DEG_CSFSNS, by = "Gene")
+
+## Looks like lots of the genes that are not shared are lncRNAs or weird genes
 
 ```
 
@@ -102,23 +138,35 @@ library(eulerr)
 FDR_cutoff_TE = 0.001
 log2FC_cutoff_TE = 1
 
+TCGA_LUAD_limma_DEG_CSFSNS_filtered <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,]
+
 print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
-nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
-                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,])
+nrow(TCGA_LUAD_limma_DEG_CSFSNS_filtered)
 
 ### xena
 FDR_cutoff_xena = 0.001
 log2FC_cutoff_xena = 1
 
+xena_LUAD_T_N_DEG_filtered <- xena_LUAD_T_N_DEG[xena_LUAD_T_N_DEG$FDR<FDR_cutoff_xena
+                              & abs(xena_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_xena,]
+
 print(paste0("xena DEGs meeting FDR cutoff ", FDR_cutoff_xena, " and log2FC cutoff ", log2FC_cutoff_xena))
-nrow(xena_LUAD_T_N_DEG[xena_LUAD_T_N_DEG$FDR<FDR_cutoff_xena
-                              & abs(xena_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_xena,])
+nrow(xena_LUAD_T_N_DEG_filtered)
 
-### Venn diagram
-
+### Venn diagram of all genes
 gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS$Gene), xena_LUAD = unique(xena_LUAD_T_N_DEG$Gene)))
-
 plot(gene_sets, 
+     main = "All genes",
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+### Venn diagram of filtered genes
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS_filtered$Gene), xena_LUAD = unique(xena_LUAD_T_N_DEG_filtered$Gene)))
+plot(gene_sets, 
+     main = "Filtered genes",
      quantities = TRUE,  # Show counts in regions
      fills = c("red", "blue", "green"),  
      alpha = 0.5, 
@@ -157,35 +205,159 @@ ggplot(TE_xena_comparison_filtered_2, aes(x = log2FC_TE, y = log2FC_xena)) +
 ```
 
 
-## Comparing TE with PMID 26292924 list
+
+## Comparing TE with UALCAN top/bottom 250 list
 ```{r}
+# Combine the top and bottom 250 genes into 1 list just for ease of comparison
+UALCAN_LUAD_T_N_DEG <- rbind(UALCAN_LUAD_NOS_Up_reg_top250, UALCAN_LUAD_NOS_Down_reg_top250)
+
+library(eulerr)
 
 #### Comparing number of rows with given cutoffs
 
 ### T-E
 FDR_cutoff_TE = 0.001
+log2FC_cutoff_TE = 1
 
-print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE))
-nrow(TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE,])
+TCGA_LUAD_limma_DEG_CSFSNS_filtered <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,]
 
-### 26292924
-FDR_cutoff_26292924 = 0.001
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
+nrow(TCGA_LUAD_limma_DEG_CSFSNS_filtered)
 
-print(paste0("26292924 DEGs meeting FDR cutoff ", FDR_cutoff_26292924))
-nrow(PMID26292924_LUAD_LUSC_FDRs[PMID26292924_LUAD_LUSC_FDRs$FDR_LUAD<FDR_cutoff_26292924,])
+### UALCAN
+# Not filtering necessary for this list
 
-## Well this study used edgeR rather than limma, so it could explain this difference somewhat.
+### Venn diagram of all genes
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS$Gene), UALCAN_LUAD = unique(UALCAN_LUAD_T_N_DEG$Gene)))
+plot(gene_sets, 
+     main = "All genes",
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
 
-## Plotting FDRs to look for commonality
+### Venn diagram of filtered genes
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS_filtered$Gene), UALCAN_LUAD = unique(UALCAN_LUAD_T_N_DEG$Gene)))
+plot(gene_sets, 
+     main = "Filtered genes",
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
 
-## Combine the tables of TE and 26292924 LUAD
+
+## Give TE top upregulated ranks based on log2FC and filter TE to the genes in top 250 up UALCAN
+TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_top250 <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  arrange(., -log2FC) %>%
+  mutate(Rank_limma = c(1:nrow(TCGA_LUAD_limma_DEG_CSFSNS))) %>%
+  filter(Gene %in% UALCAN_LUAD_NOS_Up_reg_top250$Gene)
+# Now I want to add the ranks in the top 250 list
+UALCAN_LUAD_NOS_Up_reg_top250_getranks <- UALCAN_LUAD_NOS_Up_reg_top250 %>% filter (Gene %in% TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_top250$Gene)
+TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_top250$Rank_UALCAN <- UALCAN_LUAD_NOS_Up_reg_top250_getranks$Rank
+
+## Plot the ranks for comparison
+ggplot(TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_top250, aes(x = Rank_limma, y = Rank_UALCAN)) +
+  geom_point()
+
+## Other comparisons
+nrow(TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_top250[TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_top250$Rank_limma<250,])
+## Plotting just the first 100
+ggplot(TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_top250[c(1:100),], aes(x = Rank_limma, y = Rank_UALCAN)) +
+  geom_point() + 
+  ggtitle("Ranks of first 100 shared upregulated genes between Limma and UALCAN")
+
+#######
+
+## Give TE top downregulated ranks based on log2FC and filter TE to the genes in top 250 down UALCAN
+TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_bottom250 <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  arrange(., log2FC) %>%
+  mutate(Rank_limma = c(1:nrow(TCGA_LUAD_limma_DEG_CSFSNS))) %>%
+  filter(Gene %in% UALCAN_LUAD_NOS_Down_reg_top250$Gene)
+# Now I want to add the ranks in the top 250 list
+UALCAN_LUAD_NOS_Down_reg_top250_getranks <- UALCAN_LUAD_NOS_Down_reg_top250 %>% filter (Gene %in% TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_bottom250$Gene)
+TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_bottom250$Rank_UALCAN <- UALCAN_LUAD_NOS_Down_reg_top250_getranks$Rank
+
+# Plot the ranks for comparison
+ggplot(TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_bottom250, aes(x = Rank_limma, y = Rank_UALCAN)) +
+  geom_point()
+# PLot just first 100
+ggplot(TCGA_LUAD_limma_DEG_CSFSNS_UALCAN_bottom250[c(1:100),], aes(x = Rank_limma, y = Rank_UALCAN)) +
+  geom_point()+ 
+  ggtitle("Ranks of first 100 shared downregulated genes between Limma and UALCAN")
+
+```
+
+
+
+
+
+## Comparing TE with PMID 26292924 list
+```{r}
+
+## Pull LUAD information out
 PMID26292924_LUAD_FDRs <- PMID26292924_LUAD_LUSC_FDRs %>%
   select(LUAD, FDR_LUAD) %>%
   rename(., Gene = "LUAD",  FDR = "FDR_LUAD")
 PMID26292924_LUAD_FDRs$FDR <- as.numeric(PMID26292924_LUAD_FDRs$FDR)
 
-TE_26292924_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
-  inner_join(., PMID26292924_LUAD_FDRs, by = "Gene", suffix = c("_TE", "_26292924"))
+#### Comparing number of rows with given cutoffs
+
+### T-E
+FDR_cutoff_TE = 0.001
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE))
+TCGA_LUAD_limma_DEG_CSFSNS_filtered <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE,]
+nrow(TCGA_LUAD_limma_DEG_CSFSNS_filtered)
+
+### 26292924
+FDR_cutoff_26292924 = 0.001
+print(paste0("26292924 DEGs meeting FDR cutoff ", FDR_cutoff_26292924))
+PMID26292924_LUAD_filtered <- PMID26292924_LUAD_FDRs[PMID26292924_LUAD_FDRs$FDR<FDR_cutoff_26292924,]
+nrow(PMID26292924_LUAD_filtered)
+
+## Well this study used edgeR rather than limma, so it could explain this difference somewhat.
+## Now I want to check the percentiles instead
+
+# Calculate the 10th percentile thresholds
+### T-E
+# limma_percentile <- 0.1
+# FDR_percentile <- quantile(as.numeric(TCGA_LUAD_limma_DEG_CSFSNS$FDR), probs = limma_percentile, na.rm = TRUE)
+# TCGA_LUAD_limma_DEG_CSFSNS_filtered <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR <= FDR_percentile, ]
+# print(paste0("TE DEGs meeting percentile cutoff ", limma_percentile))
+# nrow(TCGA_LUAD_limma_DEG_CSFSNS_filtered)
+# 
+# ### 26292924
+# PMID26292924_percentile <- 0.1
+# FDR_percentile <- quantile(as.numeric(PMID26292924_LUAD_FDRs$FDR), probs = PMID26292924_percentile, na.rm = TRUE)
+# PMID26292924_LUAD_FDRs_filtered <- PMID26292924_LUAD_FDRs[PMID26292924_LUAD_FDRs$FDR <= FDR_percentile, ]
+# print(paste0("PMID26292924 DEGs meeting percentile cutoff ", limma_percentile))
+# nrow(PMID26292924_LUAD_FDRs_filtered)
+
+
+
+### Venn diagram of all genes
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS$Gene), PMID26292924_LUAD = unique(PMID26292924_LUAD_FDRs$Gene)))
+plot(gene_sets, 
+     main = "All genes",
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+### Venn diagram of filtered genes
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS_filtered$Gene), PMID26292924_LUAD = unique(PMID26292924_LUAD_FDRs_filtered$Gene)))
+plot(gene_sets, 
+     main = "Filtered genes",
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+## Plotting FDRs to look for commonality
+
+## Combine the tables of TE and 26292924 LUAD
+TE_26292924_comparison <- TCGA_LUAD_limma_DEG_CSFSNS_filtered %>%
+  inner_join(., PMID26292924_LUAD_FDRs_filtered, by = "Gene", suffix = c("_TE", "_26292924"))
 
 ### Plot the FDR values from both for all genes
 ggplot(TE_26292924_comparison, aes(x = FDR_TE, y = FDR_26292924)) +
@@ -237,6 +409,100 @@ ggplot(TE_TM_comparison_filtered, aes(x = log2FC_TE, y = log2FC_TM)) +
   geom_point()
 
 # I think the inverse correlation gets better as you push up the FDR. Note I am not filtering for sign at all here. Interesting.
+
+```
+
+
+
+### 2025/03/12: Trying this with the new version of DEGs I got from xenabrowser
+```{r}
+
+xena_DEG_results_Primary_Tumor_vs_Solid_Tissue_Normal <- read.table("../4_TCGA_data/xena_DEG_results_Primary_Tumor_vs_Solid_Tissue_Normal_114_samples_20250313.csv", sep = ",", header = TRUE)
+
+colnames(xena_DEG_results_Primary_Tumor_vs_Solid_Tissue_Normal)[c(1,2,6)] <- c("Gene","log2FC", "FDR")
+
+xena_LUAD_T_N_DEG <- xena_DEG_results_Primary_Tumor_vs_Solid_Tissue_Normal
+
+library(eulerr)
+
+#### Comparing number of rows with given cutoffs
+
+### T-E
+FDR_cutoff_TE = 0.001
+log2FC_cutoff_TE = 1
+
+TCGA_LUAD_limma_DEG_CSFSNS_filtered <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,]
+
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
+nrow(TCGA_LUAD_limma_DEG_CSFSNS_filtered)
+
+### xena
+FDR_cutoff_xena = 0.001
+log2FC_cutoff_xena = 1
+
+xena_LUAD_T_N_DEG_filtered <- xena_LUAD_T_N_DEG[xena_LUAD_T_N_DEG$FDR<FDR_cutoff_xena
+                              & abs(xena_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_xena,]
+
+print(paste0("xena DEGs meeting FDR cutoff ", FDR_cutoff_xena, " and log2FC cutoff ", log2FC_cutoff_xena))
+nrow(xena_LUAD_T_N_DEG_filtered)
+
+### Venn diagram of all genes
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS$Gene), xena_LUAD = unique(xena_LUAD_T_N_DEG$Gene)))
+plot(gene_sets, 
+     main = "All genes",
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+### Venn diagram of filtered genes
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS_filtered$Gene), xena_LUAD = unique(xena_LUAD_T_N_DEG_filtered$Gene)))
+plot(gene_sets, 
+     main = "Filtered genes",
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+
+## Combine the tables of TE and xena
+TE_xena_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  inner_join(., xena_LUAD_T_N_DEG, by = "Gene", suffix = c("_TE", "_xena"))
+
+## Make a version where all the cutoffs are met
+TE_xena_comparison_filtered <- TE_xena_comparison %>%
+  filter(., abs(log2FC_TE) >= log2FC_cutoff_TE & abs(log2FC_xena) >= log2FC_cutoff_xena & FDR_TE <= FDR_cutoff_TE & FDR_xena <= FDR_cutoff_xena)
+
+### Plot the log2FC values from both for all genes
+ggplot(TE_xena_comparison, aes(x = log2FC_TE, y = log2FC_xena)) +
+  geom_point()
+## Looks quite correlated
+
+
+### Plot the log2FC values for the genes meeting cutoffs
+ggplot(TE_xena_comparison_filtered, aes(x = log2FC_TE, y = log2FC_xena)) +
+  geom_point() # Most of the signs are matching apart from a handful so that's good at least
+
+
+## Trying out filtering both by only really stringent FDRs and see how well they correlate then
+FDR_cutoff_TE_2 <- 10^-20
+FDR_cutoff_xena_2 <- 10^-20
+
+TE_xena_comparison_filtered_2 <- TE_xena_comparison %>%
+  filter(., FDR_TE <= FDR_cutoff_TE_2 & FDR_xena <= FDR_cutoff_xena_2)
+
+ggplot(TE_xena_comparison_filtered_2, aes(x = log2FC_TE, y = log2FC_xena)) +
+  geom_point() ## It does get tighter as you increast the FDR to really high levels but it's still not perfect correlation. However, I think this is all reassuring enough that my method is at least acceptable.
+
+
+## Now I want to take a look at the genes that are not shared between them
+## Get genes from my limma and not xena
+TE_xena_unshared_genes <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  anti_join(., xena_LUAD_T_N_DEG, by = "Gene")
+
+xena_TE_unshared_genes <- xena_LUAD_T_N_DEG%>%
+  anti_join(., TCGA_LUAD_limma_DEG_CSFSNS, by = "Gene")
 
 ```
 

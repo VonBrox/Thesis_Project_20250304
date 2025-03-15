@@ -548,7 +548,7 @@ v_A1
 ```{r}
 
 # Change date suffix as appropriate if changes are made
-#write.table(GSE63127_CS_NS_limma, "../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20241204.txt", sep = '\t')
+#write.table(GSE63127_CS_NS_limma, "../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", sep = '\t')
 
 ```
 
@@ -592,9 +592,8 @@ query <- GDCquery(project = "TCGA-LUAD",
                   sample.type = c("Primary Tumor", "Solid Tissue Normal"),
                   workflow.type = "STAR - Counts")
 
-GDCdownload(query)
-
-data <- GDCprepare(query)
+#GDCdownload(query, directory = "../../GDC_data") 
+data <- GDCprepare(query, directory = "../../GDC_data")
 
 ```
 
@@ -616,8 +615,8 @@ query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
   filter(data_format == "BCR XML")
 
 ## Download data
-GDCdownload(query_clinical)
-clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient")
+#GDCdownload(query_clinical, directory = "../../GDC_data")
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient", directory = "../../GDC_data")
 
 head(clinical_data)
 
@@ -794,7 +793,48 @@ legend("bottomleft",
 
 ```
 
-The matrices have messy boxplots and histograms, but since I am using the signed-rank test, it does not suppose require normally distributed data, so I have decided to go with this raw counts matrix for now.
+
+## More checks (2025/03/11)
+```{r}
+# Get library sizes
+library_sizes <- colSums(counts_matched_T_NM)
+
+# Histogram of library sizes
+hist(library_sizes, breaks=50, main="Library Size Distribution", xlab="Total Read Counts")
+
+# Boxplot of library sizes
+boxplot(library_sizes, main="Library Sizes", ylab="Read Counts")
+
+# Summary statistics
+summary(library_sizes)
+
+# Compute summary statistics for gene expression
+gene_counts <- rowSums(counts_matched_T_NM > 1)  # Number of samples where gene is expressed (>1 read)
+
+# Histogram of number of samples expressing each gene
+hist(gene_counts, breaks=50, main="Gene Detection Across Samples", 
+     xlab="Number of Samples Expressing Gene")
+
+# Summary of gene detection
+summary(gene_counts)
+
+# Split by tumor vs normal
+group <- rep(c("Tumor","Normal"), length(counts_matched_T_NM)/2)
+group_table <- table(group)  # Ensure 'group' is correctly defined
+print(group_table)
+
+# Check expression separately in tumor and normal samples
+tumor_counts <- rowSums(counts_matched_T_NM[, group == "Tumor"] > 1)
+normal_counts <- rowSums(counts_matched_T_NM[, group == "Normal"] > 1)
+
+# Plot side-by-side
+par(mfrow=c(1,2))
+hist(tumor_counts, breaks=50, main="Tumor Gene Expression", xlab="Number of Tumor Samples")
+hist(normal_counts, breaks=50, main="Normal Gene Expression", xlab="Number of Normal Samples")
+par(mfrow=c(1,1))
+
+
+```
 
 2024/12/04
 In an earlier version of the script I used a Wilcoxon signed-rank test since I read in a paper that a Wilcoxon-based method was the most accurate method (Li et al. Genome Biology (2022) 23:79)
@@ -818,6 +858,8 @@ Note that I include a filtering step to remove genes with low counts:
 "Filter out rows with less than 10 total counts in the smallest sample group size"
 The smallest group (tumor or normal) has 44 members, so this filters out any genes that cannot reach a sum of 10 counts using 44 samples.
 
+But now, I am tryung to use filterbyExp instead
+
 ## Differential expression analysis using limma for consistency
 
 ```{r}
@@ -829,12 +871,15 @@ design <- model.matrix(~0 + groups)
 # "Condition" should indicate Tumor/Normal status
 colnames(design) <- c("Normal", "Tumor")
 
+# Filter out rows meeting minimum parameters by the filterByExpr function
+keep <- filterByExpr(counts_matched_T_NM, design = design) # new method
 # Filter out rows with less than 10 total counts in the smallest sample group size (88/2 = 44)
-keep <- rowSums(counts_matched_T_NM >= 10) >= 44
-counts_matched_T_NM <- counts_matched_T_NM[keep,]
+#keep <- rowSums(counts_matched_T_NM >= 10) >= 44 # old method
+
+counts_matched_T_NM_filtered<- counts_matched_T_NM[keep,]
 
 # Use voom to transform the counts
-voom_data <- voom(counts_matched_T_NM, design)
+voom_data <- voom(counts_matched_T_NM_filtered, design)
 
 # Fit the model
 fit <- lmFit(voom_data, design)
@@ -858,8 +903,6 @@ TCGA_LUAD_DEG <- TCGA_LUAD_DEG %>%
 # Giving a yet more descriptive name
 TCGA_LUAD_limma_DEG <- TCGA_LUAD_DEG
 
-
-
 ### Replace ensembl IDs with gene names
 TCGA_LUAD_limma_DEG <- TCGA_LUAD_limma_DEG %>% arrange(., rownames(.))
 gene_info_sorted <- gene_info %>% 
@@ -872,16 +915,15 @@ TCGA_LUAD_limma_DEG <- TCGA_LUAD_limma_DEG %>%
 TCGA_LUAD_limma_DEG$Gene <- gene_info_sorted$gene_name
 
 # Save output
-#write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250221.txt", sep = '\t')
+# write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250307.txt", sep = '\t')
 
 ```
 
 
 ## Visualization of the DEGs
-
 ```{r, fig.width=10, fig.height=6}
 
-log2FC_cutoff_TE <- 0.75
+log2FC_cutoff_TE <- 1
 FDR_cutoff_TE <- 0.001
 
 v_TE <- EnhancedVolcano::EnhancedVolcano(
@@ -1103,7 +1145,7 @@ TCGA_LUAD_limma_DMG <- TCGA_LUAD_DMG
 nrow(TCGA_LUAD_limma_DMG)
 
 ### Saving output
-write.table(TCGA_LUAD_limma_DMG, "../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250225.txt", sep = '\t')
+write.table(TCGA_LUAD_limma_DMG, "../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt", sep = '\t')
 
 ```
 
@@ -1192,8 +1234,8 @@ boxplot(exprs(gset)) # Same range of values, with similar-looking ranges, but no
 
 ## Going to try this again without the quantile to see what happens
 
-# exprs(gset) <- normalizeBetweenArrays(exprs(gset))
-# boxplot(exprs(gset))
+exprs(gset) <- normalizeBetweenArrays(exprs(gset))
+boxplot(exprs(gset))
 # 2024/11/12: I elected to do quantile normalization because this gave me a larger list of "persistent" genes. Could justify that it "better captures the variation between groups" etc
 
 min(exprs(gset))
@@ -1412,7 +1454,7 @@ ties <- tT_persistent%>%
 print(ties)
 
 # As there is a tie with MUCA5 I will remove the MUCA5 probe with an "x" label for cross-reactivity
-tT_persistent <- tT_persistent %>% filter (ID != "214303_x_at")
+#tT_persistent <- tT_persistent %>% filter (ID != "214303_x_at")
 
 #Pick the columns we care about
 GSE7895_persistent_DEGs <- tT_persistent %>%
@@ -1420,7 +1462,7 @@ GSE7895_persistent_DEGs <- tT_persistent %>%
   dplyr::rename(., Gene = Gene.symbol, CS_NS_A2 = CS_vs_NS, FS_NS_A2 = FS_vs_NS, CS_FS_A2 = CS_vs_FS, FDR_A2 = adj.P.Val)
 
 # Save output
-#write.table(GSE7895_persistent_DEGs, "../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_no_quantile_20241216.txt")
+#write.table(GSE7895_persistent_DEGs, "../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_quantile_20250307.txt")
 
 ```
 

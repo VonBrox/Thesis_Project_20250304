@@ -1,5 +1,5 @@
 ---
-title: "2.2_Tumor_airway_comparisons_cutoffs_intersections_LUSC_CSFS_20250304"
+title: "2.1_Tumor_airway_comparisons_cutoffs_intersections_LUAD_CSFS_20250304"
 output: html_document
 date: "2025-03-04"
 ---
@@ -8,21 +8,19 @@ date: "2025-03-04"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-- 2025/01/31: This version uses the LUSC data instead of LUAD data.
-
 # Comparing and filtering A1, TE, TM, and A2 to generate "linked genes" and "linked persistent genes" lists
 
 ## Reading in datasets to intersect
 ```{r}
 
 # A1
-GSE63127_CS_NS              <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", header = TRUE)
+GSE63127_CS_NS        <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", header = TRUE)
 
 # T-E
-TCGA_LUSC_DEG               <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUSC_limma_DEG_CSFS_20250307.txt")
+TCGA_LUAD_DEG       <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250307.txt")
 
 # T-M
-TCGA_LUSC_DMG               <- read.table("../2_Outputs/5_Tumor_DMGs/TCGA_LUSC_limma_DMG_20250307.txt")
+TCGA_LUAD_DMG         <- read.table("../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt")
 
 # A2
 GSE7895_persistent_DEGs     <- read.table("../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_quantile_20250307.txt")
@@ -45,41 +43,41 @@ log2FC_cutoff_A1 = 0.25
 print(paste0("A1 DEGs meeting FDR cutoff ", FDR_cutoff_A1, " and log2FC cutoff ", log2FC_cutoff_A1))
 nrow(GSE63127_CS_NS[GSE63127_CS_NS$adj.P.Val<FDR_cutoff_A1
                                     & abs(GSE63127_CS_NS$logFC)>log2FC_cutoff_A1,])
-
+# 
 # hist(GSE63127_CS_NS[GSE63127_CS_NS$adj.P.Val<FDR_cutoff_A1
 #                                     & abs(GSE63127_CS_NS$logFC)>log2FC_cutoff_A1,]$logFC, breaks = 100)
 # 
 # hist(log10(GSE63127_CS_NS[GSE63127_CS_NS$adj.P.Val<FDR_cutoff_A1
 #                                     & abs(GSE63127_CS_NS$logFC)>log2FC_cutoff_A1,]$adj.P.Val), breaks = 100)
 
-# TCGA-LUSC DEGs
+# TCGA-LUAD DEGs
 FDR_cutoff_TE = 0.001
-log2FC_cutoff_TE = 2
+log2FC_cutoff_TE = 1.5
 
 print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
-nrow(TCGA_LUSC_DEG[TCGA_LUSC_DEG$FDR<FDR_cutoff_TE
-                              & abs(TCGA_LUSC_DEG$log2FC)>log2FC_cutoff_TE,])
+nrow(TCGA_LUAD_DEG[TCGA_LUAD_DEG$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_DEG$log2FC)>log2FC_cutoff_TE,])
 # 
-# hist(TCGA_LUSC_DEG[TCGA_LUSC_DEG$FDR<FDR_cutoff_TE
-#                               & abs(TCGA_LUSC_DEG$log2FC)>log2FC_cutoff_TE,]$log2FC, breaks = 100)
+# hist(TCGA_LUAD_DEG[TCGA_LUAD_DEG$FDR<FDR_cutoff_TE
+#                               & abs(TCGA_LUAD_DEG$log2FC)>log2FC_cutoff_TE,]$log2FC, breaks = 100)
 # 
-# hist(log10(TCGA_LUSC_DEG[TCGA_LUSC_DEG$FDR<FDR_cutoff_TE
-#                               & abs(TCGA_LUSC_DEG$log2FC)>log2FC_cutoff_TE,]$FDR), breaks = 100)
+# hist(log10(TCGA_LUAD_DEG[TCGA_LUAD_DEG$FDR<FDR_cutoff_TE
+#                               & abs(TCGA_LUAD_DEG$log2FC)>log2FC_cutoff_TE,]$FDR), breaks = 100)
 
 
-# TCGA-LUSC DMGs limma
+# TCGA-LUAD DMGs limma
 FDR_cutoff_TM = 0.01
-log2FC_cutoff_TM = 1
+log2FC_cutoff_TM = 0.75
 
 print(paste0("TM DMGs meeting FDR cutoff ", FDR_cutoff_TM, " and log2FC cutoff ", log2FC_cutoff_TM))
-nrow(TCGA_LUSC_DMG[TCGA_LUSC_DMG$FDR<FDR_cutoff_TM
-                               & abs(TCGA_LUSC_DMG$log2FC)>log2FC_cutoff_TM,])
+nrow(TCGA_LUAD_DMG[TCGA_LUAD_DMG$FDR<FDR_cutoff_TM
+                               & abs(TCGA_LUAD_DMG$log2FC)>log2FC_cutoff_TM,])
 # 
-# hist(TCGA_LUSC_DMG[TCGA_LUSC_DMG$FDR<FDR_cutoff_TM
-#                                & abs(TCGA_LUSC_DMG$log2FC)>log2FC_cutoff_TM,]$log2FC, breaks = 100)
+# hist(TCGA_LUAD_DMG[TCGA_LUAD_DMG$FDR<FDR_cutoff_TM
+#                                & abs(TCGA_LUAD_DMG$log2FC)>log2FC_cutoff_TM,]$log2FC, breaks = 100)
 # 
-# hist(log10(TCGA_LUSC_DMG[TCGA_LUSC_DMG$FDR<FDR_cutoff_TM
-#                                & abs(TCGA_LUSC_DMG$log2FC)>log2FC_cutoff_TM,]$FDR), breaks = 100)
+# hist(log10(TCGA_LUAD_DMG[TCGA_LUAD_DMG$FDR<FDR_cutoff_TM
+#                                & abs(TCGA_LUAD_DMG$log2FC)>log2FC_cutoff_TM,]$FDR), breaks = 100)
 
 
 ```
@@ -92,13 +90,13 @@ GSE63127_CS_NS_cutoff <- GSE63127_CS_NS %>%
   dplyr::rename(., Gene = Gene.symbol, FDR_A1 = adj.P.Val, log2FC_A1 = logFC) %>%
   dplyr::select(., Gene, FDR_A1, log2FC_A1)
 
-TCGA_LUSC_DEG_cutoff <- TCGA_LUSC_DEG %>%
+TCGA_LUAD_DEG_cutoff <- TCGA_LUAD_DEG %>%
   filter(abs(log2FC)>log2FC_cutoff_TE) %>%
   filter(FDR < FDR_cutoff_TE) %>%
   dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC, Gene = Gene) %>%
   dplyr::select(., Gene, FDR_TE, log2FC_TE)
 
-TCGA_LUSC_DMG_cutoff <- TCGA_LUSC_DMG %>%
+TCGA_LUAD_DMG_cutoff <- TCGA_LUAD_DMG %>%
   filter(abs(log2FC)>log2FC_cutoff_TM) %>%
   filter(FDR < FDR_cutoff_TM) %>%
   dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
@@ -111,20 +109,10 @@ TCGA_LUSC_DMG_cutoff <- TCGA_LUSC_DMG %>%
 ## Merge the lists
 
 A1_TE_merged_DEGs <- GSE63127_CS_NS_cutoff %>%
-  inner_join(., TCGA_LUSC_DEG_cutoff, by = "Gene") %>%
+  inner_join(., TCGA_LUAD_DEG_cutoff, by = "Gene") %>%
   filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
 
-print(c("overlap", nrow(A1_TE_merged_DEGs)))
-
-## Fisher's exact test (In progress)
-# n1 <- nrow(A1_TE_merged_DEGs)
-# n2 <- nrow(TCGA_LUSC_DEG_cutoff)
-# n3 <- nrow(GSE63127_CS_NS_cutoff)
-# 
-# print(c("expected overlap ", n2*n3/20000))
-# 
-# fisher.test(matrix(c(n1, n3-n1, n2-n1, 20000-n3-n2+n1), nrow = 2) )
-
+nrow(A1_TE_merged_DEGs)
 
 ```
 
@@ -138,8 +126,8 @@ A1_TE_A2_linked_genes <- A1_TE_merged_DEGs %>%
 
 nrow(A1_TE_A2_linked_genes)
 
-#write(A1_TE_TM_linked_genes$Gene, "../2_Outputs/6_Linked_genes/A1_TE_TM_linked_genes_20250221.txt", sep = "\n")
 ```
+
 
 
 ## 5.3 Comparing and filtering A2 and "linked" genes to give "methylation related linked genes"
@@ -157,7 +145,11 @@ A1_TE_A2_TM_methylation_linked_genes$Gene
 
 ```
 
-### Some sanity checks
+
+######
+
+# Sanity Checks
+
 
 ## Checking the number of genes expected to overlap by chance
 Since I am not sure if the standard equation for overlaps expected by chance can apply here, I want to empirically test it by doing random draws of the same number of genes and doing overlaps to look for overlaps expected by chance.
@@ -166,9 +158,9 @@ library(dplyr)
 
 # Set the number of rows you want to sample
 GSE63127_CS_NS_ngenes <- nrow(GSE63127_CS_NS_cutoff)
-TCGA_LUSC_DEG_ngenes <- nrow(TCGA_LUSC_DEG_cutoff)
+TCGA_LUAD_DEG_ngenes <- nrow(TCGA_LUAD_DEG_cutoff)
 GSE7895_persistent_DEGs_ngenes <- nrow(GSE7895_persistent_DEGs) # no cutoff was applied here
-TCGA_LUSC_DMG_ngenes <- nrow(TCGA_LUSC_DMG_cutoff)
+TCGA_LUAD_DMG_ngenes <- nrow(TCGA_LUAD_DMG_cutoff)
 
 
 # Make a dataframe to contain the results
@@ -184,8 +176,8 @@ for (row in 1:1000) {
     dplyr::rename(., Gene = Gene.symbol, FDR_A1 = adj.P.Val, log2FC_A1 = logFC) %>%
     dplyr::select(., Gene, FDR_A1, log2FC_A1)
   
-  TCGA_LUSC_DEG_sample <- TCGA_LUSC_DEG %>% 
-    sample_n(TCGA_LUSC_DEG_ngenes) %>%
+  TCGA_LUAD_DEG_sample <- TCGA_LUAD_DEG %>% 
+    sample_n(TCGA_LUAD_DEG_ngenes) %>%
     dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC, Gene = Gene) %>%
     dplyr::select(., Gene, FDR_TE, log2FC_TE)
     
@@ -193,8 +185,8 @@ for (row in 1:1000) {
   GSE7895_persistent_DEGs_sample <- GSE7895_persistent_DEGs %>% 
     sample_n(GSE7895_persistent_DEGs_ngenes)
   
-  TCGA_LUSC_DMG_sample <- TCGA_LUSC_DMG %>% 
-    sample_n(TCGA_LUSC_DMG_ngenes)%>%
+  TCGA_LUAD_DMG_sample <- TCGA_LUAD_DMG %>% 
+    sample_n(TCGA_LUAD_DMG_ngenes)%>%
     filter(abs(log2FC)>log2FC_cutoff_TM) %>%
     filter(FDR < FDR_cutoff_TM) %>%
     dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
@@ -202,7 +194,7 @@ for (row in 1:1000) {
   
   # Check the random overlaps between A1, TE with the sign filter
   A1_TE_merged_DEGs_sample <- GSE63127_CS_NS_sample %>%
-    inner_join(., TCGA_LUSC_DEG_sample, by = "Gene") %>%
+    inner_join(., TCGA_LUAD_DEG_sample, by = "Gene") %>%
     filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
   
   A1_TE_A2_TM_sampling_table[row,1] <- nrow(A1_TE_merged_DEGs_sample)
@@ -217,7 +209,7 @@ for (row in 1:1000) {
   # Check the random overlaps with TM with the sign filter
   
   A1_TE_A2_TM_genes_sample <- A1_TE_A2_genes_sample %>%
-    dplyr::inner_join(., TCGA_LUSC_DMG_sample, by = "Gene") %>%
+    dplyr::inner_join(., TCGA_LUAD_DMG_sample, by = "Gene") %>%
     dplyr::filter(sign(log2FC_A1) != sign(log2FC_TM)) # Ensure signs are opposite
   
   A1_TE_A2_TM_sampling_table[row,3] <- nrow(A1_TE_A2_TM_genes_sample)
@@ -238,15 +230,54 @@ sd(A1_TE_A2_TM_sampling_table$A1_TE_A2_TM)
 ```
 
 
+
+
+### Fisher's exact test for significance of overlaps
+
+```{r}
+
+## Fisher's exact test (In progress - should not just use 20k, that is a stand-in for all genes)
+## Also need to account for overlaps better in the third term there - would need to check other overlaps too
+
+# Known values
+overlap <- nrow(A1_TE_TM_linked_genes) # Observed overlap
+universe_size <- 20000 # 20k genes in genome
+union_size <- length(unique(c(GSE63127_CS_NS_cutoff$Gene, TCGA_LUAD_DEG_cutoff$Gene, TCGA_LUAD_DMG_cutoff$Gene))) # Size of |A ∪ B ∪ C|
+
+# Calculate table entries
+n11 <- overlap
+n12 <- union_size - overlap
+n21 <- universe_size - union_size
+n22 <- 0 # Genes outside all sets
+
+# Construct 2x2 contingency table
+contingency_table <- matrix(c(n11, n12, n21, n22), nrow = 2)
+
+# Perform Fisher's Exact Test
+fisher_result <- fisher.test(contingency_table)
+
+# Print expected and observed overlaps
+## Expected/observed overlap given independent datasets:
+expected_overlap <- nrow(GSE63127_CS_NS_cutoff)/20000*nrow(TCGA_LUAD_DEG_cutoff)/20000*nrow(TCGA_LUAD_DMG_cutoff)
+print(c("Expected overlap: ", expected_overlap))
+print(c("Observed overlap: ", nrow(A1_TE_TM_linked_genes)))
+
+# Output results
+fisher_result
+
+
+```
+
+
 ## Trying a hypergeometric/Fisher's exact test with a different package
 ```{r}
 library(SuperExactTest)
 
 # Define gene lists
 A1_genes <- GSE63127_CS_NS_cutoff$Gene
-TE_genes <- TCGA_LUSC_DEG_cutoff$Gene
+TE_genes <- TCGA_LUAD_DEG_cutoff$Gene
 A2_genes <- GSE7895_persistent_DEGs$Gene
-TM_genes <- TCGA_LUSC_DMG_cutoff$Gene
+TM_genes <- TCGA_LUAD_DMG_cutoff$Gene
 
 # Universe of genes (e.g., all genes in the study)
 universe <- 20000  # Change based on your dataset
@@ -266,46 +297,20 @@ df_res <- as.data.frame(summary(res)$Table)
 # This is good, but it does not account for the filter for opposite sign TE and TM
 
 ```
-
-### Fisher's exact test for significance of overlaps
-
+### 5.3.3 Additional checks (correlation of log2FCs in A1 and A2)
 ```{r}
-
-
-## Fisher's exact test (In progress - should not just use 20k, that is a stand-in for all genes)
-## Also need to account for overlaps better in the third term there - would need to check other overlaps too
-
-# Known values
-overlap <- nrow(A1_TE_TM_linked_genes) # Observed overlap
-universe_size <- 20000 # 20k genes in genome
-union_size <- length(unique(c(GSE63127_CS_NS_cutoff$Gene, GSE63127_CS_NS_cutoff$Gene, TCGA_LUSC_DMG_cutoff$Gene))) # Size of |A ∪ B ∪ C|
-
-# Calculate table entries
-n11 <- overlap
-n12 <- union_size - overlap
-n21 <- universe_size - union_size
-n22 <- 0 # Genes outside all sets
-
-# Construct 2x2 contingency table
-contingency_table <- matrix(c(n11, n12, n21, n22), nrow = 2)
-
-# Perform Fisher's Exact Test
-fisher_result <- fisher.test(contingency_table)
-
-## Expected overlap given independent datasets:
-expected_overlap <- nrow(GSE63127_CS_NS_cutoff)/20000*nrow(TCGA_LUSC_DEG_cutoff)/20000*nrow(TCGA_LUSC_DMG_cutoff)
-print(c("Expected overlap:", expected_overlap))
-print(c("Observed overlap:", nrow(A1_TE_TM_linked_genes)))
-
-
-# Output results
-fisher_result
-
-
+cor.test(A1_TE_TM_A2_persistent_linked_genes$log2FC_A1, y = A1_TE_TM_A2_persistent_linked_genes$CS_NS_A2, use = "everything",
+    method = "spearman")
+    
+ggplot(A1_TE_TM_A2_persistent_linked_genes, aes(x = log2FC_A1, y = CS_NS_A2)) +
+  geom_point(color = "blue", size = 3) +                # Scatter points
+  geom_smooth(method = "lm", se = FALSE, color = "black") + # Add a trend line +
+  theme_minimal()
 ```
 
 
-### I.iv.1 Visualizing Spearman correlations of log2FC values
+
+###  Visualizing Spearman correlations of log2FC values
 ```{r}
 ## Visualizing Spearman correlations
 library(GGally)
@@ -316,7 +321,7 @@ ggpairs(A1_TE_TM_linked_genes[, c("log2FC_A1", "log2FC_TE", "log2FC_TM")],
 
 ```
 
-### I.iv.2 Visualizing multiple linear regression of the log2FC values
+### Visualizing multiple linear regression of the log2FC values
 ```{r}
 mlr_airway_model <- lm(log2FC_A1 ~ log2FC_TE + log2FC_TM, data = A1_TE_TM_linked_genes)
 summary(mlr_airway_model)
@@ -342,28 +347,14 @@ s3d$plane3d(mlr_airway_model) # Add a plane based on the multiple linear regress
 
 ```
 
-
-### 5.3.3 Additional checks (correlation of log2FCs in A1 and A2)
-```{r}
-cor.test(A1_TE_TM_A2_persistent_linked_genes$log2FC_A1, y = A1_TE_TM_A2_persistent_linked_genes$CS_NS_A2, use = "everything",
-    method = "spearman")
-    
-ggplot(A1_TE_TM_A2_persistent_linked_genes, aes(x = log2FC_A1, y = CS_NS_A2)) +
-  geom_point(color = "blue", size = 3) +                # Scatter points
-  geom_smooth(method = "lm", se = FALSE, color = "black") + # Add a trend line +
-  theme_minimal()
-```
-
-
-
 ## 2025/02/07: This cutoff optimization code is adapted from the code I did in the version of this script from 20241210_12PM
 
-## Attempting to optimize cutoffs to satisfy Fisher's exact test while maintaining acceptable numbers of DEGs
+# Attempting to optimize cutoffs to satisfy Fisher's exact test while maintaining acceptable numbers of DEGs
 
-### Making functions to do dataset intersections and get number of resulting rows
+## Making functions to do dataset intersections and get number of resulting rows
 ```{r}
 
-linked_gene_result <- function(GSE63127_CS_NS, TCGA_LUSC_DEG, TCGA_LUSC_DMG, 
+linked_gene_result <- function(GSE63127_CS_NS, TCGA_LUAD_DEG, TCGA_LUAD_DMG, 
                                log2FC_cutoff_A1, FDR_cutoff_A1,
                                log2FC_cutoff_TE, FDR_cutoff_TE,
                                log2FC_cutoff_TM, FDR_cutoff_TM){
@@ -374,24 +365,24 @@ linked_gene_result <- function(GSE63127_CS_NS, TCGA_LUSC_DEG, TCGA_LUSC_DMG,
     dplyr::rename(., Gene = Gene.symbol, FDR_A1 = adj.P.Val, log2FC_A1 = logFC) %>%
     dplyr::select(., Gene, FDR_A1, log2FC_A1)
 
-  TCGA_LUSC_DEG_cutoff <- TCGA_LUSC_DEG %>%
+  TCGA_LUAD_DEG_cutoff <- TCGA_LUAD_DEG %>%
     filter(abs(log2FC)>log2FC_cutoff_TE) %>%
     filter(FDR < FDR_cutoff_TE) %>%
     dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC) %>%
     dplyr::select(., Gene, FDR_TE, log2FC_TE)
 
-  TCGA_LUSC_DMG_cutoff <- TCGA_LUSC_DMG %>%
+  TCGA_LUAD_DMG_cutoff <- TCGA_LUAD_DMG %>%
     filter(abs(log2FC)>log2FC_cutoff_TM) %>%
     filter(FDR < FDR_cutoff_TM) %>%
     dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
     dplyr::select(., Gene, FDR_TM, log2FC_TM)
   
   A1_TE_merged_DEGs <- GSE63127_CS_NS_cutoff %>%
-    inner_join(., TCGA_LUSC_DEG_cutoff, by = "Gene") %>%
+    inner_join(., TCGA_LUAD_DEG_cutoff, by = "Gene") %>%
     filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
   
   A1_TE_TM_linked_genes <- A1_TE_merged_DEGs %>%
-    inner_join(., TCGA_LUSC_DMG_cutoff, by = "Gene") %>%
+    inner_join(., TCGA_LUAD_DMG_cutoff, by = "Gene") %>%
     filter(sign(log2FC_A1)!=sign(log2FC_TM)) # Filter to genes with opposite sign
   
   return(nrow(A1_TE_TM_linked_genes))
@@ -407,13 +398,17 @@ library(tidyr)
 library(ggplot2)
 
 # Define ranges for cutoffs
-fdr_cutoffs_A1 <- c(0.01, 0.05)
-fdr_cutoffs_TE <- c(0.001, 0.01, 0.05)
-fdr_cutoffs_TM <- c(0.01, 0.05)
+# fdr_cutoffs_A1 <- c(0.01, 0.05)
+# fdr_cutoffs_TE <- c(0.001, 0.01, 0.05)
+# fdr_cutoffs_TM <- c(0.01, 0.05)
 
-log2fc_cutoffs_A1 <- c(0.25, 0.5)
-log2fc_cutoffs_TE <- c(0.25, 0.75, 1)
-log2fc_cutoffs_TM <- c(0.25, 0.5)
+fdr_cutoffs_A1 <- 0.01
+fdr_cutoffs_TE <- 0.001
+fdr_cutoffs_TM <- 0.01
+
+log2fc_cutoffs_A1 <- c(0.1, 0.25, 0.5, 0.75, 1)
+log2fc_cutoffs_TE <- c(0.1, 0.25, 0.5, 0.75, 1)
+log2fc_cutoffs_TM <- c(0.1, 0.25, 0.5, 0.75, 1)
 
 # Create all combinations of cutoffs for A1, TE, and TM
 cutoff_combinations <- expand.grid(FDR_A1 = fdr_cutoffs_A1,
@@ -440,13 +435,13 @@ for (row in 1:nrow(cutoff_combinations)){
   A1_DEGs <- c(A1_DEGs, nrow(A1_DEGs_curr))
   
   # Give number of remaining TE DEGs
-  TE_DEGs_curr <- TCGA_LUSC_DEG[TCGA_LUSC_DEG$FDR<cutoff_combinations$FDR_TE[row]
-                              & abs(TCGA_LUSC_DEG$log2FC)>cutoff_combinations$log2FC_TE[row],]
+  TE_DEGs_curr <- TCGA_LUAD_DEG[TCGA_LUAD_DEG$FDR<cutoff_combinations$FDR_TE[row]
+                              & abs(TCGA_LUAD_DEG$log2FC)>cutoff_combinations$log2FC_TE[row],]
   TE_DEGs <- c(TE_DEGs, nrow(TE_DEGs_curr))
   
   # Give number of remaining TM DMGs
-  TM_DMGs_curr <- TCGA_LUSC_DMG[TCGA_LUSC_DMG$FDR<cutoff_combinations$FDR_TM[row]
-                               & abs(TCGA_LUSC_DMG$log2FC)>cutoff_combinations$log2FC_TM[row],]
+  TM_DMGs_curr <- TCGA_LUAD_DMG[TCGA_LUAD_DMG$FDR<cutoff_combinations$FDR_TM[row]
+                               & abs(TCGA_LUAD_DMG$log2FC)>cutoff_combinations$log2FC_TM[row],]
   TM_DMGs <- c(TM_DMGs,nrow(TM_DMGs_curr))
   
   # Give number of "linked genes" resulting using my function
@@ -460,7 +455,6 @@ for (row in 1:nrow(cutoff_combinations)){
   # Give expected number of overlapping genes given random draws from 20k genes
   expected_overlap_20k_curr <- nrow(A1_DEGs_curr)/20000*nrow(TE_DEGs_curr)/20000*nrow(TM_DMGs_curr)
   expected_overlap_20k <- c(expected_overlap_20k, expected_overlap_20k_curr)
-  
 }
 
 cutoff_combinations$A1_DEGs <- A1_DEGs
@@ -471,35 +465,36 @@ cutoff_combinations$expected_overlap_20k <- expected_overlap_20k
 
 # Filter to acceptable ranges for the 3 datasets, and then pick a combination that optimizes the Fisher's exact test result
 cutoff_combinations_filtered <- cutoff_combinations %>%
-#   filter(A1_DEGs %in% 1000:7500) %>%
-#   filter(TE_DEGs %in% 4000:7500) %>%
-#   filter(TM_DMGs %in% 4000:7500)
-   filter(linked_genes > expected_overlap_20k)
-## None here
+  # filter(A1_DEGs %in% 1000:7500) %>%
+  # filter(TE_DEGs %in% 4000:7500) %>%
+  # filter(TM_DMGs %in% 4000:7500)
+  filter(expected_overlap_20k < linked_genes)
+
+## Oh snap I got some!! (2024/02/21)
 
 ```
 
+## 2025/02/11
 
-## 2025/02/10
+Checking the TCGA-LUAD methylation data ONLY tumor samples comparing former and never smokers using the list of "linked genes" and "persistent linked genes". Will try to do this using first PCA and then a heatmap (hierarchical clustering).
 
-Checking the TCGA-LUSC methylation data ONLY tumor samples comparing former and never smokers using the list of "linked genes" and "persistent linked genes". Will try to do this using first PCA and then a heatmap (hierarchical clustering).
-
-## Read in TCGA-LUSC clinical data, filter out current smokers, order by smoking status
+## Read in TCGA-LUAD clinical data, filter out current smokers, order by smoking status
 ```{r}
 
 library(TCGAbiolinks)
 library(SummarizedExperiment)
 library(dplyr)
 
-## Read in TCGA-LUSC clinical data
+## Read in TCGA-LUAD clinical data
 query_clinical <- GDCquery(
-  project = "TCGA-LUSC",
+  project = "TCGA-LUAD",
   data.category = "Clinical",
   data.type = "Clinical Supplement"
 )
 
 # Check the available files
 query_clinical$results[[1]] %>% head()
+
 
 ## I see that some are not BCR XML files, so I will try to remove these
 query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
@@ -516,6 +511,7 @@ clinical_data_no_CS <- clinical_data %>%
   arrange(., tobacco_smoking_history) %>%
   select(bcr_patient_barcode, tobacco_smoking_history)
 
+
 # Get the patient barcodes in a form that can be used to filter the tumor samples
 clinical_data_no_CS_sample_barcodes <- clinical_data_no_CS %>%
   mutate(bcr_patient_barcode = bcr_patient_barcode %>%
@@ -523,11 +519,11 @@ clinical_data_no_CS_sample_barcodes <- clinical_data_no_CS %>%
     gsub("-", "\\.", .)
   )
 
-## Read in the data for TCGA-LUSC methylation
-LUSC_methylation_hm450_tumor <- read.table("../4_TCGA_data/TCGA_LUSC/data_methylation_hm450_LUSC.txt", header=TRUE, fill=TRUE)
+## Read in the data for TCGA-LUAD methylation
+LUAD_methylation_hm450_tumor <- read.table("../4_TCGA_data/TCGA_LUAD/data_methylation_hm450_LUAD.txt", header=TRUE, fill=TRUE)
 
 # Get the barcodes existing in rownames of the sample info
-clinical_data_no_CS_sample_barcodes_in_methyl <- clinical_data_no_CS_sample_barcodes[clinical_data_no_CS_sample_barcodes$bcr_patient_barcode %in% colnames(LUSC_methylation_hm450_tumor),] 
+clinical_data_no_CS_sample_barcodes_in_methyl <- clinical_data_no_CS_sample_barcodes[clinical_data_no_CS_sample_barcodes$bcr_patient_barcode %in% colnames(LUAD_methylation_hm450_tumor),] 
 
 ```
 
@@ -538,7 +534,7 @@ clinical_data_no_CS_sample_barcodes_in_methyl <- clinical_data_no_CS_sample_barc
 library(dplyr)
 
 # Step 1: Identify rows with duplicate Gene values
-duplicates <- LUSC_methylation_hm450_tumor %>%
+duplicates <- LUAD_methylation_hm450_tumor %>%
   group_by(Hugo_Symbol) %>%
   filter(n() > 1)
 
@@ -551,143 +547,62 @@ rows_to_remove <- duplicates %>%
   ungroup()
 
 # Step 3: Remove these rows from the original dataframe
-LUSC_methylation_hm450_tumor <- anti_join(LUSC_methylation_hm450_tumor, rows_to_remove, by = colnames(LUSC_methylation_hm450_tumor))
+LUAD_methylation_hm450_tumor <- anti_join(LUAD_methylation_hm450_tumor, rows_to_remove, by = colnames(LUAD_methylation_hm450_tumor))
 
 # Now make the gene names into row names
-rownames(LUSC_methylation_hm450_tumor) <- LUSC_methylation_hm450_tumor$Hugo_Symbol
+rownames(LUAD_methylation_hm450_tumor) <- LUAD_methylation_hm450_tumor$Hugo_Symbol
 
 ```
 
-## PCAs of the TCGA-LUSC methylation NS FS using genes of interest
+
+## PCAs of the TCGA-LUAD methylation NS FS using genes of interest
 ```{r}
 
+library(edgeR)
+
 # Make gene names as row names
-rownames(LUSC_methylation_hm450_tumor) <- LUSC_methylation_hm450_tumor$Hugo_Symbol
+rownames(LUAD_methylation_hm450_tumor) <- LUAD_methylation_hm450_tumor$Hugo_Symbol
 
 ## Filter to former and never smokers
-LUSC_methylation_hm450_tumor_FS_NS <- LUSC_methylation_hm450_tumor %>%
+LUAD_methylation_hm450_tumor_FS_NS <- LUAD_methylation_hm450_tumor %>%
   select(clinical_data_no_CS_sample_barcodes_in_methyl$bcr_patient_barcode)
 
 ## Filter to just "Linked genes"
-LUSC_methylation_hm450_tumor_FS_NS_linked_genes <- LUSC_methylation_hm450_tumor_FS_NS %>%
+LUAD_methylation_hm450_tumor_FS_NS_linked_genes <- LUAD_methylation_hm450_tumor_FS_NS %>%
   filter(rownames(.) %in% A1_TE_TM_linked_genes$Gene)
 
 ## Plot a PCA based on these genes, using color to represent smoking status
-
-## PCA to check for tumor-normal separation with outlier removed
 colz <- clinical_data_no_CS_sample_barcodes_in_methyl$tobacco_smoking_history # Get color values from smoking history
-plotMDS(LUSC_methylation_hm450_tumor_FS_NS_linked_genes,
+plotMDS(LUAD_methylation_hm450_tumor_FS_NS_linked_genes,
         gene.selection = "common",
-        main = "PCA for TCGA-LUSC former and never smokers using linked genes",
+        main = "PCA for TCGA-LUAD former and never smoker tumors using linked genes",
         col = colz,
         pch = 1
 )
 
-legend("topright", legend = c("1 = Lifelong Non-smokers", "3 = Current reformed smokers for >15 years", "4 = Current reformed smokers for ≤15 years"), 
-       fill = unique(colz), 
+legend("bottomright", legend = c("1 = Lifelong Non-smokers", "3 = Current reformed smokers for >15 years", "4 = Current reformed smokers for ≤15 years"),
+       fill = unique(colz),
        title = "Smoking status")
 
 
-### Doing the same with persistent linked genes
-
+# Now try with the persistent linked genes
 
 ## Filter to just "Persistent linked genes"
-LUSC_methylation_hm450_tumor_FS_NS_persistent_linked_genes <- LUSC_methylation_hm450_tumor_FS_NS %>%
+LUAD_methylation_hm450_tumor_FS_NS_persistent_linked_genes <- LUAD_methylation_hm450_tumor_FS_NS %>%
   filter(rownames(.) %in% A1_TE_TM_A2_persistent_linked_genes$Gene)
 
 
-## PCA to check for tumor-normal separation with outlier removed
 colz <- clinical_data_no_CS_sample_barcodes_in_methyl$tobacco_smoking_history # Get color values from smoking history
-plotMDS(LUSC_methylation_hm450_tumor_FS_NS_persistent_linked_genes,
+plotMDS(LUAD_methylation_hm450_tumor_FS_NS_persistent_linked_genes,
         gene.selection = "common",
-        main = "PCA for TCGA-LUSC former and never smokers using linked genes",
+        main = "PCA for TCGA-LUAD former and never smoker tumors using persistent linked genes",
         col = colz,
         pch = 1
 )
 
-legend("topright", legend = c("1 = Lifelong Non-smokers", "3 = Current reformed smokers for >15 years", "4 = Current reformed smokers for ≤15 years"), 
-       fill = unique(colz), 
+legend("bottomright", legend = c("1 = Lifelong Non-smokers", "3 = Current reformed smokers for >15 years", "4 = Current reformed smokers for ≤15 years"),
+       fill = unique(colz),
        title = "Smoking status")
-
 
 ## Plot a heatmap with hierarchical clustering to achieve the same thing
 ```
-
-### Checking the same thing using "persistent linked genes"
-
-```{r}
-## Filter to just "Linked genes"
-LUSC_methylation_hm450_tumor_FS_NS_persistent_linked_genes <- LUSC_methylation_hm450_tumor_FS_NS %>%
-  filter(rownames(.) %in% A1_TE_TM_A2_persistent_linked_genes$Gene)
-
-## Plot a PCA based on these genes, using color to represent smoking status
-
-## PCA to check for tumor-normal separation with outlier removed
-colz <- clinical_data_no_CS_sample_barcodes_in_methyl$tobacco_smoking_history # Get color values from smoking history
-plotMDS(LUSC_methylation_hm450_tumor_FS_NS_persistent_linked_genes,
-        gene.selection = "common",
-        main = "PCA for TCGA-LUSC former and never smokers using persistent linked genes",
-        col = colz,
-        pch = 1
-)
-
-legend("topright", legend = c("1 = Lifelong Non-smokers", "3 = Current reformed smokers for >15 years", "4 = Current reformed smokers for ≤15 years"), 
-       fill = unique(colz), 
-       title = "Smoking status")
-
-
-## Plot a heatmap with hierarchical clustering to achieve the same thing
-```
-
-### 2025/02/10
-I want to check the results I get from the TCGA T vs NM differential analyses against anything I can find in literature
-
-```{r}
-library(ggvenn)
-library(ggplot2)
-
-## Read in the table of differentially expressed genes from the publication
-LUAD_LUSC_FDRs_26292924 <- read.table('../4_TCGA_data/LUAD_LUSC_FDRs_26292924.txt', header = T)
-
-# Extract just the LUSC info
-LUSC_FDRs_26292924 <- LUAD_LUSC_FDRs_26292924[,c('LUSC', 'FDR_LUSC')]
-colnames(LUSC_FDRs_26292924) <- c('Gene', 'FDR_LUSC')
-
-# First just check the genes in common
-LUSC_genes_26292924 <- LUSC_FDRs_26292924$Gene
-LUSC_genes_limma <- TCGA_LUSC_DEG$Gene
-
-gene_lists <- list(
-  LUSC_genes_26292924 = LUSC_genes_26292924,
-  LUSC_genes_limma = LUSC_genes_limma
-)
-
-ggvenn(gene_lists, 
-       fill_color = c("skyblue", "lightgreen"), 
-       stroke_size = 0.5, 
-       set_name_size = 5)
-
-## That's odd that only 50% of gene names are matching here...
-
-## Anyway, I want to try comparing the FDRs here
-LUSC_genes_comparing_26292924_limma <- inner_join(LUSC_FDRs_26292924, TCGA_LUSC_DEG, by = 'Gene')
-colnames(LUSC_genes_comparing_26292924_limma) <- c("Gene", "FDR_LUSC_26292924","log2FC_LUSC_limma", "FDR_LUSC_limma")
-
-ggplot(LUSC_genes_comparing_26292924_limma, aes(x=FDR_LUSC_26292924, y=FDR_LUSC_limma)) +
-    geom_point(shape=1) +      # Use hollow circles
-    coord_trans(y ='log10', x='log10')
-
-## NO correlation AT ALL!!!
-
-
-## Now I want to see how many are "significant" for each
-nrow(LUSC_genes_comparing_26292924_limma[LUSC_genes_comparing_26292924_limma$FDR_LUSC_26292924<0.05,])
-nrow(LUSC_genes_comparing_26292924_limma[LUSC_genes_comparing_26292924_limma$FDR_LUSC_limma<0.05,])
-
-# Seems maybe mine is not giving a stringent enough result?
-
-
-
-```
-
-

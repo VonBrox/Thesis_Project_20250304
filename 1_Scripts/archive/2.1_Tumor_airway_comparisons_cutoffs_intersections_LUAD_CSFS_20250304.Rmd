@@ -14,16 +14,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 
 # A1
-GSE63127_CS_NS        <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20241204.txt", header = TRUE)
+GSE63127_CS_NS        <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", header = TRUE)
 
 # T-E
-TCGA_LUAD_DEG       <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFSNS_20250221.txt")
+TCGA_LUAD_DEG       <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250307.txt")
 
 # T-M
-TCGA_LUAD_DMG         <- read.table("../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFSNS_20250225.txt")
+TCGA_LUAD_DMG           <- read.table("../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt")
 
 # A2
-GSE7895_persistent_DEGs     <- read.table("../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_20241127.txt")
+GSE7895_persistent_DEGs <- read.table("../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_quantile_20250307.txt")
 
 ```
 
@@ -116,17 +116,125 @@ nrow(A1_TE_merged_DEGs)
 
 ```
 
-### I.iii Intersection of A1/TE DEGs with A2 DEGs
+### I.iii Intersection of A1/TE DEGs with A2 DEGs to give persistent cancer genes
 ```{r}
 ## Merge the lists
 
-A1_TE_A2_linked_genes <- A1_TE_merged_DEGs %>%
+A1_TE_A2_genes <- A1_TE_merged_DEGs %>%
   inner_join(., GSE7895_persistent_DEGs, by = "Gene") %>%
   filter(sign(log2FC_A1)==sign(CS_NS_A2)) # Filter to genes with same sign
 
-nrow(A1_TE_A2_linked_genes)
+nrow(A1_TE_A2_genes)
+
+# Save
+#write.table(A1_TE_A2_genes, "../2_Outputs/6_Linked_genes/LUAD_CSFS_A1_TE_A2_genes.txt")
+
+
 
 ```
+
+## 5.3 Comparing and filtering TM and A1TEA2 genes to give methylation related persistent cancer genes
+```{r}
+
+A1_TE_A2_TM_genes <- A1_TE_A2_genes %>%
+  dplyr::inner_join(., TCGA_LUAD_DMG_cutoff, by = "Gene") %>%
+  dplyr::filter(sign(log2FC_A1) != sign(log2FC_TM)) # Ensure signs are opposite
+
+nrow(A1_TE_A2_TM_genes)
+
+A1_TE_A2_TM_genes$Gene
+
+write.table(A1_TE_A2_TM_genes, "../2_Outputs/6_Linked_genes/LUAD_CSFS_A1_TE_A2_TM_genes.txt")
+
+```
+
+
+### Some sanity checks
+
+
+## Checking the number of genes expected to overlap by chance
+Since I am not sure if the standard equation for overlaps expected by chance can apply here, I want to empirically test it by doing random draws of the same number of genes and doing overlaps to look for overlaps expected by chance.
+```{r}
+library(dplyr)
+
+# Set the number of rows you want to sample
+GSE63127_CS_NS_ngenes <- nrow(GSE63127_CS_NS_cutoff)
+TCGA_LUAD_DEG_ngenes <- nrow(TCGA_LUAD_DEG_cutoff)
+GSE7895_persistent_DEGs_ngenes <- nrow(GSE7895_persistent_DEGs) # no cutoff was applied here
+TCGA_LUAD_DMG_ngenes <- nrow(TCGA_LUAD_DMG_cutoff)
+
+
+# Make a dataframe to contain the results
+A1_TE_A2_TM_sampling_table <- data.frame(A1_TE = numeric(), A1_TE_A2 = numeric(), A1_TE_A2_TM = numeric())
+
+# Initiate a loop for sampling
+
+for (row in 1:1000) {
+  
+  # Randomly sample desired number of rows from each of the 4 datasets
+  GSE63127_CS_NS_sample <- GSE63127_CS_NS %>% 
+    sample_n(GSE63127_CS_NS_ngenes) %>%
+    dplyr::rename(., Gene = Gene.symbol, FDR_A1 = adj.P.Val, log2FC_A1 = logFC) %>%
+    dplyr::select(., Gene, FDR_A1, log2FC_A1)
+  
+  TCGA_LUAD_DEG_sample <- TCGA_LUAD_DEG %>% 
+    sample_n(TCGA_LUAD_DEG_ngenes) %>%
+    dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC, Gene = Gene) %>%
+    dplyr::select(., Gene, FDR_TE, log2FC_TE)
+    
+  
+  GSE7895_persistent_DEGs_sample <- GSE7895_persistent_DEGs %>% 
+    sample_n(GSE7895_persistent_DEGs_ngenes)
+  
+  TCGA_LUAD_DMG_sample <- TCGA_LUAD_DMG %>% 
+    sample_n(TCGA_LUAD_DMG_ngenes)%>%
+    filter(abs(log2FC)>log2FC_cutoff_TM) %>%
+    filter(FDR < FDR_cutoff_TM) %>%
+    dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
+    dplyr::select(., Gene, FDR_TM, log2FC_TM)
+  
+  # Check the random overlaps between A1, TE with the sign filter
+  A1_TE_merged_DEGs_sample <- GSE63127_CS_NS_sample %>%
+    inner_join(., TCGA_LUAD_DEG_sample, by = "Gene") %>%
+    filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
+  
+  A1_TE_A2_TM_sampling_table[row,1] <- nrow(A1_TE_merged_DEGs_sample)
+  
+  # Check the random overlaps with A2 with the sign filter
+  A1_TE_A2_genes_sample <- A1_TE_merged_DEGs_sample %>%
+    inner_join(., GSE7895_persistent_DEGs_sample, by = "Gene") %>%
+    filter(sign(log2FC_A1)==sign(CS_NS_A2)) # Filter to genes with same sign
+  
+  A1_TE_A2_TM_sampling_table[row,2] <- nrow(A1_TE_A2_genes_sample)
+  
+  # Check the random overlaps with TM with the sign filter
+  
+  A1_TE_A2_TM_genes_sample <- A1_TE_A2_genes_sample %>%
+    dplyr::inner_join(., TCGA_LUAD_DMG_sample, by = "Gene") %>%
+    dplyr::filter(sign(log2FC_A1) != sign(log2FC_TM)) # Ensure signs are opposite
+  
+  A1_TE_A2_TM_sampling_table[row,3] <- nrow(A1_TE_A2_TM_genes_sample)
+}
+
+hist(A1_TE_A2_TM_sampling_table$A1_TE, breaks = 100)
+
+## So this is encouraging, there are many more genes overlapping than I found when randomly sampling by chance.
+
+mean(A1_TE_A2_TM_sampling_table$A1_TE)
+sd(A1_TE_A2_TM_sampling_table$A1_TE)
+
+mean(A1_TE_A2_TM_sampling_table$A1_TE_A2)
+sd(A1_TE_A2_TM_sampling_table$A1_TE_A2)
+
+mean(A1_TE_A2_TM_sampling_table$A1_TE_A2_TM)
+sd(A1_TE_A2_TM_sampling_table$A1_TE_A2_TM)
+```
+
+
+
+
+
+
 
 
 ### I.iv.1 Visualizing Spearman correlations of log2FC values
@@ -232,20 +340,6 @@ df_res <- as.data.frame(summary(res)$Table)
 
 ```
 
-## 5.3 Comparing and filtering A2 and "linked" genes to give "methylation related linked genes"
-
-### 5.3.2 Filtering by dataset intersection
-```{r}
-
-A1_TE_A2_TM_methylation_linked_genes <- A1_TE_A2_linked_genes %>%
-  dplyr::inner_join(., TCGA_LUAD_DMG_cutoff, by = "Gene") %>%
-  dplyr::filter(sign(log2FC_A1) != sign(log2FC_TM)) # Ensure signs are opposite
-
-nrow(A1_TE_A2_TM_methylation_linked_genes)
-
-A1_TE_A2_TM_methylation_linked_genes$Gene
-
-```
 
 ### 5.3.3 Additional checks (correlation of log2FCs in A1 and A2)
 ```{r}
@@ -522,3 +616,4 @@ legend("bottomright", legend = c("1 = Lifelong Non-smokers", "3 = Current reform
 
 ## Plot a heatmap with hierarchical clustering to achieve the same thing
 ```
+
