@@ -733,6 +733,16 @@ hist(log2(as.matrix(counts_matched_T_NM))) # Still not normal at all
 
 ## PCA to check for tumor-normal separation
 #colz <- as.numeric(as.factor(rep(c(1,0), length(counts_matched_T_NM)/2))) # Get color values from group
+
+
+
+
+## NOTE: Should do normalization before hierarchical clustering - TPM
+## For PCA I should do normalization as well
+
+# SummarizedExperiment
+# vst does the normalization
+
 colz <- rep(c("firebrick2","black"), length(counts_matched_T_NM)/2 ) # Get color values from group
 
 plotMDS(counts_matched_T_NM,
@@ -772,6 +782,9 @@ hc <- hclust(sample_dist) #Perform hierarchical clustering
 plot(hc, main = "Dendrogram of Samples", xlab = "", sub = "", cex = 0.8) # Plot the dendrogram
 
 
+
+## Redo with the normaliztion and check the blacklist as well
+
 ```
 
 ## 2.2.2 Acting on quality control checks: Remove outlier and its pair
@@ -794,7 +807,7 @@ plotMDS(counts_matched_T_NM,
         pch = 1
 )
 legend("bottomleft", 
-       legend = c("Tumor", "Normal"), 
+       legend = c("Tumor", "Normal")counts_matched_T_NM, 
        col = colz2, # Colors: only for smoking status
        pch = c(15, 15),                
        text.col = "black"
@@ -824,8 +837,9 @@ design <- model.matrix(~0 + groups)
 colnames(design) <- c("Normal", "Tumor")
 
 ### Low read counts filtering #####
-keep <- filterByExpr(counts_matched_T_NM, design = design) # new method
-#keep <- rowSums(counts_matched_T_NM >= 10) >= 57 # old method
+#keep <- filterByExpr(counts_matched_T_NM, design = design) # new method
+keep <- rowSums(counts_matched_T_NM >= 10) >= 57 # old method
+
 counts_matched_T_NM_filtered <- counts_matched_T_NM[keep,] 
 
 # xenabrowser method
@@ -891,7 +905,7 @@ TCGA_LUAD_limma_DEG$Gene <- gene_info_sorted$gene_name
 
 ```{r, fig.width=10, fig.height=6}
 
-log2FC_cutoff_TE <- 1
+log2FC_cutoff_TE <- 1.5
 FDR_cutoff_TE <- 0.001
 
 v_TE <- EnhancedVolcano::EnhancedVolcano(
