@@ -809,7 +809,7 @@ dds <- DESeqDataSetFromMatrix(countData = as.matrix(counts_matched_T_NM),
 
 # Variance stabilizing transformations (VST) for visualization
 vsd <- vst(dds, blind=FALSE)
-head(assay(vsd), 3)
+#head(assay(vsd), 3)
 plotPCA(vsd, intgroup=c("group"))
 
 # Normalize and check variance
@@ -897,8 +897,8 @@ design <- model.matrix(~0 + groups)
 colnames(design) <- c("Normal", "Tumor")
 
 ### Low read counts filtering #####
-#keep <- filterByExpr(counts_matched_T_NM, design = design) # new method
-keep <- rowSums(counts_matched_T_NM >= 10) >= 57 # old method
+keep <- filterByExpr(counts_matched_T_NM, design = design) # new method
+#keep <- rowSums(counts_matched_T_NM >= 10) >= 57 # old method
 
 counts_matched_T_NM_filtered <- counts_matched_T_NM[keep,] 
 
@@ -1130,8 +1130,6 @@ legend("bottomleft",
        )  
 
 ## Very good tumor-normal separation
-
-
 
 ```
 

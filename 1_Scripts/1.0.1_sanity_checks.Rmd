@@ -429,7 +429,7 @@ library(eulerr)
 
 ### T-E
 FDR_cutoff_TE = 0.001
-log2FC_cutoff_TE = 1
+log2FC_cutoff_TE = 1.5
 
 TCGA_LUAD_limma_DEG_CSFSNS_filtered <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
                               & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,]
@@ -439,7 +439,7 @@ nrow(TCGA_LUAD_limma_DEG_CSFSNS_filtered)
 
 ### xena
 FDR_cutoff_xena = 0.001
-log2FC_cutoff_xena = 1
+log2FC_cutoff_xena = 1.5
 
 xena_LUAD_T_N_DEG_filtered <- xena_LUAD_T_N_DEG[xena_LUAD_T_N_DEG$FDR<FDR_cutoff_xena
                               & abs(xena_LUAD_T_N_DEG$log2FC)>log2FC_cutoff_xena,]
@@ -505,6 +505,96 @@ xena_TE_unshared_genes <- xena_LUAD_T_N_DEG%>%
   anti_join(., TCGA_LUAD_limma_DEG_CSFSNS, by = "Gene")
 
 ```
+
+
+
+### Checking against the gene list from PMID: 33968738 (which used limma, though a different low read count filter)
+```{r}
+
+PMID_33968738_TCGA_LUAD_DEGs <- read.table("../4_TCGA_data/PMID_33968738_TCGA_LUAD_DEGs.txt", header = T)
+names(PMID_33968738_TCGA_LUAD_DEGs)[c(1,2,6)] <- c("Gene", "log2FC", "FDR")
+
+library(ggplot2)
+library(eulerr)
+library(dplyr)
+#### Comparing number of rows with given cutoffs
+
+### T-E
+FDR_cutoff_TE = 0.001
+log2FC_cutoff_TE = 1.5
+TCGA_LUAD_limma_DEG_CSFSNS_filter <- TCGA_LUAD_limma_DEG_CSFSNS[TCGA_LUAD_limma_DEG_CSFSNS$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_limma_DEG_CSFSNS$log2FC)>log2FC_cutoff_TE,]
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
+nrow(TCGA_LUAD_limma_DEG_CSFSNS_filter)
+
+### PMID_33968738
+FDR_cutoff_PMID_33968738 = 0.001
+log2FC_cutoff_PMID_33968738 = 1.5
+PMID_33968738_TCGA_LUAD_DEGs_filter <- PMID_33968738_TCGA_LUAD_DEGs[PMID_33968738_TCGA_LUAD_DEGs$FDR<FDR_cutoff_PMID_33968738
+                              & abs(PMID_33968738_TCGA_LUAD_DEGs$log2FC)>log2FC_cutoff_PMID_33968738,]
+
+print(paste0("PMID_33968738 DEGs meeting FDR cutoff ", FDR_cutoff_PMID_33968738, " and log2FC cutoff ", log2FC_cutoff_PMID_33968738))
+nrow(PMID_33968738_TCGA_LUAD_DEGs_filter)
+
+
+### Venn diagram pre-filter
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS$Gene), PMID_33968738_LUAD = unique(PMID_33968738_TCGA_LUAD_DEGs$Gene)))
+plot(main = "All genes",
+     gene_sets,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+### Venn diagram post-filter
+gene_sets <- euler(list(limma_LUAD = unique(TCGA_LUAD_limma_DEG_CSFSNS_filter$Gene), PMID_33968738_LUAD = unique(PMID_33968738_TCGA_LUAD_DEGs_filter$Gene)))
+plot(main = "Filtered genes",
+     gene_sets,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+## Combine the tables of TE and PMID_33968738
+TE_PMID_33968738_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  inner_join(., PMID_33968738_TCGA_LUAD_DEGs, by = "Gene", suffix = c("_TE", "_PMID_33968738"))
+
+## Make a version where all the cutoffs are met
+TE_PMID_33968738_comparison_filtered <- TE_PMID_33968738_comparison %>%
+  filter(., abs(log2FC_TE) >= log2FC_cutoff_TE & abs(log2FC_PMID_33968738) >= log2FC_cutoff_PMID_33968738 & FDR_TE <= FDR_cutoff_TE & FDR_PMID_33968738 <= FDR_cutoff_PMID_33968738)
+
+
+### Plot the log2FC values for the genes meeting cutoffs
+ggplot(TE_PMID_33968738_comparison_filtered, aes(x = log2FC_TE, y = log2FC_PMID_33968738)) +
+  geom_point() # Most of the signs are matching apart from a handful so that's good at least
+
+
+## Trying out filtering both by only really stringent FDRs and see how well they correlate then
+FDR_cutoff_TE_2 <- 10^-20
+FDR_cutoff_PMID_33968738_2 <- 10^-20
+
+TE_PMID_33968738_comparison_filtered_2 <- TE_PMID_33968738_comparison %>%
+  filter(., FDR_TE <= FDR_cutoff_TE_2 & FDR_PMID_33968738 <= FDR_cutoff_PMID_33968738_2)
+
+ggplot(TE_PMID_33968738_comparison_filtered_2, aes(x = log2FC_TE, y = log2FC_PMID_33968738)) +
+  geom_point() ## It does get tighter as you increast the FDR to really high levels but it's still not perfect correlation. However, I think this is all reassuring enough that my method is at least acceptable.
+
+
+###
+
+# I am curious about why so many transcripts are not shared between them, so I want to take a look at these.
+
+## Get genes from my limma and not PMID_33968738
+TE_PMID_33968738_unshared_comparison <- TCGA_LUAD_limma_DEG_CSFSNS %>%
+  anti_join(., PMID_33968738_TCGA_LUAD_DEGs, by = "Gene")
+
+## Get genes from PMID_33968738 and not my limma
+PMID_33968738_TE_unshared_comparison <- PMID_33968738_TCGA_LUAD_DEGs  %>%
+  anti_join(., TCGA_LUAD_limma_DEG_CSFSNS, by = "Gene")
+
+## Looks like lots of the genes that are not shared are lncRNAs or weird genes
+```
+
 
 
 

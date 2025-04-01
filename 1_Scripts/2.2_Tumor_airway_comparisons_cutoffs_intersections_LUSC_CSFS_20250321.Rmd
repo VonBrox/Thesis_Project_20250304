@@ -886,6 +886,7 @@ sd(A1_TE_A2_TM_sampling_table$A1_TE_A2_TM)
 
 
 
+
 I want to go back to trying percentiles / top ranked genes, since the cutoffs are not being nice to me. Sort of take some elements from the most logical way to do it but not all of it. This might allow normal numbers of genes to be picked. Sort of a best of both worlds. It might "hide some information" from the most "logical" method yet the optics will still be good. Will end up with fewer genes than the "most logical" method but perhaps still a valid number.
 
 ## Using percentiles for filtering
@@ -901,9 +902,9 @@ TCGA_LUSC_DEG_formatted<- TCGA_LUSC_DEG %>%
   dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC, Gene = Gene) %>%
   dplyr::select(., Gene, FDR_TE, log2FC_TE)
 
-TCGA_LUSC_DMG_formatted <- TCGA_LUSC_DMG %>%
-  dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
-  dplyr::select(., Gene, FDR_TM, log2FC_TM)
+# TCGA_LUSC_DMG_formatted <- TCGA_LUSC_DMG %>%
+#   dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
+#   dplyr::select(., Gene, FDR_TM, log2FC_TM)
 
 
 print("Then filter to shared gene symbols, but for now only between A1 and TE (TM is a later thing)")
@@ -941,29 +942,32 @@ TCGA_LUSC_DEG_A1_TE_sig_all <- TCGA_LUSC_DEG_A1_TE_sig %>%
 print("TCGA_LUSC_DEG_A1_TE_sig_all:")
 nrow(TCGA_LUSC_DEG_A1_TE_sig_all)
 
-### Then filter to n% most up/downregulated genes based on log2FC
-## A1
+
+print("Then filter to n% most up/downregulated genes based on log2FC.")
+percentile <- 75
+print(paste0(percentile, " percentile"))
+#A1:
 # Calculate percentile cutoffs
-top_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.875, na.rm = TRUE)  # Top 12.5%
-bottom_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.125, na.rm = TRUE)  # Bottom 12.5%
+top_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.5+percentile/100/2, na.rm = TRUE)
+bottom_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.5-percentile/100/2, na.rm = TRUE)
 
 # Filter genes in the top and bottom 25% of log2FC
 GSE63127_CS_NS_percentile <- GSE63127_A1_TE_sig_all %>%
   filter(log2FC_A1 >= top_cutoff_A1 | log2FC_A1 <= bottom_cutoff_A1)
-
+print("GSE63127_CS_NS_percentile:")
 nrow(GSE63127_CS_NS_percentile)
 
 ###
 
 ## TE
 # Calculate percentile cutoffs
-top_cutoff_TE <- quantile(TCGA_LUSC_DEG_A1_TE_sig_all$log2FC_TE, 0.875, na.rm = TRUE)  # Top 12.5%
-bottom_cutoff_TE <- quantile(TCGA_LUSC_DEG_A1_TE_sig_all$log2FC_TE, 0.125, na.rm = TRUE)  # Bottom 12.5%
+top_cutoff_TE <- quantile(TCGA_LUSC_DEG_A1_TE_sig_all$log2FC_TE,  0.5+percentile/100/2, na.rm = TRUE)  # Top n%
+bottom_cutoff_TE <- quantile(TCGA_LUSC_DEG_A1_TE_sig_all$log2FC_TE, 0.5-percentile/100/2, na.rm = TRUE)  # Bottom n%
 
 # Filter genes in the top and bottom 25% of log2FC
 TCGA_LUSC_DEG_percentile <- TCGA_LUSC_DEG_A1_TE_sig_all %>%
   filter(log2FC_TE >= top_cutoff_TE | log2FC_TE <= bottom_cutoff_TE)
-
+print("TCGA_LUSC_DEG_percentile:")
 nrow(TCGA_LUSC_DEG_percentile)
 
 ```
@@ -976,12 +980,14 @@ nrow(TCGA_LUSC_DEG_percentile)
 A1_TE_merged_DEGs <- GSE63127_CS_NS_percentile %>%
   inner_join(., TCGA_LUSC_DEG_percentile, by = "Gene") %>%
   filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
+print("A1_TE_merged_DEGs:")
 nrow(A1_TE_merged_DEGs)
 
 ## Merge with A2
 A1_TE_A2_linked_genes <- A1_TE_merged_DEGs %>%
   inner_join(., GSE7895_persistent_DEGs, by = "Gene") %>%
   filter(sign(log2FC_A1)==sign(CS_NS_A2)) # Filter to genes with same sign
+print("A1_TE_A2_linked_genes:")
 nrow(A1_TE_A2_linked_genes)
 
 # Merge with TM (later consideration)
@@ -994,7 +1000,41 @@ nrow(A1_TE_A2_linked_genes)
 ```
 
 
-## Now try the hypergeometric test
+First trying the hypergeometric test at the FDR filter point (FDR in each vs FDR in all)
+
+```{r}
+library(SuperExactTest)
+
+# Define gene lists
+A1_genes <- GSE63127_CS_NS_A1_TE_sig$Gene
+TE_genes <- TCGA_LUSC_DEG_A1_TE_sig$Gene
+#A2_genes <- GSE7895_persistent_DEGs$Gene
+#TM_genes <- TCGA_LUSC_DMG_cutoff$Gene
+
+# Universe of genes (e.g., all genes in the study - 
+# So if we are comparing genes overlapping after the percentile filtering step, we should be using the list from right before that: symbols shared between A1 and TE with FDR < 0.05 in both, therefore with chance of overlap at this next step)
+universe <- nrow(GSE63127_CS_NS_A1_TE_shared_genes) 
+
+# Create a list of gene sets
+gene_sets <- list(A1_genes, TE_genes)
+
+# Perform SuperExactTest
+res <- supertest(gene_sets, n = universe)
+
+# Print results
+summary(res)
+
+# Summarize results in a more readable format
+df_res <- as.data.frame(summary(res)$Table)
+
+## At this stage it definitely looks like chance.
+
+## Very interesting.......the other version is definitely sensitive to adjusting the percentile....
+
+```
+
+
+## Now try the hypergeometric test again, but here specifically testing the percentile filter
 
 ```{r}
 library(SuperExactTest)
@@ -1006,7 +1046,7 @@ A2_genes <- GSE7895_persistent_DEGs$Gene
 #TM_genes <- TCGA_LUSC_DMG_cutoff$Gene
 
 # Universe of genes (e.g., all genes in the study - 
-# So if we are comparing genes overlapping after the percentile filtering step, we should be using the list from right before that: symbols shared between A1 and TE with FDR < 0.05 in both, therefore with chance of overlap)
+# So if we are comparing genes overlapping after the percentile filtering step, we should be using the list from right before that: symbols shared between A1 and TE with FDR < 0.05 in both, therefore with chance of overlap at this next step)
 universe <- nrow(GSE63127_A1_TE_sig_all) 
 
 # Create a list of gene sets
@@ -1021,6 +1061,8 @@ summary(res)
 # Summarize results in a more readable format
 df_res <- as.data.frame(summary(res)$Table)
 
-# Hey nice, if we look at it this way, it is actually indeed significant
+# Hey nice, if we look at it this way, it is actually indeed significant. Is this the best point at which to apply the hypergeometric test? Unsure, but it's interesting.
+
 ```
+
 

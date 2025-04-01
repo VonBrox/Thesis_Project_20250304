@@ -1,0 +1,158 @@
+---
+title: "Hypergeometric_confusion"
+output: html_document
+date: "2025-04-01"
+---
+
+I am confused about my application of the hypergeometric test to check different filtering steps. I will explain here:
+
+## Reading in datasets to intersect
+```{r}
+
+# A1 (airway expression in brushing samples comparing current and never smokers)
+GSE63127_CS_NS   <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", header = TRUE)
+
+# T-E (tumor expression comparing tumor and normal tissue (lung adenocarcinoma from TCGA))
+TCGA_LUAD_DEG    <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250331.txt")
+
+```
+
+## Using percentiles for filtering
+```{r, results = 'hold'}
+library(dplyr)
+
+print("First format them all the same way (this time not filtering for FDR)")
+GSE63127_CS_NS_formatted <- GSE63127_CS_NS %>%
+  dplyr::rename(., Gene = Gene.symbol, FDR_A1 = adj.P.Val, log2FC_A1 = logFC) %>%
+  dplyr::select(., Gene, FDR_A1, log2FC_A1)
+
+TCGA_LUAD_DEG_formatted<- TCGA_LUAD_DEG %>%
+  dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC, Gene = Gene) %>%
+  dplyr::select(., Gene, FDR_TE, log2FC_TE)
+
+#####
+
+print("Then filter to shared gene symbols")
+GSE63127_CS_NS_A1_TE_shared_genes <- GSE63127_CS_NS_formatted %>%
+  dplyr::filter(Gene %in% TCGA_LUAD_DEG$Gene)
+print("GSE63127_CS_NS_A1_TE_shared_genes:")
+nrow(GSE63127_CS_NS_A1_TE_shared_genes)
+
+TCGA_LUAD_DEG_A1_TE_shared_genes <- TCGA_LUAD_DEG_formatted %>%
+  dplyr::filter(Gene %in% GSE63127_CS_NS$Gene)
+print("TCGA_LUAD_DEG_A1_TE_shared_genes:")
+nrow(TCGA_LUAD_DEG_A1_TE_shared_genes)
+
+#####
+
+print("Then filter to FDRs individually being <= 0.05")
+GSE63127_CS_NS_A1_TE_sig <- GSE63127_CS_NS_A1_TE_shared_genes %>%
+  filter(FDR_A1 <= 0.05)
+print("GSE63127_CS_NS_A1_TE_sig:")
+nrow(GSE63127_CS_NS_A1_TE_sig)
+
+TCGA_LUAD_DEG_A1_TE_sig <- TCGA_LUAD_DEG_A1_TE_shared_genes %>%
+  filter(FDR_TE <= 0.05)
+print("TCGA_LUAD_DEG_A1_TE_sig:")
+nrow(TCGA_LUAD_DEG_A1_TE_sig)
+
+#####
+
+print("Then filter to FDR < 0.05 in both")
+GSE63127_A1_TE_sig_all <- GSE63127_CS_NS_A1_TE_sig %>%
+  filter(Gene %in% TCGA_LUAD_DEG_A1_TE_sig$Gene)
+print("GSE63127_A1_TE_sig_all:")
+nrow(GSE63127_A1_TE_sig_all)
+
+TCGA_LUAD_DEG_A1_TE_sig_all <- TCGA_LUAD_DEG_A1_TE_sig %>%
+  filter(Gene %in% GSE63127_CS_NS_A1_TE_sig$Gene)
+print("TCGA_LUAD_DEG_A1_TE_sig_all:")
+nrow(TCGA_LUAD_DEG_A1_TE_sig_all)
+
+#####
+
+print("Then filter to n% most up/downregulated genes based on log2FC.")
+percentile <- 75
+print(paste0(percentile, " percentile"))
+
+##A1:
+# Calculate percentile cutoffs
+top_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.5+percentile/100/2, na.rm = TRUE)
+bottom_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.5-percentile/100/2, na.rm = TRUE)
+
+# Filter genes in the top and bottom n% of log2FC
+GSE63127_CS_NS_percentile <- GSE63127_A1_TE_sig_all %>%
+  filter(log2FC_A1 >= top_cutoff_A1 | log2FC_A1 <= bottom_cutoff_A1)
+print("GSE63127_CS_NS_percentile:")
+nrow(GSE63127_CS_NS_percentile)
+
+## TE
+# Calculate percentile cutoffs
+top_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE,  0.5+percentile/100/2, na.rm = TRUE)  # Top n%
+bottom_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE, 0.5-percentile/100/2, na.rm = TRUE)  # Bottom n%
+
+# Filter genes in the top and bottom n% of log2FC
+TCGA_LUAD_DEG_percentile <- TCGA_LUAD_DEG_A1_TE_sig_all %>%
+  filter(log2FC_TE >= top_cutoff_TE | log2FC_TE <= bottom_cutoff_TE)
+print("TCGA_LUAD_DEG_percentile:")
+nrow(TCGA_LUAD_DEG_percentile)
+
+```
+
+## First trying the hypergeometric test at the FDR filter point (FDR in each vs FDR in all)
+
+```{r, results = 'hold'}
+library(SuperExactTest)
+
+# Define gene lists as those with FDR < 0.05 in each individual dataset
+A1_genes <- GSE63127_CS_NS_A1_TE_sig$Gene
+TE_genes <- TCGA_LUAD_DEG_A1_TE_sig$Gene
+
+# Universe of genes (e.g., all gene symbols shared between the two datasets)
+universe <- nrow(GSE63127_CS_NS_A1_TE_shared_genes) 
+
+# Create a list of gene sets
+gene_sets <- list(A1_genes, TE_genes)
+
+# Perform SuperExactTest
+res <- supertest(gene_sets, n = universe)
+
+# Print results
+summary(res)
+
+# Summarize results in a more readable format
+df_res <- as.data.frame(summary(res)$Table)
+
+## At this stage it definitely looks like chance.
+
+```
+
+## Now try the hypergeometric test again, but here specifically testing the percentile filter
+
+```{r, results = 'hold'}
+library(SuperExactTest)
+
+# Define gene lists
+A1_genes <- GSE63127_CS_NS_percentile$Gene
+TE_genes <- TCGA_LUAD_DEG_percentile$Gene
+
+# Universe of genes (e.g., all genes in the study - 
+# So if we are comparing genes overlapping after the percentile filtering step, we should be using the list from right before that: symbols shared between A1 and TE with FDR < 0.05 in both, therefore with chance of overlap at this next step)
+universe <- nrow(GSE63127_A1_TE_sig_all) 
+
+# Create a list of gene sets
+gene_sets <- list(A1_genes, TE_genes)
+
+# Perform SuperExactTest
+res <- supertest(gene_sets, n = universe)
+
+# Print results
+summary(res)
+
+# Summarize results in a more readable format
+df_res <- as.data.frame(summary(res)$Table)
+
+# If we test this step, it is indeed significant. Does testing this step violate any part of the assumptions of the hyupergeometric test? Unsure.
+
+```
+
