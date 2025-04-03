@@ -1,0 +1,27 @@
+---
+title: "suggestion_tries"
+output: html_document
+date: "2025-04-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Carl DeBoer suggested mashing datasets together and plotting a big PCA. I think I'll first try this with A1 and TE for LUAD.
+
+# Multi-Dataset PCA (DeBoer's suggestion)
+
+## Read in data
+```{r}
+
+## Read in the A1 normalized expression data
+A1_exprs <- read.table("../../2_Outputs/2_Airway_expression/A1_exprs_20250403.txt", sep = " ")
+
+## Read in the TE normalized expression data
+TE_exprs <- read.table("../../2_Outputs/3_Tumor_expression/TE_data_20250403.txt", sep = " ")
+
+```
+
+
+

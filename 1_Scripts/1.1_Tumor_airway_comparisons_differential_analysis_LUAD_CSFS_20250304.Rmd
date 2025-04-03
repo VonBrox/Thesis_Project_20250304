@@ -470,6 +470,12 @@ v <- vooma(gset, design, plot=T)
 # v <- voomaByGroup(gset, group=groups, design, plot=T, cex=0.1, pch=".", col=1:nlevels(gs))
 v$genes <- fData(gset) # attach gene annotations
 
+
+## Making the processed expression data to save
+# vooma_expr <- as.data.frame(v[["E"]])
+# vooma_expr <- cbind(Gene = fData(gset)$Gene.symbol, vooma_expr)
+# write.table(vooma_expr, "../2_Outputs/2_Airway_expression/A1_exprs_20250403.txt")
+
 # fit linear model
 fit  <- lmFit(v)
 
@@ -863,7 +869,7 @@ But now, I am tryung to use filterbyExp instead
 ## Differential expression analysis using limma for consistency
 
 ```{r}
-
+library(edgeR)
 # Create a design matrix
 groups <- rep(c("Tumor","Normal"), length(counts_matched_T_NM)/2)
 design <- model.matrix(~0 + groups)
@@ -916,6 +922,24 @@ TCGA_LUAD_limma_DEG$Gene <- gene_info_sorted$gene_name
 
 # Save output
  write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250331.txt", sep = '\t')
+
+```
+
+## Extracting the normalized counts information
+```{r}
+# Tumor data
+TE_data <- as.data.frame(voom_data[["E"]])
+TE_data <- TE_data %>% arrange(., rownames(.))
+
+gene_info_sorted <- gene_info %>% 
+  arrange(., gene_id) %>%
+  filter(gene_id %in% rownames(TE_data))
+
+
+TE_data <- cbind(Gene = gene_info_sorted$gene_name, TE_data)
+
+## Save the data
+write.table(TE_data, "../2_Outputs/3_Tumor_expression/TE_data_20250403.txt")
 
 ```
 

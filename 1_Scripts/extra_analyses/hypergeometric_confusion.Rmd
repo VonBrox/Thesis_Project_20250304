@@ -72,7 +72,7 @@ nrow(TCGA_LUAD_DEG_A1_TE_sig_all)
 #####
 
 print("Then filter to n% most up/downregulated genes based on log2FC.")
-percentile <- 75
+percentile <- 4
 print(paste0(percentile, " percentile"))
 
 ##A1:
@@ -155,4 +155,48 @@ df_res <- as.data.frame(summary(res)$Table)
 # If we test this step, it is indeed significant. Does testing this step violate any part of the assumptions of the hyupergeometric test? Unsure.
 
 ```
+
+
+## Then do overlaps as we see fit
+
+```{r}
+
+## Merge A1 and TE
+A1_TE_merged_DEGs <- GSE63127_CS_NS_percentile %>%
+  inner_join(., TCGA_LUAD_DEG_percentile, by = "Gene") %>%
+  filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
+nrow(A1_TE_merged_DEGs)
+
+```
+
+
+
+Just for the heck of it I want to try using the other package that Lies showed to me instead of SuperExactTest.
+
+```{r}
+# Testing the shared FDR < 0.05 filter step
+N = nrow(GSE63127_CS_NS_A1_TE_shared_genes)  # All genes with symbols shared
+m <- length(GSE63127_CS_NS_A1_TE_sig$Gene)   # Airway genes with FDR < 0.05
+n <- length(TCGA_LUAD_DEG_A1_TE_sig$Gene)   # Tumor genes with FDR < 0.05
+k <- length(intersect(GSE63127_CS_NS_A1_TE_sig$Gene, TCGA_LUAD_DEG_A1_TE_sig$Gene))    # Observed overlap
+p_value <- phyper(k - 1, m, N - m, n, lower.tail = FALSE)
+p_value # About the same as what I got before, not at all significant
+
+
+# Testing the percentile filter step
+N <- nrow(GSE63127_A1_TE_sig_all)  # All genes with FDR < 0.05 in both airway and tumor
+m <- length(GSE63127_CS_NS_percentile$Gene)   # Airway genes with FDR < 0.05 in both airway and tumor and top 25% |log2FC|
+n <- length(TCGA_LUAD_DEG_percentile$Gene)   # Tumor genes with FDR < 0.05 in both airway and tumor and top 25% |log2FC|
+k <- length(intersect(GSE63127_CS_NS_percentile$Gene, TCGA_LUAD_DEG_percentile$Gene))    # Observed overlap
+p_value <- phyper(k - 1, m, N - m, n, lower.tail = FALSE)
+p_value # About the same as what I got before, extremely significant
+
+
+
+
+```
+
+
+
+
 
