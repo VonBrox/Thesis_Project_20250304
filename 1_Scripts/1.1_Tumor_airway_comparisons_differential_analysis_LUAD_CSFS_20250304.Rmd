@@ -771,6 +771,65 @@ plot(hc, main = "Dendrogram of Samples", xlab = "", sub = "", cex = 0.8) # Plot 
 
 ```
 
+## Redoing the visualizations using normalization to better stratify samples in PCA and hierarchical clustering
+```{r}
+library(DESeq2)
+library("pheatmap")
+library("vsn")
+library(gridExtra)
+library(grid)
+
+# Create a design matrix
+groups <- rep(c("Tumor","Normal"), length(counts_matched_T_NM)/2)
+design <- model.matrix(~0 + groups)
+
+colData <- data.frame(sample = colnames(counts_matched_T_NM), row.names = colnames(counts_matched_T_NM), group = groups)
+
+dds <- DESeqDataSetFromMatrix(countData = as.matrix(counts_matched_T_NM),
+                              colData = colData,
+                              design= design)
+
+
+
+# Variance stabilizing transformations (VST) for visualization
+vsd <- vst(dds, blind=FALSE)
+#head(assay(vsd), 3)
+plotPCA(vsd, intgroup=c("group"))
+
+# Normalize and check variance
+# this gives log2(n + 1)
+ntd <- normTransform(dds)
+meanSdPlot(assay(ntd))
+meanSdPlot(assay(vsd))
+
+
+# Heatmap of count matrix
+dds <- estimateSizeFactors(dds)  # Estimates size factors for normalization
+select <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:1000]
+
+df <- as.data.frame(groups)
+rownames(df) <- rownames(colData)
+
+# Order columns based on group
+ordered_cols <- order(colData$group)
+
+# Heatmap
+p <- pheatmap(assay(ntd)[select, ordered_cols], 
+         cluster_rows=TRUE,
+         cluster_cols=TRUE, 
+         show_rownames=FALSE,
+         show_colnames = TRUE,
+         treeheight_row = 0,
+         treeheight_col = 0,
+         gaps_col = 1,
+         annotation_col=df[ordered_cols, , drop=FALSE])
+
+# TCGA-38-4626-01A still appears as an outlier in the heatmap even if that disappears in the PCA
+# Note that the samples with suffix -01B cluster together and look quite different. These were FFPE. Potentially remove?
+
+```
+
 ## 2.2.2 Acting on quality control checks: Remove outlier and its pair
 ```{r}
 # Remove the 1 most obvious outlier and its pair:
@@ -920,7 +979,7 @@ TCGA_LUAD_limma_DEG <- TCGA_LUAD_limma_DEG %>%
 
 TCGA_LUAD_limma_DEG$Gene <- gene_info_sorted$gene_name
 
-# Save output
+# Save DEG output
  write.table(TCGA_LUAD_limma_DEG, "../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250331.txt", sep = '\t')
 
 ```
@@ -939,7 +998,7 @@ gene_info_sorted <- gene_info %>%
 TE_data <- cbind(Gene = gene_info_sorted$gene_name, TE_data)
 
 ## Save the data
-write.table(TE_data, "../2_Outputs/3_Tumor_expression/TE_data_20250403.txt")
+write.table(TE_data, "../../Tumor_expression/TE_data_20250403.txt")
 
 ```
 

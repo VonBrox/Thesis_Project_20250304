@@ -17,10 +17,10 @@ knitr::opts_chunk$set(echo = TRUE)
 GSE63127_CS_NS   <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", header = TRUE)
 
 # T-E
-TCGA_LUAD_DEG   <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250307.txt")
+TCGA_LUAD_DEG   <- read.table("../2_Outputs/2_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250331.txt")
 
 # T-M
-TCGA_LUAD_DMG    <- read.table("../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt")
+TCGA_LUAD_DMG    <- read.table("../2_Outputs/3_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt")
 
 # A2
 GSE7895_persistent_DEGs   <- read.table("../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_quantile_20250307.txt")

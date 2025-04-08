@@ -72,7 +72,7 @@ nrow(TCGA_LUAD_DEG_A1_TE_sig_all)
 #####
 
 print("Then filter to n% most up/downregulated genes based on log2FC.")
-percentile <- 4
+percentile <- 75
 print(paste0(percentile, " percentile"))
 
 ##A1:
@@ -192,9 +192,39 @@ p_value <- phyper(k - 1, m, N - m, n, lower.tail = FALSE)
 p_value # About the same as what I got before, extremely significant
 
 
+#Lies has suggested that I should keep the "gene universe" unchanged in the second case (percentile filter step) because I am testing both fdr and log2FC here. I will try that out.
+N = nrow(GSE63127_CS_NS_A1_TE_shared_genes)  # All genes with symbols shared
+m <- length(GSE63127_CS_NS_percentile$Gene)   # Airway genes with FDR < 0.05 in both airway and tumor and top 25% |log2FC|
+n <- length(TCGA_LUAD_DEG_percentile$Gene)   # Tumor genes with FDR < 0.05 in both airway and tumor and top 25% |log2FC|
+k <- length(intersect(GSE63127_CS_NS_percentile$Gene, TCGA_LUAD_DEG_percentile$Gene))    # Observed overlap
+p_value <- phyper(k - 1, m, N - m, n, lower.tail = FALSE)
+p_value # Wow, the p value is so low it registers as zero!
 
+
+## Given the above thing I want to try this with the superexact test package to se if I actually get a p value
+library(SuperExactTest)
+
+# Define gene lists
+A1_genes <- GSE63127_CS_NS_percentile$Gene
+TE_genes <- TCGA_LUAD_DEG_percentile$Gene
+
+# Universe of genes (e.g., all genes in the study - 
+# So if we are comparing genes overlapping after the percentile filtering step, we should be using the list from right before that: symbols shared between A1 and TE with FDR < 0.05 in both, therefore with chance of overlap at this next step)
+universe <- nrow(GSE63127_CS_NS_A1_TE_shared_genes) 
+# Create a list of gene sets
+gene_sets <- list(A1_genes, TE_genes)
+# Perform SuperExactTest
+res <- supertest(gene_sets, n = universe)
+# Print results
+summary(res)
+
+# Summarize results in a more readable format
+df_res <- as.data.frame(summary(res)$Table) # Woww, the p value is still effectively zero! Amazing.
 
 ```
+
+
+
 
 
 
