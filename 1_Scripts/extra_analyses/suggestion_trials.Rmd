@@ -16,28 +16,84 @@ Carl DeBoer suggested mashing datasets together and plotting a big PCA. I think 
 ```{r}
 
 ## Read in the A1 normalized expression data
-A1_exprs <- read.table("../../2_Outputs/2_Airway_expression/A1_exprs_20250403.txt", sep = " ")
+A1_exprs <- read.table("../../../Airway_expression/A1_exprs_20250403.txt", sep = " ")
 
 ## Read in the TE normalized expression data
-TE_exprs <- read.table("../../2_Outputs/3_Tumor_expression/TE_data_20250403.txt", sep = " ")
+TE_exprs <- read.table("../../../Tumor_expression/TE_data_20250408.txt", sep = " ")
 
 ```
 
+## Handle duplicates 
+```{r}
+## Keep rows with highest sums
+
+TE_exprs <- TE_exprs %>%
+  mutate(row_sum = rowSums(across(where(is.numeric)))) %>%
+  group_by(Gene) %>%
+  slice_max(order_by = row_sum, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  select(-row_sum)
+TE_exprs <- column_to_rownames(TE_exprs, var = "Gene")
+
+A1_exprs <- A1_exprs %>%
+  mutate(row_sum = rowSums(across(where(is.numeric)))) %>%
+  group_by(Gene) %>%
+  slice_max(order_by = row_sum, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  select(-row_sum)
+A1_exprs <- column_to_rownames(A1_exprs, var = "Gene")
+
+```
+
+
+# Trying Alejandro/Lies' suggestion of checking whether genes of interest are biased towards high read count
+## Checking this bias with an MA plot for the TE dataset
+```{r}
+library(DESeq2)
+
+groups <- rep(c("Tumor", "Normal"), length(TE_exprs)/2)
+
+design <- model.matrix(~0 + groups)
+
+colData <- data.frame(sample = colnames(TE_exprs), row.names = colnames(TE_exprs), group = groups)
+
+dds <- DESeqDataSetFromMatrix(countData = as.matrix(TE_exprs),
+                              colData = colData,
+                              design= design)
+
+ds <- DESeq(dds)
+res <- results(ds)
+
+# MA plot
+plotMA(res, ylim = c(-5, 25))
+```
+
+
+
+# Trying DeBoer's suggestion of massive PCA
 ## Combine datasets together
 ```{r}
-TE_exprs_filtered <- TE_exprs %>%
-  filter(Gene %in% A1_exprs$Gene)
+TE_exprs_filtered <- TE_exprs_nodup %>%
+  filter(Gene %in% A1_exprs_nodup$Gene)
 
-A1_exprs_filtered <- A1_exprs %>%
+A1_exprs_filtered <- A1_exprs_nodup %>%
   filter(Gene %in% TE_exprs_filtered$Gene)
 
-A1_TE_exprs <- inner_join(A1_exprs, TE_exprs, by = "Gene")
+A1_TE_exprs <- inner_join(A1_exprs_filtered, TE_exprs_filtered, by = "Gene")
 
-## Note: I need to handle duplicate genes in the prev script
+A1_TE_exprs <- column_to_rownames(A1_TE_exprs, var = "Gene")
+
+
+## Hmm there are some negative values, check on that
+A1_TE_exprs_negatives_only <- A1_TE_exprs %>%
+  select(where(~ any(. < 0, na.rm = TRUE)))
+## It's just for a few genes, I think I'll just remove them...
+A1_TE_exprs <- A1_TE_exprs %>%
+  filter(!rownames(.) %in% c("RTKN2", "LRRN4", "ADGRF4", "SLC22A17"))
 ```
 
 
-## Redoing the visualizations using normalization to better stratify samples in PCA and hierarchical clustering
+## Big PCA and heatmap
 ```{r}
 library(DESeq2)
 library("pheatmap")
@@ -46,15 +102,17 @@ library(gridExtra)
 library(grid)
 
 # Create a design matrix
-groups <- rep(c("Tumor","Normal"), length(counts_matched_T_NM)/2)
+
+groups <- rep(c("Current_smoker","Never_smoker"), length(A1_exprs)/2)
+groups <- c(groups, rep(c("Tumor", "Normal"), length(TE_exprs)/2))
+
 design <- model.matrix(~0 + groups)
 
-colData <- data.frame(sample = colnames(counts_matched_T_NM), row.names = colnames(counts_matched_T_NM), group = groups)
+colData <- data.frame(sample = colnames(A1_TE_exprs), row.names = colnames(A1_TE_exprs), group = groups)
 
-dds <- DESeqDataSetFromMatrix(countData = as.matrix(counts_matched_T_NM),
+dds <- DESeqDataSetFromMatrix(countData = as.matrix(A1_TE_exprs),
                               colData = colData,
                               design= design)
-
 
 
 # Variance stabilizing transformations (VST) for visualization
@@ -94,6 +152,117 @@ p <- pheatmap(assay(ntd)[select, ordered_cols],
 # TCGA-38-4626-01A still appears as an outlier in the heatmap even if that disappears in the PCA
 # Note that the samples with suffix -01B cluster together and look quite different. These were FFPE. Potentially remove?
 
+```
+
+#####
+
+Lies suggested checking whether the overlapping genes are biased towards the high read count levels.
+
+# Checking read count bias of overlapping genes
+
+## Read in the necessary gene lists and datasets
+```{r}
+
+# Read in the lists of DEGs for the A1 and TE individually
+GSE63127_CS_NS_limma <- read.table("../../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt")
+TCGA_LUAD_limma_DEG_CSFS <- read.table("../../2_Outputs/2_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250331.txt")
+
+# Read in the lists of overlapping genes
+A1_TE_merged_DEGs <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_25th_percentile_20250414.txt")
+A1_TE_A2_linked_genes <- read.table( "../../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_25th_percentile_20250414.txt")
+
+# Read in the expression data
+## Read in the A1 normalized expression data
+A1_exprs <- read.table("../../../Airway_expression/A1_exprs_20250403.txt", sep = " ")
+
+## Read in the TE normalized expression data
+TE_exprs <- read.table("../../../Tumor_expression/TE_data_20250408.txt", sep = " ")
+
+```
+
+# Get mean expression values for the genes, add them to the DEG list
+```{r}
+
+A1_exprs_noblanks <- A1_exprs[A1_exprs$Gene != "",]
+A1_exprs_means <-data.frame(Gene = A1_exprs_noblanks$Gene, mean_expr = rowMeans(as.matrix(A1_exprs_noblanks[,-1])))
+A1_exprs_means$ID <- rownames(A1_exprs_means)
+
+TE_exprs_noblanks <- TE_exprs[TE_exprs$Gene != "",]
+TE_exprs_means <- data.frame(Gene = TE_exprs_noblanks$Gene, mean_expr = rowMeans(as.matrix(TE_exprs_noblanks[,-1])))
+
+
+## Add the mean expression info to the DEGs lists
+GSE63127_CS_NS_limma <- inner_join(GSE63127_CS_NS_limma, A1_exprs_means, by = "ID" )
+TCGA_LUAD_limma_DEG_CSFS  <- inner_join(TCGA_LUAD_limma_DEG_CSFS, TE_exprs_means, by = "Gene")
+
+```
+
+# Add columns saying whether these are in the A1-TE overlap
+```{r}
+GSE63127_CS_NS_limma$A1_TE <- ifelse(GSE63127_CS_NS_limma$Gene %in% A1_TE_merged_DEGs$Gene, "Yes", "No")
+GSE63127_CS_NS_limma$A1_TE_A2 <- ifelse(GSE63127_CS_NS_limma$Gene %in% A1_TE_A2_linked_genes$Gene, "Yes", "No")
+
+TCGA_LUAD_limma_DEG_CSFS$A1_TE <- ifelse(TCGA_LUAD_limma_DEG_CSFS$Gene %in% A1_TE_merged_DEGs$Gene, "Yes", "No")
+TCGA_LUAD_limma_DEG_CSFS$A1_TE_A2 <- ifelse(TCGA_LUAD_limma_DEG_CSFS$Gene %in% A1_TE_A2_linked_genes$Gene, "Yes", "No")
+```
+
+
+## Make an MA plot for TE
+```{r}
+library(ggplot2)
+
+ggplot(TCGA_LUAD_limma_DEG_CSFS, aes(x = log10(mean_expr + 1), y = log2FC, color = A1_TE)) +
+  geom_point(alpha = 0.6, size = 1) +
+  scale_color_manual(values = c("Yes" = "blue", "No" = "grey")) +
+  theme_minimal() +
+  labs(
+    title = "MA Plot for TE, checking A1-TE genes",
+    x = "Log10(Mean Expression + 1)",
+    y = "Log2 Fold Change"
+  ) +
+  theme(legend.title = element_blank())
+
+ggplot(TCGA_LUAD_limma_DEG_CSFS, aes(x = log10(mean_expr + 1), y = log2FC, color = A1_TE_A2)) +
+  geom_point(alpha = 0.6, size = 1) +
+  scale_color_manual(values = c("Yes" = "blue", "No" = "grey")) +
+  theme_minimal() +
+  labs(
+    title = "MA Plot for TE, checking A1-TE-A2 genes",
+    x = "Log10(Mean Expression + 1)",
+    y = "Log2 Fold Change"
+  ) +
+  theme(legend.title = element_blank())
+
+```
+
+It appears that there is not a bias towards high mean expression here. Good!
+
+
+## Make an MA plot for A1
+```{r}
+library(ggplot2)
+
+ggplot(GSE63127_CS_NS_limma, aes(x = log10(mean_expr + 1), y = logFC, color = A1_TE)) +
+  geom_point(alpha = 0.6, size = 1) +
+  scale_color_manual(values = c("Yes" = "blue", "No" = "grey")) +
+  theme_minimal() +
+  labs(
+    title = "MA Plot for A1, checking A1-TE genes",
+    x = "Log10(Mean Expression + 1)",
+    y = "Log2 Fold Change"
+  ) +
+  theme(legend.title = element_blank())
+
+ggplot(GSE63127_CS_NS_limma, aes(x = log10(mean_expr + 1), y = logFC, color = A1_TE_A2)) +
+  geom_point(alpha = 0.6, size = 1) +
+  scale_color_manual(values = c("Yes" = "blue", "No" = "grey")) +
+  theme_minimal() +
+  labs(
+    title = "MA Plot for A1, checking A1-TE-A2 genes",
+    x = "Log10(Mean Expression + 1)",
+    y = "Log2 Fold Change"
+  ) +
+  theme(legend.title = element_blank())
 ```
 
 

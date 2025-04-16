@@ -910,17 +910,17 @@ TCGA_LUAD_DEG_A1_TE_sig_all <- TCGA_LUAD_DEG_A1_TE_sig %>%
   filter(Gene %in% GSE63127_CS_NS_A1_TE_sig$Gene)
 nrow(TCGA_LUAD_DEG_A1_TE_sig_all)
 
-### Then filter to 50% most up/downregulated genes based on log2FC
+### Then filter to 25% most up/downregulated genes based on log2FC
 ## A1
 # Calculate percentile cutoffs
 top_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.75, na.rm = TRUE)  # Top 12.5%
 bottom_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.25, na.rm = TRUE)  # Bottom 12.5%
 
 # Filter genes in the top and bottom 25% of log2FC
-GSE63127_CS_NS_50th_percentile <- GSE63127_A1_TE_sig_all %>%
+GSE63127_CS_NS_percentile <- GSE63127_A1_TE_sig_all %>%
   filter(log2FC_A1 >= top_cutoff_A1 | log2FC_A1 <= bottom_cutoff_A1)
 
-nrow(GSE63127_CS_NS_50th_percentile)
+nrow(GSE63127_CS_NS_percentile)
 
 ###
 
@@ -930,10 +930,10 @@ top_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE, 0.75, na.rm = T
 bottom_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE, 0.25, na.rm = TRUE)  # Bottom 12.5%
 
 # Filter genes in the top and bottom 25% of log2FC
-TCGA_LUAD_DEG_50th_percentile <- TCGA_LUAD_DEG_A1_TE_sig_all %>%
+TCGA_LUAD_DEG_percentile <- TCGA_LUAD_DEG_A1_TE_sig_all %>%
   filter(log2FC_TE >= top_cutoff_TE | log2FC_TE <= bottom_cutoff_TE)
 
-nrow(TCGA_LUAD_DEG_50th_percentile)
+nrow(TCGA_LUAD_DEG_percentile)
 
 ```
 
@@ -942,8 +942,8 @@ nrow(TCGA_LUAD_DEG_50th_percentile)
 ```{r}
 
 ## Merge A1 and TE
-A1_TE_merged_DEGs <- GSE63127_CS_NS_50th_percentile %>%
-  inner_join(., TCGA_LUAD_DEG_50th_percentile, by = "Gene") %>%
+A1_TE_merged_DEGs <- GSE63127_CS_NS_percentile %>%
+  inner_join(., TCGA_LUAD_DEG_percentile, by = "Gene") %>%
   filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
 nrow(A1_TE_merged_DEGs)
 
@@ -959,6 +959,11 @@ nrow(A1_TE_A2_linked_genes)
 #   dplyr::filter(sign(log2FC_A1) != sign(log2FC_TM)) # Ensure signs are opposite
 # nrow(A1_TE_A2_TM_methylation_linked_genes)
 # A1_TE_A2_TM_methylation_linked_genes$Gene
+
+
+## Save these outputs ##
+# write.table(A1_TE_merged_DEGs, "../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_25th_percentile_20250414.txt")
+# write.table(A1_TE_A2_linked_genes, "../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_25th_percentile_20250414.txt")
 
 ```
 
