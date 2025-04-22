@@ -16,7 +16,7 @@ The points are:
 Addressing the points:
 
 # 1.  Confirm the genes of interest using the selection and filtering methods discussed.
-This is up to the committee.
+This is up to the committee. When I change the lists of genes of interest it will affect the checks after this point.
 
 # 2. Compare the LUSC genes of interest with the LUAD genes of interest.
 
@@ -28,10 +28,12 @@ A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS <- read.table("../../2_Outputs/4_Lin
 
 A1_TE_A2_linked_genes_75th_percentile_LUAD_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_75th_percentile_LUAD_CSFS_20250414.txt")
 
+
 # LUSC
 A1_TE_merged_DEGs_75th_percentile_LUSC_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_75th_percentile_LUSC_CSFS_20250422.txt")
 
 A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS_20250414.txt")
+
 ```
 
 
