@@ -1,0 +1,43 @@
+---
+title: "1_Follow_up"
+output: html_document
+date: "2025-04-22"
+---
+
+In this code I will directly address the points for follow-up that were denoted in the previous progress report.
+
+The points are:
+1. Confirm the genes of interest using the selection and filtering methods discussed.
+2. Compare the LUSC genes of interest with the LUAD genes of interest.
+3. Compare former vs. never smoker tumor methylation as another point of interest for the analysis.
+4. Explore the statistical significance of overlapping genes and give a detailed report of the results and their implications.
+5. Once we have confirmed that the lists of genes of interest are finalized, I can use the datasets listed in comment 8 to make further comparisons and refine the hypothesis.
+
+Addressing the points:
+
+# 1.  Confirm the genes of interest using the selection and filtering methods discussed.
+This is up to the committee.
+
+# 2. Compare the LUSC genes of interest with the LUAD genes of interest.
+
+## Read in the genes of interest
+```{r}
+
+# LUAD 
+A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS_20250422.txt")
+
+A1_TE_A2_linked_genes_75th_percentile_LUAD_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_75th_percentile_LUAD_CSFS_20250414.txt")
+
+# LUSC
+A1_TE_merged_DEGs_75th_percentile_LUSC_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_75th_percentile_LUSC_CSFS_20250422.txt")
+
+A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS_20250414.txt")
+```
+
+
+## Compare the gene lists to each other with venn diagrams
+```{r}
+
+```
+
+

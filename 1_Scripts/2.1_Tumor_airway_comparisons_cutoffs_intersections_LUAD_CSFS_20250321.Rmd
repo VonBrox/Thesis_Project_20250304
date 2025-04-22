@@ -913,8 +913,8 @@ nrow(TCGA_LUAD_DEG_A1_TE_sig_all)
 ### Then filter to 25% most up/downregulated genes based on log2FC
 ## A1
 # Calculate percentile cutoffs
-top_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.75, na.rm = TRUE)  # Top 12.5%
-bottom_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.25, na.rm = TRUE)  # Bottom 12.5%
+top_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.875, na.rm = TRUE)  # Top 12.5%
+bottom_cutoff_A1 <- quantile(GSE63127_A1_TE_sig_all$log2FC_A1, 0.125, na.rm = TRUE)  # Bottom 12.5%
 
 # Filter genes in the top and bottom 25% of log2FC
 GSE63127_CS_NS_percentile <- GSE63127_A1_TE_sig_all %>%
@@ -926,8 +926,8 @@ nrow(GSE63127_CS_NS_percentile)
 
 ## TE
 # Calculate percentile cutoffs
-top_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE, 0.75, na.rm = TRUE)  # Top 12.5%
-bottom_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE, 0.25, na.rm = TRUE)  # Bottom 12.5%
+top_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE, 0.875, na.rm = TRUE)  # Top 12.5%
+bottom_cutoff_TE <- quantile(TCGA_LUAD_DEG_A1_TE_sig_all$log2FC_TE, 0.125, na.rm = TRUE)  # Bottom 12.5%
 
 # Filter genes in the top and bottom 25% of log2FC
 TCGA_LUAD_DEG_percentile <- TCGA_LUAD_DEG_A1_TE_sig_all %>%
@@ -962,8 +962,8 @@ nrow(A1_TE_A2_linked_genes)
 
 
 ## Save these outputs ##
-# write.table(A1_TE_merged_DEGs, "../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_25th_percentile_20250414.txt")
-# write.table(A1_TE_A2_linked_genes, "../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_25th_percentile_20250414.txt")
+# write.table(A1_TE_merged_DEGs, "../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS_20250422.txt")
+# write.table(A1_TE_A2_linked_genes, "../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_75th_percentile_LUAD_CSFS_20250414.txt")
 
 ```
 

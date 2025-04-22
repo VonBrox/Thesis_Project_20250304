@@ -19,10 +19,10 @@ knitr::opts_chunk$set(echo = TRUE)
 GSE63127_CS_NS              <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", header = TRUE)
 
 # T-E
-TCGA_LUSC_DEG               <- read.table("../2_Outputs/4_Tumor_DEGs/TCGA_LUSC_limma_DEG_CSFS_20250307.txt")
+TCGA_LUSC_DEG               <- read.table("../2_Outputs/2_Tumor_DEGs/TCGA_LUSC_limma_DEG_CSFS_20250307.txt")
 
 # T-M
-TCGA_LUSC_DMG               <- read.table("../2_Outputs/5_Tumor_DMGs/TCGA_LUSC_limma_DMG_20250307.txt")
+TCGA_LUSC_DMG               <- read.table("../2_Outputs/3_Tumor_DMGs/TCGA_LUSC_limma_DMG_20250307.txt")
 
 # A2
 GSE7895_persistent_DEGs     <- read.table("../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_quantile_20250307.txt")
@@ -996,6 +996,10 @@ nrow(A1_TE_A2_linked_genes)
 #   dplyr::filter(sign(log2FC_A1) != sign(log2FC_TM)) # Ensure signs are opposite
 # nrow(A1_TE_A2_TM_methylation_linked_genes)
 # A1_TE_A2_TM_methylation_linked_genes$Gene
+
+## Save this output
+# write.table(A1_TE_merged_DEGs, "../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_75th_percentile_LUSC_CSFS_20250422.txt")
+# write.table(A1_TE_A2_linked_genes, "../2_Outputs/4_Linked_genes/A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS_20250414.txt")
 
 ```
 
