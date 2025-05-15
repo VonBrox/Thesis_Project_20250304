@@ -725,7 +725,7 @@ print(ties)
 head(GSE14633_CS_NS_GEO2R_limma_sig)
 
 ## Save table
-#write.table(GSE14633_CS_NS_GEO2R_limma_sig, file='../2_Outputs/1_Airway_DEGs/GSE14633_CS_NS_GEO2R_limma_sig_20241114.txt', sep="\t")
+write.table(GSE14633_CS_NS_GEO2R_limma_sig, file='../2_Outputs/1_Airway_DEGs/GSE14633_CS_NS_GEO2R_limma_sig_20241114.txt', sep="\t")
 
 ```
 
@@ -1336,7 +1336,7 @@ length(sml) # 182 samples
 
 ## Make histograms and boxplots to check if the data is log-transformed and needs quantile normalization ##
 hist(as.matrix(exprs(gset))) # skewed left, needs log2 transform
-boxplot(exprs(gset)) # scary-looking
+#boxplot(exprs(gset)) # scary-looking
 max(exprs(gset)) # 136808
 min(exprs(gset)) # 0.0657913
 # Should do both log2 and quantile normalization
@@ -1346,7 +1346,7 @@ exprs(gset) <- log2(exprs(gset)+1)
 #exprs(gset) <- normalizeBetweenArrays(exprs(gset)) # quantile normalization - skipping for now
 
 hist(as.matrix(exprs(gset))) # much better
-boxplot(exprs(gset))
+#boxplot(exprs(gset))
 # min(exprs(gset)) # 0.3185814
 # max(exprs(gset)) # 16.17398
 
@@ -1757,7 +1757,7 @@ head(GSE63127_CS_NS_GEO2R_limma_sig)
 nrow(GSE63127_CS_NS_GEO2R_limma_sig)
 
 # Save the output (used absolute path for convenience)
-#write.table(GSE63127_CS_NS_GEO2R_limma_sig, "../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_GEO2R_limma_sig_20241115.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
+write.table(GSE63127_CS_NS_GEO2R_limma_sig, "../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_GEO2R_limma_sig_20241115.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
 
 
 

@@ -22,6 +22,7 @@ This is up to the committee. When I change the lists of genes of interest it wil
 
 ## Read in the genes of interest
 ```{r}
+## These are the genes of interest I have defined as of 2025/04/22
 
 # LUAD 
 A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS <- read.table("../../2_Outputs/4_Linked_genes/A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS_20250422.txt")
@@ -37,9 +38,468 @@ A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS <- read.table("../../2_Outputs/4
 ```
 
 
-## Compare the gene lists to each other with venn diagrams
+## Compare the gene lists to each other with euler/"venn" diagrams
 ```{r}
+library(eulerr)
+
+# A1_TE gene comparison between LUAD and LUSC
+
+A1_TE_gene_sets <- euler(list(A1_TE_LUAD = unique(A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS$Gene), A1_TE_LUSC = unique(A1_TE_merged_DEGs_75th_percentile_LUSC_CSFS$Gene)))
+
+plot(main = "A1_TE genes",
+     A1_TE_gene_sets,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+# A1_TE_A2 comparison between LUAD and LUSC
+
+A1_TE_A2_gene_sets <- euler(list(A1_TE_A2_LUAD = unique(A1_TE_A2_linked_genes_75th_percentile_LUAD_CSFS$Gene), A1_TE_A2_LUSC = unique(A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS$Gene)))
+
+plot(main = "A1_TE_A2 genes",
+     A1_TE_A2_gene_sets,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
 
 ```
+
+
+## Take a look at pathways for the genes that are common or different here
+```{r}
+
+
+
+```
+
+
+
+# 3. Compare former vs. never smoker tumor methylation as another point of interest for the analysis.
+
+I could see doing this in two different ways:
+
+3.1. Take the A1-TE-A2 genes and check how well they can stratify former from never smokers in the TCGA methylation data using either a PCA or hierarchical clustering
+
+3.2. Do differential analysis of former vs. never smokers in tumors and compare the gene list to the A1-TE-A2 list.
+
+The first way sounds kinda more interesting and probably better, and I have already done something like it. I will try both of these anyway.
+
+## 3.1. Take the A1-TE-A2 genes and check how well they can stratify current from former smokers in the TCGA methylation data using either a PCA or hierarchical clustering
+
+### LUAD
+
+
+#### Read in the clinical data 
+```{r}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+
+## Read in TCGA-LUSC clinical data
+query_clinical <- GDCquery(
+  project = "TCGA-LUAD",
+  data.category = "Clinical",
+  data.type = "Clinical Supplement"
+)
+
+# Check the available files
+query_clinical$results[[1]] %>% head()
+
+## I see that some are not BCR XML files, so I will try to remove these
+query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
+  filter(data_format == "BCR XML")
+
+## Download data
+GDCdownload(query_clinical,files.per.chunk = 1)
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient")
+
+## Sort by tobacco smoking history
+clinical_data_smoking_history <- clinical_data %>%
+  arrange(., tobacco_smoking_history) %>%
+  select(bcr_patient_barcode, tobacco_smoking_history)
+
+```
+
+
+
+### Read in the methylation data and arrange by smoking history
+```{r}
+
+# Get the patient barcodes in a form that can be used to filter the tumor samples
+clinical_data_smoking_history_sample_barcodes <- clinical_data_smoking_history %>%
+  mutate(bcr_patient_barcode = bcr_patient_barcode %>%
+    gsub("$", ".01", .) %>%
+    gsub("-", "\\.", .)
+  )
+
+## Read in the data for TCGA-LUAD methylation
+LUAD_methylation_hm450_tumor <- read.table("../../4_TCGA_data/TCGA_LUAD/data_methylation_hm450_LUAD.txt", header=TRUE, fill=TRUE)
+
+# Get the barcodes existing in rownames of the sample info
+clinical_data_smoking_history_sample_barcodes_methyl <- clinical_data_smoking_history_sample_barcodes[clinical_data_smoking_history_sample_barcodes$bcr_patient_barcode %in% colnames(LUAD_methylation_hm450_tumor),] 
+
+```
+
+
+## Deal with duplicate genes and make them the rownames of the methylation table
+```{r}
+### 3.2.2 Handling duplicate genes
+library(dplyr)
+
+# Step 1: Identify rows with duplicate Gene values
+duplicates <- LUAD_methylation_hm450_tumor %>%
+  group_by(Hugo_Symbol) %>%
+  filter(n() > 1)
+
+# Step 2: Remove the row with the smallest row sum for each duplicate gene
+rows_to_remove <- duplicates %>%
+  rowwise() %>%
+  mutate(row_sum = sum(c_across(where(is.numeric)))) %>%  # Compute row sum for numeric columns
+  group_by(Hugo_Symbol) %>%
+  slice_min(row_sum, with_ties = FALSE) %>%  # Select the row with the smallest sum
+  ungroup()
+
+# Step 3: Remove these rows from the original dataframe
+LUAD_methylation_hm450_tumor <- anti_join(LUAD_methylation_hm450_tumor, rows_to_remove, by = colnames(LUAD_methylation_hm450_tumor))
+
+# Now make the gene names into row names
+rownames(LUAD_methylation_hm450_tumor) <- LUAD_methylation_hm450_tumor$Hugo_Symbol
+
+# Remove the ID columns
+LUAD_methylation_hm450_tumor$Hugo_Symbol <- NULL
+LUAD_methylation_hm450_tumor$Entrez_Gene_Id <- NULL
+
+```
+
+
+## PCA of the LUAD methylation data using A1-TE genes and coloring by smoking status (filtering out 5 (FS of unspecified TSQ duration)) 
+```{r}
+library(limma)
+
+## Setting up the dataframe
+
+# Order the dataframe by smoking status
+LUAD_methylation_hm450_tumor_sstat <- LUAD_methylation_hm450_tumor %>%
+  select(clinical_data_smoking_history_sample_barcodes_methyl$bcr_patient_barcode)
+
+# Filter to just A1-TE genes
+LUAD_methylation_hm450_tumor_sstat_A1_TE <- LUAD_methylation_hm450_tumor_sstat %>%
+  filter(rownames(.) %in% A1_TE_merged_DEGs_75th_percentile_LUAD_CSFS$Gene)
+
+
+## Plot a PCA based on A1-TE genes, using color to represent smoking status
+
+# Smoking status
+smoking_status <- clinical_data_smoking_history_sample_barcodes_methyl$tobacco_smoking_history
+
+# Only keep samples with status 1, 2, 3, or 4
+valid_idx <- smoking_status %in% c(1, 2, 3, 4)
+smoking_status_filtered <- smoking_status[valid_idx]
+
+# Define custom order for color darkness
+status_order <- c(1, 3, 4, 2)  # lightest to darkest
+
+# Create color ramp
+blues <- colorRampPalette(c("#cce6ff", "#004080"))(length(status_order))
+
+# Create a named vector mapping statuses to colors
+status_color_map <- setNames(blues, status_order)
+
+# Assign colors to filtered samples
+colors <- status_color_map[as.character(smoking_status_filtered)]
+
+# Filter the data for plotting
+filtered_data <- LUAD_methylation_hm450_tumor_sstat_A1_TE[, valid_idx]
+
+# Plot MDS
+plotMDS(filtered_data,
+        gene.selection = "common",
+        main = "PCA for TCGA-LUAD methylation by smoking status using A1-TE genes",
+        col = colors,
+        pch = 1)
+
+# Add legend
+legend("bottomleft",
+       legend = paste(c("1 = NS",  "3 = FS > 15 yr", "4 = FS≤ 15 years", "2 = CS")),
+       col = blues,
+       pch = 1,
+       title = "Smoking History")
+
+## Doesn't look like much of a trend happening here
+
+```
+
+
+## PCA of the LUAD methylation data using A1-TE-A2 genes and coloring by smoking status (filtering out 5 (FS of unspecified TSQ duration)) 
+```{r}
+library(limma)
+
+## Setting up the dataframe
+
+# Order the dataframe by smoking status
+LUAD_methylation_hm450_tumor_sstat <- LUAD_methylation_hm450_tumor %>%
+  select(clinical_data_smoking_history_sample_barcodes_methyl$bcr_patient_barcode)
+
+# Filter to just A1-TE-A2 genes
+LUAD_methylation_hm450_tumor_sstat_A1_TE_A2 <- LUAD_methylation_hm450_tumor_sstat %>%
+  filter(rownames(.) %in% A1_TE_A2_linked_genes_75th_percentile_LUAD_CSFS$Gene)
+
+
+
+## Plot a PCA based on A1-TE-A2 genes, using color to represent smoking status
+
+# Smoking status
+smoking_status <- clinical_data_smoking_history_sample_barcodes_methyl$tobacco_smoking_history
+
+# Only keep samples with status 1, 2, 3, or 4
+valid_idx <- smoking_status %in% c(1, 2, 3, 4)
+smoking_status_filtered <- smoking_status[valid_idx]
+
+# Define custom order for color darkness
+status_order <- c(1, 3, 4, 2)  # lightest to darkest
+
+# Create color ramp
+blues <- colorRampPalette(c("#cce6ff", "#004080"))(length(status_order))
+
+# Create a named vector mapping statuses to colors
+status_color_map <- setNames(blues, status_order)
+
+# Assign colors to filtered samples
+colors <- status_color_map[as.character(smoking_status_filtered)]
+
+# Filter the data for plotting
+filtered_data <- LUAD_methylation_hm450_tumor_sstat_A1_TE_A2[, valid_idx]
+
+# Plot MDS
+plotMDS(filtered_data,
+        gene.selection = "common",
+        main = "PCA for TCGA-LUAD methylation by smoking status using A1-TE-A2 genes",
+        col = colors,
+        pch = 1)
+
+# Add legend
+legend("topright",
+       legend = paste(c("1 = NS",  "3 = FS > 15 yr", "4 = FS≤ 15 years", "2 = CS")),
+       col = blues,
+       pch = 1,
+       title = "Smoking History")
+
+## Doesn't look like much of a trend happening here
+
+```
+
+
+#########
+
+### LUSC
+
+#### Read in the clinical data 
+```{r}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+
+## Read in TCGA-LUSC clinical data
+query_clinical <- GDCquery(
+  project = "TCGA-LUSC",
+  data.category = "Clinical",
+  data.type = "Clinical Supplement"
+)
+
+# Check the available files
+query_clinical$results[[1]] %>% head()
+
+## I see that some are not BCR XML files, so I will try to remove these
+query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
+  filter(data_format == "BCR XML")
+
+## Download data
+GDCdownload(query_clinical,files.per.chunk = 1)
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient")
+
+## Sort by tobacco smoking history
+clinical_data_smoking_history <- clinical_data %>%
+  arrange(., tobacco_smoking_history) %>%
+  select(bcr_patient_barcode, tobacco_smoking_history)
+
+```
+
+
+### Read in the methylation data and arrange by smoking history
+```{r}
+
+# Get the patient barcodes in a form that can be used to filter the tumor samples
+clinical_data_smoking_history_sample_barcodes <- clinical_data_smoking_history %>%
+  mutate(bcr_patient_barcode = bcr_patient_barcode %>%
+    gsub("$", ".01", .) %>%
+    gsub("-", "\\.", .)
+  )
+
+## Read in the data for TCGA-LUSC methylation
+LUSC_methylation_hm450_tumor <- read.table("../../4_TCGA_data/TCGA_LUSC/data_methylation_hm450_LUSC.txt", header=TRUE, fill=TRUE)
+
+# Get the barcodes existing in rownames of the sample info
+clinical_data_smoking_history_sample_barcodes_methyl <- clinical_data_smoking_history_sample_barcodes[clinical_data_smoking_history_sample_barcodes$bcr_patient_barcode %in% colnames(LUSC_methylation_hm450_tumor),] 
+
+```
+
+## Deal with duplicate genes and make them the rownames of the methylation table
+```{r}
+### 3.2.2 Handling duplicate genes
+library(dplyr)
+
+# Step 1: Identify rows with duplicate Gene values
+duplicates <- LUSC_methylation_hm450_tumor %>%
+  group_by(Hugo_Symbol) %>%
+  filter(n() > 1)
+
+# Step 2: Remove the row with the smallest row sum for each duplicate gene
+rows_to_remove <- duplicates %>%
+  rowwise() %>%
+  mutate(row_sum = sum(c_across(where(is.numeric)))) %>%  # Compute row sum for numeric columns
+  group_by(Hugo_Symbol) %>%
+  slice_min(row_sum, with_ties = FALSE) %>%  # Select the row with the smallest sum
+  ungroup()
+
+# Step 3: Remove these rows from the original dataframe
+LUSC_methylation_hm450_tumor <- anti_join(LUSC_methylation_hm450_tumor, rows_to_remove, by = colnames(LUSC_methylation_hm450_tumor))
+
+# Now make the gene names into row names
+rownames(LUSC_methylation_hm450_tumor) <- LUSC_methylation_hm450_tumor$Hugo_Symbol
+
+# Remove the ID columns
+LUSC_methylation_hm450_tumor$Hugo_Symbol <- NULL
+LUSC_methylation_hm450_tumor$Entrez_Gene_Id <- NULL
+
+```
+
+
+
+## PCA of the LUSC methylation data using A1-TE genes and coloring by smoking status (filtering out 5 (FS of unspecified TSQ duration)) 
+```{r}
+library(limma)
+
+## Setting up the dataframe
+
+# Order the dataframe by smoking status
+LUSC_methylation_hm450_tumor_sstat <- LUSC_methylation_hm450_tumor %>%
+  select(clinical_data_smoking_history_sample_barcodes_methyl$bcr_patient_barcode)
+
+# Filter to just A1-TE genes
+LUSC_methylation_hm450_tumor_sstat_A1_TE <- LUSC_methylation_hm450_tumor_sstat %>%
+  filter(rownames(.) %in% A1_TE_merged_DEGs_75th_percentile_LUSC_CSFS$Gene)
+
+
+## Plot a PCA based on A1-TE genes, using color to represent smoking status
+
+# Smoking status
+smoking_status <- clinical_data_smoking_history_sample_barcodes_methyl$tobacco_smoking_history
+
+# Only keep samples with status 1, 2, 3, or 4
+valid_idx <- smoking_status %in% c(1, 2, 3, 4)
+smoking_status_filtered <- smoking_status[valid_idx]
+
+# Define custom order for color darkness
+status_order <- c(1, 3, 4, 2)  # lightest to darkest
+
+# Create color ramp
+blues <- colorRampPalette(c("#cce6ff", "#004080"))(length(status_order))
+
+# Create a named vector mapping statuses to colors
+status_color_map <- setNames(blues, status_order)
+
+# Assign colors to filtered samples
+colors <- status_color_map[as.character(smoking_status_filtered)]
+
+# Filter the data for plotting
+filtered_data <- LUSC_methylation_hm450_tumor_sstat_A1_TE[, valid_idx]
+
+# Plot MDS
+plotMDS(filtered_data,
+        gene.selection = "common",
+        main = "PCA for TCGA-LUSC methylation by smoking status using A1-TE genes",
+        col = colors,
+        pch = 1)
+
+# Add legend
+legend("bottomleft",
+       legend = paste(c("1 = NS",  "3 = FS > 15 yr", "4 = FS≤ 15 years", "2 = CS")),
+       col = blues,
+       pch = 1,
+       title = "Smoking History")
+
+## Doesn't look like much of a trend happening here
+
+```
+
+
+## PCA of the LUSC methylation data using A1-TE-A2 genes and coloring by smoking status (filtering out 5 (FS of unspecified TSQ duration)) 
+```{r}
+library(limma)
+
+## Setting up the dataframe
+
+# Order the dataframe by smoking status
+LUSC_methylation_hm450_tumor_sstat <- LUSC_methylation_hm450_tumor %>%
+  select(clinical_data_smoking_history_sample_barcodes_methyl$bcr_patient_barcode)
+
+# Filter to just A1-TE-A2 genes
+LUSC_methylation_hm450_tumor_sstat_A1_TE_A2 <- LUSC_methylation_hm450_tumor_sstat %>%
+  filter(rownames(.) %in% A1_TE_A2_linked_genes_75th_percentile_LUSC_CSFS$Gene)
+
+
+
+## Plot a PCA based on A1-TE-A2 genes, using color to represent smoking status
+
+# Smoking status
+smoking_status <- clinical_data_smoking_history_sample_barcodes_methyl$tobacco_smoking_history
+
+# Only keep samples with status 1, 2, 3, or 4
+valid_idx <- smoking_status %in% c(1, 2, 3, 4)
+smoking_status_filtered <- smoking_status[valid_idx]
+
+# Define custom order for color darkness
+status_order <- c(1, 3, 4, 2)  # lightest to darkest
+
+# Create color ramp
+blues <- colorRampPalette(c("#cce6ff", "#004080"))(length(status_order))
+
+# Create a named vector mapping statuses to colors
+status_color_map <- setNames(blues, status_order)
+
+# Assign colors to filtered samples
+colors <- status_color_map[as.character(smoking_status_filtered)]
+
+# Filter the data for plotting
+filtered_data <- LUSC_methylation_hm450_tumor_sstat_A1_TE_A2[, valid_idx]
+
+# Plot MDS
+plotMDS(filtered_data,
+        gene.selection = "common",
+        main = "PCA for TCGA-LUSC methylation by smoking status using A1-TE-A2 genes",
+        col = colors,
+        pch = 1)
+
+# Add legend
+legend("topright",
+       legend = paste(c("1 = NS",  "3 = FS > 15 yr", "4 = FS≤ 15 years", "2 = CS")),
+       col = blues,
+       pch = 1,
+       title = "Smoking History")
+
+## Doesn't look like much of a trend happening here
+
+```
+
+
+So far it doesn't look like there is much of a trend happening here. I could also try hierarchical clustering, and maybe also try straight differential analysis and gene comparison instead. Also, maybe the thing that Carl DeBoer suggested which is looking at the "loads" of the genes in the PCA?
+
+
+##4. Explore the statistical significance of overlapping genes and give a detailed report of the results and their implications.
+
+For my foray into this see the script hypergeometric_confusion and the word document "SOS question".
+
 
 
