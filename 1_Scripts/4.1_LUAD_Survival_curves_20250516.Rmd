@@ -47,8 +47,8 @@ query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
   filter(data_format == "BCR XML")
 
 ## Download data
-GDCdownload(query_clinical)
-clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient")
+GDCdownload(query_clinical, directory = "../../GDC_data")
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient", directory = "../../GDC_data")
 
 head(clinical_data)
 
@@ -73,9 +73,9 @@ query <- GDCquery(project = "TCGA-LUAD",
                   sample.type = c("Primary Tumor", "Solid Tissue Normal"),
                   workflow.type = "STAR - Counts")
 
-GDCdownload(query)
+GDCdownload(query, directory = "../../GDC_data")
 
-data <- GDCprepare(query)
+data <- GDCprepare(query, directory = "../../GDC_data")
 
 counts <- as.data.frame(assay(data))  # Extracting the count matrix (these are supposedly raw counts)
 head(counts)  # Viewing the first few rows (genes) and columns (samples)
@@ -85,12 +85,6 @@ head(gene_info)  # Preview the first few genes and their annotations
 
 sample_info <- as.data.frame(colData(data))
 head(sample_info)  # Preview sample metadata
-
-## Save data for loading since it takes so long to download
-saveRDS(data, file = "../../2_Outputs/LUAD_counts_data_20250522.rds")
-
-# Load it later
-rse_object <- readRDS("my_rse.rds")
 
 ```
 

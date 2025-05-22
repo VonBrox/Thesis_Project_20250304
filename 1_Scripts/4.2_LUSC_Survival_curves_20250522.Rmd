@@ -45,9 +45,33 @@ query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
   filter(data_format == "BCR XML")
 
 ## Download data
-GDCdownload(query_clinical)
-clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient")
+GDCdownload(query_clinical, directory = "../../GDC_data")
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient", directory = "../../GDC_data")
 
 head(clinical_data)
+
+```
+
+
+## Download expression data
+```{r message=FALSE, warning=FALSE, results='hide'}
+query <- GDCquery(project = "TCGA-LUSC",
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  sample.type = c("Primary Tumor", "Solid Tissue Normal"),
+                  workflow.type = "STAR - Counts")
+
+GDCdownload(query, directory = "../../GDC_data")
+
+data <- GDCprepare(query, directory = "../../GDC_data")
+
+counts <- as.data.frame(assay(data))  # Extracting the count matrix (these are supposedly raw counts)
+head(counts)  # Viewing the first few rows (genes) and columns (samples)
+
+gene_info <- as.data.frame(rowData(data))
+head(gene_info)  # Preview the first few genes and their annotations
+
+sample_info <- as.data.frame(colData(data))
+head(sample_info)  # Preview sample metadata
 
 ```
