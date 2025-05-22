@@ -75,3 +75,14 @@ sample_info <- as.data.frame(colData(data))
 head(sample_info)  # Preview sample metadata
 
 ```
+
+## Survival analysis: Comparing former smokers (groups 3 and 4) with high and low expression of individual genes of interest 
+```{r}
+# Replace the sample barcodes with patient IDs (Note: maybe check more carefully that this worked properly later)
+colnames(counts) <- sample_info$patient
+
+# Subset data
+former_smokers <- clinical_data[clinical_data$tobacco_smoking_history == c(3,4), ]
+former_smokers <- former_smokers[!is.na(former_smokers$bcr_patient_barcode),] # Remove NA values
+```
+

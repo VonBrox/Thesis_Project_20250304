@@ -88,7 +88,7 @@ head(sample_info)  # Preview sample metadata
 
 ```
 
-## Survival analysis: Comparing former smokers (groups 3 and 4) with high and low expression of individual genes of interest ("persistent linked genes")
+## Survival analysis: Comparing former smokers (groups 3 and 4) with high and low expression of individual genes of interest 
 ```{r}
 
 # Replace the sample barcodes with patient IDs (Note: maybe check more carefully that this worked properly later)
