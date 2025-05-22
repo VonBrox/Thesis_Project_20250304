@@ -1,0 +1,53 @@
+---
+title: "LUSC survival curves"
+output: html_document
+date: "2025-05-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+My initial plan is to take TCGA-LUSC former smokers as a group, take a list of genes of interest ("persistent linked genes"), compare those former smokers with the highest and lowest 25% expression levels of the genes of interest, and compare survival times. My rationale: This could point to persistently genes that are involved in tumor progression and mortality in addition to carcinogenesis.
+
+## Load libraries
+```{r message=FALSE, warning=FALSE, results='hide'}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(survival)
+library(survminer)
+library(dplyr)
+```
+
+## Read in the linked genes of interest
+```{r}
+
+LUSC_A1_TE_A2 <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_20250514.txt")
+
+```
+
+
+## Download clinical data
+```{r message=FALSE, warning=FALSE, results='hide'}
+
+query_clinical <- GDCquery(
+  project = "TCGA-LUSC",
+  data.category = "Clinical",
+  data.type = "Clinical Supplement"
+)
+
+# Check the available files
+query_clinical$results[[1]] %>% head()
+
+## I see that some are not BCR XML files, so I will try to remove these
+query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
+  filter(data_format == "BCR XML")
+
+## Download data
+GDCdownload(query_clinical)
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient")
+
+head(clinical_data)
+
+```
