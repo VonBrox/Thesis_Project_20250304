@@ -1078,16 +1078,16 @@ I decided I should switch from wilcoxon sign-rank test to limma because this is 
 ## 3.1 Loading dataset downloaded from cbioportal
 ```{r}
 
-data_methylation_hm450_tumor <- read.table("../../Former_Smokers_Aim_2/1_TCGA_LUAD_multiomics/0_Unpaired_input_tables/data_methylation_hm450.txt", header=TRUE, fill=TRUE)
+data_methylation_hm450_tumor <- read.table("../3_TCGA_data/TCGA_LUAD/data_methylation_hm450_LUAD.txt", header=TRUE, fill=TRUE)
 
-data_methylation_hm450_normal <- read.table("../../Former_Smokers_Aim_2/1_TCGA_LUAD_multiomics/0_Unpaired_input_tables/data_methylation_hm450_normals.txt", header=TRUE, fill=TRUE)
+data_methylation_hm450_normal <- read.table("../3_TCGA_data/TCGA_LUAD/data_methylation_hm450_normals_LUAD.txt", header=TRUE, fill=TRUE)
 
 ```
 
 
 ## 3.2 Formatting dataset 
 
-### 3.2.1 Formatting counts in tumor-normal pairs
+### 3.2.1 Formatting counts in tumor-normal pairs, removing never smokers
 ```{r}
 
 allIDs_tumor  <- colnames(data_methylation_hm450_tumor)

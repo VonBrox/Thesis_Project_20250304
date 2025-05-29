@@ -1,0 +1,91 @@
+---
+title: "Other dataset comparisons"
+output: html_document
+date: "2025-05-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read in lists of genes of interest
+```{r}
+## LUAD
+LUAD_A1_TE <- readLines("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_genes_20250514.txt")
+LUAD_A1_TE_A2 <- readLines("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_genes_20250514.txt")
+LUAD_A1_TE_A2_TM <- readLines("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_TM_genes_20250528.txt")
+
+## LUSC
+LUSC_A1_TE <- readLines("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_genes_20250514.txt")
+LUSC_A1_TE_A2 <- readLines("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_genes_20250514.txt")
+LUSC_A1_TE_A2_TM <- readLines("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_TM_genes_20250528.txt")
+
+```
+
+
+
+## Compare genes of interest with studies related to methylation in airways
+```{r}
+
+## Vucic et al 2014 (link to COPD) ##
+
+# Read in table 2 ("Differentially Methylated and Differentially Expressed Genes in Chronic Obstructive Pulmonary Disease Small Airways Previously Associated with Chronic Obstructive Pulmonary Disease")
+vucic_2014_table_2 <- read.table("../2_Gene_lists/methylation_airways/24298892/24298892_vucic_2014_table_2", sep = '\t', header = TRUE)
+
+print(c("Genes common to Vucic 2014 known COPD DMG list and LUAD_A1_TE: ", intersect(LUAD_A1_TE, vucic_2014_table_2$Symbol)))
+# Nothing here, so no need to go further with LUAD. Check LUSC.
+print(c("Genes common to Vucic 2014 known COPD DMG list and LUSC_A1_TE: ", intersect(LUSC_A1_TE, vucic_2014_table_2$Symbol)))
+# Nothing here
+
+###
+
+# Read in table 3 ("Differentially Methylated and Expressed Genes Most Likely Under Epigenetic Control in Chronic Obstructive Pulmonary Disease Small Airways")
+vucic_2014_table_3 <- read.table("../2_Gene_lists/methylation_airways/24298892/24298892_vucic_2014_table_3", sep = '\t', header = TRUE)
+
+print(c("Genes common to Vucic 2014 COPD-related linked DEG-DMG list and LUAD_A1_TE: ", intersect(LUAD_A1_TE, vucic_2014_table_3$Ref_Seq)))
+# Nothing
+
+print(c("Genes common to Vucic 2014 COPD-related linked DEG-DMG  list and LUSC_A1_TE: ", intersect(LUSC_A1_TE, vucic_2014_table_3$Ref_Seq)))
+# CYP4F11
+# Checking the next layer
+print(c("Genes common to Vucic 2014 COPD-related linked DEG-DMG  list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, vucic_2014_table_3$Ref_Seq)))
+# Not there
+
+###
+
+## Buro-Auriemma et al 2013 (smoking-related airway methylation changes)##
+
+Buro_2013_25_hypermethylated <- read.table("../2_Gene_lists/methylation_airways/23842454/23842454_Buro_2013_25_hypermethylated.txt")
+
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE:", intersect(LUAD_A1_TE, Buro_2013_25_hypermethylated$V1)))
+## 2 hits, checking next layer
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE_A2:", intersect(LUAD_A1_TE_A2, Buro_2013_25_hypermethylated$V1)))
+# 1 hit, checking next layer
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE_A2_TM:", intersect(LUAD_A1_TE_A2_TM, Buro_2013_25_hypermethylated$V1)))
+# No hit
+
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE: ", intersect(LUSC_A1_TE, Buro_2013_25_hypermethylated$V1)))
+## 2 hits, checking next layer
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, Buro_2013_25_hypermethylated$V1)))
+# 1 hit, next layer
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, Buro_2013_25_hypermethylated$V1)))
+# No hits
+
+###
+
+Buro_2013_25_hypomethylated <- read.table("../2_Gene_lists/methylation_airways/23842454/23842454_Buro_2013_25_hypomethylated.txt")
+
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUAD_A1_TE:", intersect(LUAD_A1_TE, Buro_2013_25_hypomethylated$V1)))
+# 1 hit, next layer
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUAD_A1_TE_A2:", intersect(LUAD_A1_TE_A2, Buro_2013_25_hypomethylated$V1)))
+# No hits
+
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUSC_A1_TE:", intersect(LUSC_A1_TE, Buro_2013_25_hypomethylated$V1)))
+# 3 hits
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUSC_A1_TE_A2:", intersect(LUSC_A1_TE_A2, Buro_2013_25_hypomethylated$V1)))
+# No hits
+
+```
+
+
+

@@ -1,0 +1,377 @@
+---
+title: "2.1_Tumor_airway_comparisons_cutoffs_intersections_LUAD_CSFS_20250304"
+output: html_document
+date: "2025-03-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Comparing and filtering A1, TE, A2, and TM to generate gene lists
+
+## Reading in datasets to intersect
+```{r}
+
+# A1
+GSE63127_CS_NS   <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_limma_20250307.txt", header = TRUE)
+
+# T-E
+TCGA_LUAD_DEG   <- read.table("../2_Outputs/2_Tumor_DEGs/TCGA_LUAD_limma_DEG_CSFS_20250331.txt")
+
+# A2
+GSE7895_persistent_DEGs   <- read.table("../2_Outputs/1_Airway_DEGs/GSE7895_persistent_DEGs_quantile_20250307.txt")
+
+# T-M
+TCGA_LUAD_DMG    <- read.table("../2_Outputs/3_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt")
+
+```
+
+
+
+############
+
+2025/05/13:
+
+Essentially, right now I have 2 candidate methods to filter to the genes of interest.
+One is applying the cutoffs I defined in my progress report.
+The other is using "sequential filtering" and going with the 75th percentile, then simple overlaps again.
+I want to try both methods.
+I know that the hypergeometric test shows that step 5 of my sequential filtering method has significant overlap for LUAD.
+Now I want to revisit the progress report cutoffs method and see whether the overlap is significant by hypergeometric test.
+If it is, I will probably go with that for the main part of the project, since we have all agreed that it is acceptable.
+If not, I will make the argument for using the sequential filtering method because it revealed that when filtering for percentiles, there is very significant overlap.
+
+
+## Method 1
+
+### Testing FDR and log2FC cutoffs that I presented in the progress report
+```{r}
+library(dplyr)
+### Testing FDR and log2FC cutoffs ###
+
+# A1 DEGs
+FDR_cutoff_A1 = 0.001
+log2FC_cutoff_A1 = 0.25
+
+print(paste0("A1 DEGs meeting FDR cutoff ", FDR_cutoff_A1, " and log2FC cutoff ", log2FC_cutoff_A1))
+nrow(GSE63127_CS_NS[GSE63127_CS_NS$adj.P.Val<FDR_cutoff_A1
+                                    & abs(GSE63127_CS_NS$logFC)>log2FC_cutoff_A1,])
+# 
+ hist(GSE63127_CS_NS[GSE63127_CS_NS$adj.P.Val<FDR_cutoff_A1
+                                    & abs(GSE63127_CS_NS$logFC)>log2FC_cutoff_A1,]$logFC, breaks = 100)
+# 
+# hist(log10(GSE63127_CS_NS[GSE63127_CS_NS$adj.P.Val<FDR_cutoff_A1
+#                                     & abs(GSE63127_CS_NS$logFC)>log2FC_cutoff_A1,]$adj.P.Val), breaks = 100)
+
+# TCGA-LUAD DEGs
+FDR_cutoff_TE = 0.001
+log2FC_cutoff_TE = 1.5
+
+print(paste0("TE DEGs meeting FDR cutoff ", FDR_cutoff_TE, " and log2FC cutoff ", log2FC_cutoff_TE))
+nrow(TCGA_LUAD_DEG[TCGA_LUAD_DEG$FDR<FDR_cutoff_TE
+                              & abs(TCGA_LUAD_DEG$log2FC)>log2FC_cutoff_TE,])
+# 
+ hist(TCGA_LUAD_DEG[TCGA_LUAD_DEG$FDR<FDR_cutoff_TE
+                               & abs(TCGA_LUAD_DEG$log2FC)>log2FC_cutoff_TE,]$log2FC, breaks = 100)
+# 
+# hist(log10(TCGA_LUAD_DEG[TCGA_LUAD_DEG$FDR<FDR_cutoff_TE
+#                               & abs(TCGA_LUAD_DEG$log2FC)>log2FC_cutoff_TE,]$FDR), breaks = 100)
+
+# 
+# # TCGA-LUAD DMGs limma
+# FDR_cutoff_TM = 0.001
+# log2FC_cutoff_TM = 0.5
+# 
+# print(paste0("TM DMGs meeting FDR cutoff ", FDR_cutoff_TM, " and log2FC cutoff ", log2FC_cutoff_TM))
+# nrow(TCGA_LUAD_DMG[TCGA_LUAD_DMG$FDR<FDR_cutoff_TM
+#                                & abs(TCGA_LUAD_DMG$log2FC)>log2FC_cutoff_TM,])
+# # 
+#  hist(TCGA_LUAD_DMG[TCGA_LUAD_DMG$FDR<FDR_cutoff_TM
+#                                & abs(TCGA_LUAD_DMG$log2FC)>log2FC_cutoff_TM,]$log2FC, breaks = 100)
+# # 
+# # hist(log10(TCGA_LUAD_DMG[TCGA_LUAD_DMG$FDR<FDR_cutoff_TM
+# #                                & abs(TCGA_LUAD_DMG$log2FC)>log2FC_cutoff_TM,]$FDR), breaks = 100)
+
+
+```
+
+### Applying cutoffs and formatting consistently for merge ###
+```{r}
+GSE63127_CS_NS_cutoff <- GSE63127_CS_NS %>%
+  filter(abs(logFC)>log2FC_cutoff_A1) %>%
+  filter(adj.P.Val < FDR_cutoff_A1) %>%
+  dplyr::rename(., Gene = Gene.symbol, FDR_A1 = adj.P.Val, log2FC_A1 = logFC) %>%
+  dplyr::select(., Gene, FDR_A1, log2FC_A1)
+
+TCGA_LUAD_DEG_cutoff <- TCGA_LUAD_DEG %>%
+  filter(abs(log2FC)>log2FC_cutoff_TE) %>%
+  filter(FDR < FDR_cutoff_TE) %>%
+  dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC, Gene = Gene) %>%
+  dplyr::select(., Gene, FDR_TE, log2FC_TE)
+
+# TCGA_LUAD_DMG_cutoff <- TCGA_LUAD_DMG %>%
+#   filter(abs(log2FC)>log2FC_cutoff_TM) %>%
+#   filter(FDR < FDR_cutoff_TM) %>%
+#   dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
+#   dplyr::select(., Gene, FDR_TM, log2FC_TM)
+```
+
+
+### Intersection of A1 and TE DEGs
+```{r}
+## Merge the lists
+
+A1_TE_merged_DEGs <- GSE63127_CS_NS_cutoff %>%
+  inner_join(., TCGA_LUAD_DEG_cutoff, by = "Gene") %>%
+  filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
+
+nrow(A1_TE_merged_DEGs)
+
+```
+
+## Hypergeometric test for LUAD-A1-TE genes
+```{r}
+
+N = length(intersect(GSE63127_CS_NS$Gene, TCGA_LUAD_DEG$Gene)) # Number of genes in both A1 and TE BEFORE the cutoffs are applied
+N
+
+n = nrow(GSE63127_CS_NS_cutoff) # Number of genes in LUAD-A1 meeting cutoff
+n
+
+m = nrow(TCGA_LUAD_DEG_cutoff) # Number of genes in LUAD-TE meeting cutoff
+m
+
+k  = nrow(A1_TE_merged_DEGs) # Number of overlapping genes for LUAD-A1-TE
+k
+
+p_value <- phyper(k - 1, m, N - m, n, lower.tail = FALSE)
+p_value
+
+# NOT AT ALL significant...
+```
+
+
+
+### Intersection of A1/TE DEGs with A2 DEGs
+```{r}
+## Merge the lists
+
+A1_TE_A2_linked_genes_method1 <- A1_TE_merged_DEGs %>%
+  inner_join(., GSE7895_persistent_DEGs, by = "Gene") %>%
+  filter(sign(log2FC_A1)==sign(CS_NS_A2)) # Filter to genes with same sign
+
+nrow(A1_TE_A2_linked_genes_method1)
+
+```
+
+I don't think that the hypergeometric test can apply to checking this step, because A1 and A2 cannot be called truly independent. Since they both measure genes with expression affected by smoking in airways (A1 in current smokers and A2 in former smokers), they will be expected to share many genes.
+
+## Comparing and filtering A2 and "linked" genes to give "methylation related linked genes"
+
+### Filtering by dataset intersection
+```{r}
+
+# Note that this is something to deal with later
+
+# A1_TE_A2_TM_methylation_linked_genes <- A1_TE_A2_linked_genes %>%
+#   dplyr::inner_join(., TCGA_LUAD_DMG_cutoff, by = "Gene") %>%
+#   dplyr::filter(sign(log2FC_A1) != sign(log2FC_TM)) # Ensure signs are opposite
+# 
+# nrow(A1_TE_A2_TM_methylation_linked_genes)
+# 
+# A1_TE_A2_TM_methylation_linked_genes$Gene
+
+```
+
+
+## Method 2
+
+This is the method I was using in a sequential pipeline to try to test each assumption being made along the way, though I arbitrarily picked a 75th percentile log2FC cutoff.
+
+## Using sequential filtering with 75th percentiles
+
+```{r}
+library(dplyr)
+
+### First format them all the same way (this time not filtering for FDR)
+A1_formatted <- GSE63127_CS_NS %>%
+  dplyr::rename(., Gene = Gene.symbol, FDR_A1 = adj.P.Val, log2FC_A1 = logFC) %>%
+  dplyr::select(., Gene, FDR_A1, log2FC_A1)
+
+LUAD_TE_formatted<- TCGA_LUAD_DEG %>%
+  dplyr::rename(., FDR_TE = FDR, log2FC_TE = log2FC, Gene = Gene) %>%
+  dplyr::select(., Gene, FDR_TE, log2FC_TE)
+
+# LUAD_TM_formatted <- LUAD_TM %>%
+#   dplyr::rename(., FDR_TM = FDR, log2FC_TM = log2FC) %>%
+#   dplyr::select(., Gene, FDR_TM, log2FC_TM)
+
+
+print("Filter 1: Shared gene symbols between A1 and TE")
+LUAD_A1_TE_shared_genes <- A1_formatted %>%
+  dplyr::filter(Gene %in% intersect(LUAD_TE_formatted$Gene, A1_formatted$Gene))
+nrow(LUAD_A1_TE_shared_genes)
+
+LUAD_TE_A1_shared_genes <- LUAD_TE_formatted %>%
+  dplyr::filter(Gene %in% intersect(LUAD_TE_formatted$Gene, A1_formatted$Gene))
+nrow(LUAD_TE_A1_shared_genes)
+
+# Note: The genes that end up being duplicates here are "DNAJC9-AS1", "POLR2J4", "RGS5", hence the difference in nrow for the two above, however I think these get lost in later steps so it does not really matter here.
+
+print("Filter 2: FDR <= 0.05 individually for A1 and TE")
+LUAD_A1_TE_sig <- LUAD_A1_TE_shared_genes %>%
+  filter(FDR_A1 <= 0.05)
+nrow(LUAD_A1_TE_sig)
+
+LUAD_TE_A1_sig <- LUAD_TE_A1_shared_genes %>%
+  filter(FDR_TE <= 0.05)
+nrow(LUAD_TE_A1_sig)
+
+print("Filter 3: FDR <= 0.05  in both A1 and TE")
+LUAD_A1_TE_sig_all <- LUAD_A1_TE_sig %>%
+  filter(Gene %in% LUAD_TE_A1_sig$Gene)
+nrow(LUAD_A1_TE_sig_all)
+
+LUAD_TE_A1_sig_all <- LUAD_TE_A1_sig %>%
+  filter(Gene %in% LUAD_A1_TE_sig$Gene)
+nrow(LUAD_A1_TE_sig_all)
+
+print("Filter 4: 75th percentile |log2FC| in each")
+
+## A1
+# Calculate percentile cutoffs
+top_cutoff_A1 <- quantile(LUAD_A1_TE_sig_all$log2FC_A1, 0.875, na.rm = TRUE)  # Top 12.5%
+bottom_cutoff_A1 <- quantile(LUAD_A1_TE_sig_all$log2FC_A1, 0.125, na.rm = TRUE)  # Bottom 12.5%
+
+# Filter genes in the top and bottom 25% of log2FC
+LUAD_A1_TE_percentile <- LUAD_A1_TE_sig_all %>%
+  filter(log2FC_A1 >= top_cutoff_A1 | log2FC_A1 <= bottom_cutoff_A1)
+nrow(LUAD_A1_TE_percentile)
+
+###
+
+## TE
+# Calculate percentile cutoffs
+top_cutoff_TE <- quantile(LUAD_TE_A1_sig_all$log2FC_TE, 0.875, na.rm = TRUE)  # Top 12.5%
+bottom_cutoff_TE <- quantile(LUAD_TE_A1_sig_all$log2FC_TE, 0.125, na.rm = TRUE)  # Bottom 12.5%
+
+# Filter genes in the top and bottom 25% of log2FC
+LUAD_TE_A1_percentile <- LUAD_TE_A1_sig_all %>%
+  filter(log2FC_TE >= top_cutoff_TE | log2FC_TE <= bottom_cutoff_TE)
+nrow(LUAD_TE_A1_percentile)
+
+###
+
+print("Filter 5: 75th percentile |log2FC| in both")
+LUAD_A1_TE_merged_percentile <- LUAD_A1_TE_percentile %>%
+  inner_join(., LUAD_TE_A1_percentile, by = "Gene")
+nrow(LUAD_A1_TE_merged_percentile)
+
+print("Filter 6: Same sign for log2FC")
+LUAD_A1_TE_merged_percentile_sign <- LUAD_A1_TE_merged_percentile %>%
+  filter(sign(log2FC_A1)==sign(log2FC_TE)) # Filter to genes with same signs
+nrow(LUAD_A1_TE_merged_percentile_sign)
+
+## Save this list of LUAD-A1-TE genes
+#write.table(LUAD_A1_TE_merged_percentile_sign, "../2_Outputs/4_Linked_genes/LUAD_A1_TE_20250514.txt")
+
+print("Merge with A2, same sign")
+LUAD_A1_TE_A2 <- LUAD_A1_TE_merged_percentile_sign %>%
+  inner_join(., GSE7895_persistent_DEGs, by = "Gene") %>%
+  filter(sign(log2FC_A1)==sign(CS_NS_A2)) # Filter to genes with same sign
+nrow(LUAD_A1_TE_A2)
+
+# Save this list of LUAD-A1-TE-A2 genes
+#write.table(LUAD_A1_TE_A2, "../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.txt")
+
+```
+
+
+## Hypergeometric tests for different filter steps
+```{r}
+
+print("Testing filter step 3")
+
+N = nrow(LUAD_A1_TE_shared_genes) # All gene symbols shared between A1 and TE (filter step 1)
+print(paste0("N = ",N))
+
+n = nrow(LUAD_A1_TE_sig) # Number of genes with FDR <= 0.05 in A1 (filter step 3)
+print(paste0("n = ",n))
+
+m = nrow(LUAD_TE_A1_sig)  # Number of genes with FDR <= 0.05 in TE (filter step 3)
+print(paste0("m = ",m))
+
+k  = nrow(LUAD_A1_TE_sig_all) # Number of genes with FDR <= 0.05 in both A1 and TE
+print(paste0("k = ",k))
+
+p_value <- phyper(k - 1, m, N - m, n, lower.tail = FALSE)
+print(paste0("p_value: ", p_value))
+
+
+
+print("Testing last filter step (basically steps 5 and 6 are combined together)")
+
+N = nrow(LUAD_A1_TE_sig_all) # The number of genes with FDR <= 0.05 in both A1 and TE (after filter step 3)
+print(paste0("N = ",N))
+
+n = nrow(LUAD_A1_TE_percentile) # Number of genes for top 75th percentile |log2FC| in each (here A1)
+print(paste0("n = ",n))
+
+m = nrow(LUAD_TE_A1_percentile)  # Number of genes for top 75th percentile |log2FC| in each (here TE)
+print(paste0("m = ",m))
+
+k  = nrow(LUAD_A1_TE_merged_percentile_sign) # Number of genes with top 75th percentile in both and with same sign
+print(paste0("k = ",k))
+
+p_value <- phyper(k - 1, m, N - m, n, lower.tail = FALSE)
+print(paste0("p_value: ", p_value))
+
+## Good, looks like the overlap is way more than expected by chance at this step, at least
+```
+
+
+
+
+
+
+#####
+
+
+extra stuff
+
+
+#####
+
+
+Now I instead want to try Dr. DeBoer's suggestion of linear correlations and PCA.
+I think for linear correlations I just literally plot the log2FCs, not the expression values?
+
+## Plotting log2FCs of FDR<0.05 genes from A1 and TE
+```{r}
+library(ggplot2)
+
+
+## Combine them together
+A1_TE <- LUAD_A1_TE_sig_all %>%
+  left_join(., LUAD_TE_A1_sig_all, by = "Gene")
+
+## Scatterplot
+ggplot(A1_TE, aes(x = log2FC_A1, y = log2FC_TE)) + 
+         geom_point(shape = 1) 
+
+### Spearman correlation ###
+cor_test <- cor.test(A1_TE$log2FC_A1, A1_TE$log2FC_TE, method = "spearman")
+cor_test
+# Interesting, it is highly significant? How? It doesn't look like it could be...
+
+
+### Trying for the filtered genes (I mean obviously they will correlate because of the filtering selections):
+ggplot(LUAD_A1_TE_merged_percentile_sign, aes(x = log2FC_A1, y = log2FC_TE)) + 
+         geom_point(shape = 1) 
+#Even this barely looks correlated... not that it necessarily needs to be...
+
+```
+
+
+
