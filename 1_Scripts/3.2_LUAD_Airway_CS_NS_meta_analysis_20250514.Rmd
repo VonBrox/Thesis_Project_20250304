@@ -20,10 +20,10 @@ These scripts analyse the output "linked genes" and "persistent linked genes" fr
 ```{r}
 
 # Read in LUAD-A1-TE
-LUAD_A1_TE <- read.table('../2_Outputs/4_Linked_genes/LUAD_A1_TE_20250514.txt', header = TRUE)
+LUAD_A1_TE <- read.table('../../2_Outputs/4_Linked_genes/LUAD_A1_TE_20250514.txt', header = TRUE)
 
 # Read in LUAD-A1-TE-A2
-LUAD_A1_TE_A2 <- read.table('../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.txt', header = TRUE)
+LUAD_A1_TE_A2 <- read.table('../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.txt', header = TRUE)
 
 
 ```
@@ -32,24 +32,24 @@ LUAD_A1_TE_A2 <- read.table('../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.
 ```{r}
 ## Read in the tables
 
-GSE4302_CS_NS_GEO2R_limma_sig <- read.table("../2_Outputs/1_Airway_DEGs/GSE4302_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
+GSE4302_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE4302_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 
-GSE7895_CS_NS_GEO2R_limma_sig <- read.table("../2_Outputs/1_Airway_DEGs/GSE7895_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
+GSE7895_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE7895_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 
 #GSE14633_CS_NS_GEO2R_limma_sig <- read.table("../2_Outputs/1_Airway_DEGs/GSE14633_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 #colnames(GSE14633_CS_NS_GEO2R_limma_sig)[2] <- "Gene.symbol" # Rename column for binding
 
-GSE19027_CS_NS_GEO2R_limma_sig <- read.table("../2_Outputs/1_Airway_DEGs/GSE19027_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
+GSE19027_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE19027_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 # For some reason I have to set the column names
 # colnames(GSE19027_CS_NS_GEO2R_limma_sig) <- GSE19027_CS_NS_GEO2R_limma_sig[1,]
 # GSE19027_CS_NS_GEO2R_limma_sig <- GSE19027_CS_NS_GEO2R_limma_sig[-1,]
 
-GSE20257_CS_NS_GEO2R_limma_sig <- read.table("../2_Outputs/1_Airway_DEGs/GSE20257_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
+GSE20257_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE20257_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 # For some reason I have to set the column names
 colnames(GSE20257_CS_NS_GEO2R_limma_sig) <- GSE20257_CS_NS_GEO2R_limma_sig[1,]
 GSE20257_CS_NS_GEO2R_limma_sig <- GSE20257_CS_NS_GEO2R_limma_sig[-1,]
 
-GSE63127_CS_NS_GEO2R_limma_sig <- read.table("../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_GEO2R_limma_sig_20241115.txt", sep = '\t')
+GSE63127_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_GEO2R_limma_sig_20241115.txt", sep = '\t')
 # For some reason I have to set the column names
 colnames(GSE63127_CS_NS_GEO2R_limma_sig) <- GSE63127_CS_NS_GEO2R_limma_sig[1,]
 GSE63127_CS_NS_GEO2R_limma_sig <- GSE63127_CS_NS_GEO2R_limma_sig[-1,]
@@ -65,9 +65,10 @@ CS_NS_gene_rank_input <- as.data.frame(rbind(
   cbind("GSE19027", GSE19027_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE19027_CS_NS_GEO2R_limma_sig$logFC, GSE19027_CS_NS_GEO2R_limma_sig$adj.P.Val ), 
   # cbind("GSE14633", GSE14633_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE14633_CS_NS_GEO2R_limma_sig$logFC, GSE14633_CS_NS_GEO2R_limma_sig$adj.P.Val), 
   cbind("GSE20257", GSE20257_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE20257_CS_NS_GEO2R_limma_sig$logFC, GSE20257_CS_NS_GEO2R_limma_sig$adj.P.Val), 
-  cbind("GSE4302", GSE4302_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE4302_CS_NS_GEO2R_limma_sig$logFC, GSE4302_CS_NS_GEO2R_limma_sig$adj.P.Val), 
-  cbind("GSE63127",GSE63127_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE63127_CS_NS_GEO2R_limma_sig$logFC, GSE63127_CS_NS_GEO2R_limma_sig$adj.P.Val), 
-  cbind("GSE7895", GSE7895_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE7895_CS_NS_GEO2R_limma_sig$logFC, GSE7895_CS_NS_GEO2R_limma_sig$adj.P.Val)))
+  cbind("GSE4302", GSE4302_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE4302_CS_NS_GEO2R_limma_sig$logFC, GSE4302_CS_NS_GEO2R_limma_sig$adj.P.Val)
+  # cbind("GSE63127",GSE63127_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE63127_CS_NS_GEO2R_limma_sig$logFC, GSE63127_CS_NS_GEO2R_limma_sig$adj.P.Val), 
+  # cbind("GSE7895", GSE7895_CS_NS_GEO2R_limma_sig$Gene.symbol, GSE7895_CS_NS_GEO2R_limma_sig$logFC, GSE7895_CS_NS_GEO2R_limma_sig$adj.P.Val)
+  ))
 
 colnames(CS_NS_gene_rank_input) <- c("Study_ID", "Gene.symbol", "log2FC", "adj.P.Val")
 head(CS_NS_gene_rank_input)

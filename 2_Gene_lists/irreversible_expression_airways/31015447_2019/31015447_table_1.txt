@@ -1,0 +1,433 @@
+SampleID	SampleType	Cohort	Patient	Time	Age at Baseline	Race	Sex	Baseline Smoking Status	Previous LC History	Previous LUSC History	Asbestos Exposure	HighRisk LC Job	COPD Status	COPD GOLD Category	Pack-years at Baseline
+PCGA-01-0001-029-19762-00897BX-1007485R	Biopsy	DiscoverySet	1	19762	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-029-20126-01119BX-1031612R	Biopsy	DiscoverySet	1	20126	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-037-19118-00482BX-1007555R	Biopsy	DiscoverySet	1	19118	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-037-19300-00589BX-1007585R	Biopsy	DiscoverySet	1	19300	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-037-19762-00898BX-1007486R	Biopsy	DiscoverySet	1	19762	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-037-20126-01120BX-1031613R	Biopsy	DiscoverySet	1	20126	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-050-19762-00903BX-1007491R	Biopsy	DiscoverySet	1	19762	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-070-19300-00587BX-1007583R	Biopsy	DiscoverySet	1	19300	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-070-19762-00902BX-1007490R	Biopsy	DiscoverySet	1	19762	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-070-20126-01117BX-1031610R	Biopsy	DiscoverySet	1	20126	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-074-19300-00586BX-1007582R	Biopsy	DiscoverySet	1	19300	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-074-20126-01116BX-1031609R	Biopsy	DiscoverySet	1	20126	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-074-20343-01315BX-1031647R	Biopsy	DiscoverySet	1	20343	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-076-19300-00585BX-1007581R	Biopsy	DiscoverySet	1	19300	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-076-20343-01314BX-1031646R	Biopsy	DiscoverySet	1	20343	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-077-20126-01115BX-1031608R	Biopsy	DiscoverySet	1	20126	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-082-19118-00480BX-1007553R	Biopsy	DiscoverySet	1	19118	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-086-19118-00479BR-1007366R	Brush	DiscoverySet	1	19118	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-086-19300-00584BR-1007492R	Brush	DiscoverySet	1	19300	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-086-19762-00896BR-1007524R	Brush	DiscoverySet	1	19762	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-086-20126-01113BR-1031607R	Brush	DiscoverySet	1	20126	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-086-20343-01312BR-1031645R	Brush	DiscoverySet	1	20343	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-089-19118-00481BX-1007554R	Biopsy	DiscoverySet	1	19118	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-089-19300-00588BX-1007584R	Biopsy	DiscoverySet	1	19300	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-089-19762-00900BX-1007488R	Biopsy	DiscoverySet	1	19762	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0001-089-20126-01118BX-1031611R	Biopsy	DiscoverySet	1	20126	52.3	White	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	65
+PCGA-01-0002-021-24062-00441BX-1007600R	Biopsy	DiscoverySet	2	24062	64.9	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	70
+PCGA-01-0002-043-23843-00276BR-1007339R	Brush	DiscoverySet	2	23843	64.9	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	70
+PCGA-01-0002-077-24062-00442BX-1007601R	Biopsy	DiscoverySet	2	24062	64.9	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	70
+PCGA-01-0002-086-24062-00440BR-1007360R	Brush	DiscoverySet	2	24062	64.9	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	70
+PCGA-01-0003-043-23883-00411BR-1007354R	Brush	DiscoverySet	3	23883	65.4	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	No	NA	66
+PCGA-01-0003-043-24282-00692BR-1007501R	Brush	DiscoverySet	3	24282	65.4	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	No	NA	66
+PCGA-01-0003-061-24282-00694BX-1007409R	Biopsy	DiscoverySet	3	24282	65.4	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	No	NA	66
+PCGA-01-0003-086-24730-00945BR-1031586R	Brush	DiscoverySet	3	24730	65.4	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	No	NA	66
+PCGA-01-0003-089-23883-00412BX-1007547R	Biopsy	DiscoverySet	3	23883	65.4	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	No	NA	66
+PCGA-01-0003-089-24282-00693BX-1007408R	Biopsy	DiscoverySet	3	24282	65.4	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	No	NA	66
+PCGA-01-0003-089-24730-00947BX-1031587R	Biopsy	DiscoverySet	3	24730	65.4	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	No	NA	66
+PCGA-01-0004-086-27317-00603BR-1007380R	Brush	DiscoverySet	4	27317	74.8	White	Male	Patient has smoking history	N	No LC History	Y	Y	NA	NA	80
+PCGA-01-0004-089-27317-00604BX-1007589R	Biopsy	DiscoverySet	4	27317	74.8	White	Male	Patient has smoking history	N	No LC History	Y	Y	NA	NA	80
+PCGA-01-0004-093-27317-00605BX-1007386R	Biopsy	DiscoverySet	4	27317	74.8	White	Male	Patient has smoking history	N	No LC History	Y	Y	NA	NA	80
+PCGA-01-0005-019-16929-00325BX-1007525R	Biopsy	DiscoverySet	5	16929	46.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	30
+PCGA-01-0005-019-17489-00727BX-1007419R	Biopsy	DiscoverySet	5	17489	46.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	30
+PCGA-01-0005-050-17489-00728BX-1007420R	Biopsy	DiscoverySet	5	17489	46.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	30
+PCGA-01-0005-086-16929-00324BR-1007343R	Brush	DiscoverySet	5	16929	46.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	30
+PCGA-01-0005-086-17489-00726BR-1007504R	Brush	DiscoverySet	5	17489	46.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	30
+PCGA-01-0006-037-20238-00776BX-1007437R	Biopsy	DiscoverySet	6	20238	53.5	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	35
+PCGA-01-0006-037-21015-01279BX-1031639R	Biopsy	DiscoverySet	6	21015	53.5	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	35
+PCGA-01-0006-043-19783-00445BR-1007361R	Brush	DiscoverySet	6	19783	53.5	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	35
+PCGA-01-0006-043-20238-00773BR-1007510R	Brush	DiscoverySet	6	20238	53.5	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	35
+PCGA-01-0006-043-21015-01276BR-1031637R	Brush	DiscoverySet	6	21015	53.5	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	35
+PCGA-01-0006-086-19580-00281BR-1007341R	Brush	DiscoverySet	6	19580	53.5	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	35
+PCGA-01-0007-048-18033-00455BX-1007605R	Biopsy	DiscoverySet	7	18033	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-050-18033-00456BX-1007603R	Biopsy	DiscoverySet	7	18033	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-050-18131-00528BX-1007608R	Biopsy	DiscoverySet	7	18131	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-086-18033-00452BR-1007362R	Brush	DiscoverySet	7	18033	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-086-18131-00525BR-1007373R	Brush	DiscoverySet	7	18131	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-089-18033-00453BX-1007602R	Biopsy	DiscoverySet	7	18033	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-089-18131-00526BX-1007606R	Biopsy	DiscoverySet	7	18131	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-093-18033-00454BX-1007604R	Biopsy	DiscoverySet	7	18033	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0007-093-18131-00527BX-1007607R	Biopsy	DiscoverySet	7	18131	49.3	White	Female	Patient has smoking history	N	No LC History	N	N	No	NA	31
+PCGA-01-0008-010-21682-00839BX-1007463R	Biopsy	DiscoverySet	8	21682	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-045-21682-00840BX-1007464R	Biopsy	DiscoverySet	8	21682	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-050-21682-00841BX-1007465R	Biopsy	DiscoverySet	8	21682	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-074-21682-00837BX-1007461R	Biopsy	DiscoverySet	8	21682	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-074-22263-01191BX-1031623R	Biopsy	DiscoverySet	8	22263	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-086-21115-00417BR-1007355R	Brush	DiscoverySet	8	21115	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-086-21682-00836BR-1007516R	Brush	DiscoverySet	8	21682	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-086-22263-01189BR-1031622R	Brush	DiscoverySet	8	22263	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-089-21115-00418BX-1007548R	Biopsy	DiscoverySet	8	21115	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-089-21682-00838BX-1007462R	Biopsy	DiscoverySet	8	21682	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0008-089-22263-01194BX-1031624R	Biopsy	DiscoverySet	8	22263	56.6	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	1	59
+PCGA-01-0009-043-22704-00228BR-1007333R	Brush	DiscoverySet	9	22704	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-043-23126-00556BR-1007377R	Brush	DiscoverySet	9	23126	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-053-23126-00557BX-1007573R	Biopsy	DiscoverySet	9	23126	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-053-23497-00844BX-1007466R	Biopsy	DiscoverySet	9	23497	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-053-23882-00991BX-1031590R	Biopsy	DiscoverySet	9	23882	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-053-24085-01207BX-1031628R	Biopsy	DiscoverySet	9	24085	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-061-23126-00558BX-1007574R	Biopsy	DiscoverySet	9	23126	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-061-23497-00845BX-1007467R	Biopsy	DiscoverySet	9	23497	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-061-23882-00992BX-1031591R	Biopsy	DiscoverySet	9	23882	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-086-23497-00843BR-1007517R	Brush	DiscoverySet	9	23497	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-086-23882-00989BR-1031589R	Brush	DiscoverySet	9	23882	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-086-24085-01205BR-1031627R	Brush	DiscoverySet	9	24085	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-092-23497-00846BX-1007468R	Biopsy	DiscoverySet	9	23497	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0009-092-24085-01209BX-1031630R	Biopsy	DiscoverySet	9	24085	58.1	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	80
+PCGA-01-0010-086-19599-00502BR-1007369R	Brush	DiscoverySet	10	19599	53.6	White	Male	Never smoked	Y	LC History - Other	Y	Y	Yes	2	0
+PCGA-01-0010-086-19900-00699BR-1007502R	Brush	DiscoverySet	10	19900	53.6	White	Male	Never smoked	Y	LC History - Other	Y	Y	Yes	2	0
+PCGA-01-0010-089-19599-00503BX-1007561R	Biopsy	DiscoverySet	10	19599	53.6	White	Male	Never smoked	Y	LC History - Other	Y	Y	Yes	2	0
+PCGA-01-0010-089-19900-00700BX-1007410R	Biopsy	DiscoverySet	10	19900	53.6	White	Male	Never smoked	Y	LC History - Other	Y	Y	Yes	2	0
+PCGA-01-0010-094-19599-00504BX-1007562R	Biopsy	DiscoverySet	10	19599	53.6	White	Male	Never smoked	Y	LC History - Other	Y	Y	Yes	2	0
+PCGA-01-0010-094-19900-00701BX-1007411R	Biopsy	DiscoverySet	10	19900	53.6	White	Male	Never smoked	Y	LC History - Other	Y	Y	Yes	2	0
+PCGA-01-0011-050-26439-00341BX-1007594R	Biopsy	DiscoverySet	11	26439	72.3	White	Male	Patient has smoking history	Y	LC History - Other	Y	N	Yes	1	8
+PCGA-01-0011-050-26558-00433BX-1007596R	Biopsy	DiscoverySet	11	26558	72.3	White	Male	Patient has smoking history	Y	LC History - Other	Y	N	Yes	1	8
+PCGA-01-0011-050-26740-00567BX-1007576R	Biopsy	DiscoverySet	11	26740	72.3	White	Male	Patient has smoking history	Y	LC History - Other	Y	N	Yes	1	8
+PCGA-01-0011-086-26439-00339BR-1007346R	Brush	DiscoverySet	11	26439	72.3	White	Male	Patient has smoking history	Y	LC History - Other	Y	N	Yes	1	8
+PCGA-01-0011-086-26558-00429BR-1007358R	Brush	DiscoverySet	11	26558	72.3	White	Male	Patient has smoking history	Y	LC History - Other	Y	N	Yes	1	8
+PCGA-01-0011-089-26439-00340BX-1007593R	Biopsy	DiscoverySet	11	26439	72.3	White	Male	Patient has smoking history	Y	LC History - Other	Y	N	Yes	1	8
+PCGA-01-0011-089-26558-00432BX-1007595R	Biopsy	DiscoverySet	11	26558	72.3	White	Male	Patient has smoking history	Y	LC History - Other	Y	N	Yes	1	8
+PCGA-01-0012-050-21101-00736BX-1007424R	Biopsy	DiscoverySet	12	21101	56.5	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	32
+PCGA-01-0012-050-21836-01253BX-1031633R	Biopsy	DiscoverySet	12	21836	56.5	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	32
+PCGA-01-0012-086-20660-00422BR-1007356R	Brush	DiscoverySet	12	20660	56.5	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	32
+PCGA-01-0012-086-21836-01250BR-1031631R	Brush	DiscoverySet	12	21836	56.5	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	32
+PCGA-01-0014-009-19848-00096BR-1007320R	Brush	DiscoverySet	14	19848	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-009-19953-00205BR-1007328R	Brush	DiscoverySet	14	19953	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-010-20177-00395BX-1007543R	Biopsy	DiscoverySet	14	20177	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-010-20660-00748BX-1007430R	Biopsy	DiscoverySet	14	20660	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-011-20177-00394BX-1007542R	Biopsy	DiscoverySet	14	20177	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-053-20177-00393BX-1007541R	Biopsy	DiscoverySet	14	20177	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-053-20660-00745BX-1007427R	Biopsy	DiscoverySet	14	20660	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-086-19953-00201BR-1007327R	Brush	DiscoverySet	14	19953	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-086-20177-00391BR-1007351R	Brush	DiscoverySet	14	20177	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-086-20660-00742BR-1007507R	Brush	DiscoverySet	14	20660	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0014-089-20660-00744BX-1007426R	Biopsy	DiscoverySet	14	20660	52.8	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	57
+PCGA-01-0015-011-16303-00402BX-1007544R	Biopsy	DiscoverySet	15	16303	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-011-16541-00571BX-1007578R	Biopsy	DiscoverySet	15	16541	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-011-17129-00932BX-1031579R	Biopsy	DiscoverySet	15	17129	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-011-17638-01327BX-1031654R	Biopsy	DiscoverySet	15	17638	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-025-16541-00570BX-1007577R	Biopsy	DiscoverySet	15	16541	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-025-16954-00864BX-1007478R	Biopsy	DiscoverySet	15	16954	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-043-16303-00401BR-1007352R	Brush	DiscoverySet	15	16303	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-043-16541-00569BR-1007378R	Brush	DiscoverySet	15	16541	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-043-16954-00863BR-1007521R	Brush	DiscoverySet	15	16954	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0015-043-17638-01324BR-1031652R	Brush	DiscoverySet	15	17638	44.6	White	Male	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	47
+PCGA-01-0016-050-22821-00509BX-1007565R	Biopsy	DiscoverySet	16	22821	62.4	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	60
+PCGA-01-0016-050-23045-00647BX-1007401R	Biopsy	DiscoverySet	16	23045	62.4	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	60
+PCGA-01-0016-086-22821-00507BR-1007370R	Brush	DiscoverySet	16	22821	62.4	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	60
+PCGA-01-0016-086-23045-00644BR-1007498R	Brush	DiscoverySet	16	23045	62.4	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	60
+PCGA-01-0017-052-19883-00473BX-1007552R	Biopsy	DiscoverySet	17	19883	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-052-20261-00732BX-1007422R	Biopsy	DiscoverySet	17	20261	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-052-20422-00850BX-1007470R	Biopsy	DiscoverySet	17	20422	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-086-19883-00471BR-1007365R	Brush	DiscoverySet	17	19883	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-086-20261-00730BR-1007505R	Brush	DiscoverySet	17	20261	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-086-20422-00848BR-1007518R	Brush	DiscoverySet	17	20422	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-089-19883-00472BX-1007551R	Biopsy	DiscoverySet	17	19883	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-089-20261-00731BX-1007421R	Biopsy	DiscoverySet	17	20261	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0017-089-20422-00849BX-1007469R	Biopsy	DiscoverySet	17	20422	51.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	3	52
+PCGA-01-0018-043-21752-00493BR-1007368R	Brush	DiscoverySet	18	21752	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-043-21990-00649BR-1007499R	Brush	DiscoverySet	18	21990	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-050-21752-00496BX-1007560R	Biopsy	DiscoverySet	18	21752	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-050-21990-00651BX-1007403R	Biopsy	DiscoverySet	18	21990	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-050-22732-01146BX-1031617R	Biopsy	DiscoverySet	18	22732	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-074-21752-00494BX-1007558R	Biopsy	DiscoverySet	18	21752	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-074-21990-00650BX-1007402R	Biopsy	DiscoverySet	18	21990	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-074-22732-01145BX-1031616R	Biopsy	DiscoverySet	18	22732	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0018-086-22732-01143BR-1031615R	Brush	DiscoverySet	18	22732	58.1	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	40
+PCGA-01-0019-043-21625-00866BR-1007522R	Brush	DiscoverySet	19	21625	56.2	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	N	Yes	2	60
+PCGA-01-0019-086-20715-00198BR-1007326R	Brush	DiscoverySet	19	20715	56.2	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	N	Yes	2	60
+PCGA-01-0020-043-23497-00366BR-1007348R	Brush	DiscoverySet	20	23497	64.3	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	54
+PCGA-01-0020-043-24050-00782BR-1007512R	Brush	DiscoverySet	20	24050	64.3	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	54
+PCGA-01-0020-048-23497-00370BX-1007532R	Biopsy	DiscoverySet	20	23497	64.3	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	54
+PCGA-01-0020-048-24050-00784BX-1007441R	Biopsy	DiscoverySet	20	24050	64.3	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	54
+PCGA-01-0020-094-23497-00367BX-1007529R	Biopsy	DiscoverySet	20	23497	64.3	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	54
+PCGA-01-0020-094-24050-00783BX-1007440R	Biopsy	DiscoverySet	20	24050	64.3	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	54
+PCGA-01-0021-010-19434-00464BX-1007549R	Biopsy	DiscoverySet	21	19434	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-010-19826-00723BX-1007417R	Biopsy	DiscoverySet	21	19826	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-010-20218-00943BX-1031584R	Biopsy	DiscoverySet	21	20218	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-025-19266-00319BX-1007385R	Biopsy	DiscoverySet	21	19266	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-025-20218-00942BX-1031583R	Biopsy	DiscoverySet	21	20218	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-025-20449-01091BX-1031600R	Biopsy	DiscoverySet	21	20449	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-025-20687-01310BX-1031643R	Biopsy	DiscoverySet	21	20687	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-043-19434-00460BR-1007363R	Brush	DiscoverySet	21	19434	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-043-19623-00577BR-1031577R	Brush	DiscoverySet	21	19623	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-043-19826-00719BR-1007503R	Brush	DiscoverySet	21	19826	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-050-19434-00465BX-1007550R	Biopsy	DiscoverySet	21	19434	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-050-19826-00724BX-1007418R	Biopsy	DiscoverySet	21	19826	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-050-20218-00944BX-1031585R	Biopsy	DiscoverySet	21	20218	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-050-20449-01092BX-1031601R	Biopsy	DiscoverySet	21	20449	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-050-20687-01311BX-1031644R	Biopsy	DiscoverySet	21	20687	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-070-19182-00266BX-1007382R	Biopsy	DiscoverySet	21	19182	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-070-19623-00581BX-1007579R	Biopsy	DiscoverySet	21	19623	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-070-19826-00720BX-1007414R	Biopsy	DiscoverySet	21	19826	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-070-20218-00940BX-1031581R	Biopsy	DiscoverySet	21	20218	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-070-20449-01089BX-1031598R	Biopsy	DiscoverySet	21	20449	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-070-20687-01307BX-1031641R	Biopsy	DiscoverySet	21	20687	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-086-19077-00134BR-1007322R	Brush	DiscoverySet	21	19077	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-086-19266-00317BR-1007342R	Brush	DiscoverySet	21	19266	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-086-20218-00938BR-1031580R	Brush	DiscoverySet	21	20218	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-086-20449-01087BR-1031597R	Brush	DiscoverySet	21	20449	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-086-20687-01304BR-1031640R	Brush	DiscoverySet	21	20687	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-088-19826-00721BX-1007415R	Biopsy	DiscoverySet	21	19826	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-089-19623-00582BX-1007580R	Biopsy	DiscoverySet	21	19623	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-089-19826-00722BX-1007416R	Biopsy	DiscoverySet	21	19826	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-089-20218-00941BX-1031582R	Biopsy	DiscoverySet	21	20218	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0021-089-20687-01308BX-1031642R	Biopsy	DiscoverySet	21	20687	52	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	No	NA	28
+PCGA-01-0022-043-20918-00467BR-1007364R	Brush	DiscoverySet	22	20918	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-070-20918-00468BX-1007597R	Biopsy	DiscoverySet	22	20918	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-070-21548-00876BX-1007482R	Biopsy	DiscoverySet	22	21548	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-070-21996-01169BX-1031619R	Biopsy	DiscoverySet	22	21996	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-086-20750-00327BR-1007344R	Brush	DiscoverySet	22	20750	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-086-21548-00875BR-1007523R	Brush	DiscoverySet	22	21548	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-086-21996-01167BR-1031618R	Brush	DiscoverySet	22	21996	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-089-20918-00469BX-1007599R	Biopsy	DiscoverySet	22	20918	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-089-21996-01170BX-1031620R	Biopsy	DiscoverySet	22	21996	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-093-21548-00878BX-1007484R	Biopsy	DiscoverySet	22	21548	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0022-093-21996-01171BX-1031621R	Biopsy	DiscoverySet	22	21996	56.8	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	78
+PCGA-01-0023-010-21429-00830BX-1007460R	Biopsy	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0023-026-21429-00827BX-1007457R	Biopsy	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0023-048-21429-00829BX-1007459R	Biopsy	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0023-050-21429-00828BX-1007458R	Biopsy	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0023-061-21429-00826BX-1007456R	Biopsy	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0023-066-21429-00824BX-1007454R	Biopsy	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0023-086-21429-00821BR-1007515R	Brush	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0023-089-21429-00825BX-1007455R	Biopsy	DiscoverySet	23	21429	55.4	White	Female	Patient has smoking history	N	No LC History	N	N	NA	NA	58
+PCGA-01-0024-050-23686-00520BX-1007566R	Biopsy	DiscoverySet	24	23686	63.3	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	106
+PCGA-01-0024-050-24050-00780BX-1007439R	Biopsy	DiscoverySet	24	24050	63.3	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	106
+PCGA-01-0024-086-23581-00426BR-1007357R	Brush	DiscoverySet	24	23581	63.3	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	106
+PCGA-01-0024-086-23686-00518BR-1007371R	Brush	DiscoverySet	24	23686	63.3	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	106
+PCGA-01-0024-086-24050-00778BR-1007511R	Brush	DiscoverySet	24	24050	63.3	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	106
+PCGA-01-0025-043-21689-01103BR-1031602R	Brush	DiscoverySet	25	21689	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-048-20884-00600BX-1007587R	Biopsy	DiscoverySet	25	20884	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-048-21689-01106BX-1031604R	Biopsy	DiscoverySet	25	21689	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-050-20576-00384BX-1007539R	Biopsy	DiscoverySet	25	20576	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-050-20772-00541BX-1007571R	Biopsy	DiscoverySet	25	20772	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-050-20884-00601BX-1007588R	Biopsy	DiscoverySet	25	20884	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-050-21164-00807BX-1007444R	Biopsy	DiscoverySet	25	21164	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-050-21689-01108BX-1031606R	Biopsy	DiscoverySet	25	21689	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-074-20576-00383BX-1007538R	Biopsy	DiscoverySet	25	20576	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-074-20772-00540BX-1007570R	Biopsy	DiscoverySet	25	20772	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-074-20884-00599BX-1007586R	Biopsy	DiscoverySet	25	20884	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-074-21164-00805BX-1007442R	Biopsy	DiscoverySet	25	21164	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-074-21689-01105BX-1031603R	Biopsy	DiscoverySet	25	21689	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-086-20576-00382BR-1007350R	Brush	DiscoverySet	25	20576	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-086-20772-00539BR-1007375R	Brush	DiscoverySet	25	20772	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-086-20884-00598BR-1007379R	Brush	DiscoverySet	25	20884	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-094-21164-00806BX-1007443R	Biopsy	DiscoverySet	25	21164	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0025-094-21689-01107BX-1031605R	Biopsy	DiscoverySet	25	21689	56.3	White	Female	Patient has smoking history	Y	LC History - Other	N	N	Yes	2	34
+PCGA-01-0026-086-21752-00336BR-1007345R	Brush	DiscoverySet	26	21752	58.5	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	30
+PCGA-01-0026-086-22473-00858BR-1007520R	Brush	DiscoverySet	26	22473	58.5	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	30
+PCGA-01-0026-089-21752-00337BX-1007526R	Biopsy	DiscoverySet	26	21752	58.5	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	30
+PCGA-01-0026-089-22473-00859BX-1007475R	Biopsy	DiscoverySet	26	22473	58.5	White	Male	Patient has smoking history	Y	LC History - Other	N	Y	No	NA	30
+PCGA-01-0028-041-23527-00757BX-1007431R	Biopsy	DiscoverySet	28	23527	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0028-041-24262-01264BX-1031635R	Biopsy	DiscoverySet	28	24262	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0028-050-23163-00491BX-1007557R	Biopsy	DiscoverySet	28	23163	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0028-050-23527-00758BX-1007432R	Biopsy	DiscoverySet	28	23527	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0028-050-24262-01265BX-1031636R	Biopsy	DiscoverySet	28	24262	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0028-086-23163-00489BR-1007367R	Brush	DiscoverySet	28	23163	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0028-086-23527-00756BR-1007508R	Brush	DiscoverySet	28	23527	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0028-086-24262-01262BR-1031634R	Brush	DiscoverySet	28	24262	62.8	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	Yes	2	37
+PCGA-01-0029-043-22090-00375BR-1007349R	Brush	DiscoverySet	29	22090	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-045-22412-00625BX-1007392R	Biopsy	DiscoverySet	29	22412	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-045-22678-00814BX-1007449R	Biopsy	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-048-22090-00379BX-1007536R	Biopsy	DiscoverySet	29	22090	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-048-22678-00815BX-1007450R	Biopsy	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-050-22090-00380BX-1007537R	Biopsy	DiscoverySet	29	22090	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-050-22678-00816BX-1007451R	Biopsy	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-061-22090-00378BX-1007535R	Biopsy	DiscoverySet	29	22090	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-061-22412-00623BX-1007390R	Biopsy	DiscoverySet	29	22412	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-061-22678-00812BX-1007447R	Biopsy	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-070-22090-00376BX-1007533R	Biopsy	DiscoverySet	29	22090	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-070-22678-00810BX-1007445R	Biopsy	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-086-22412-00620BR-1007381R	Brush	DiscoverySet	29	22412	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-086-22678-00809BR-1007514R	Brush	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-089-22090-00377BX-1007534R	Biopsy	DiscoverySet	29	22090	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-089-22412-00622BX-1007389R	Biopsy	DiscoverySet	29	22412	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-089-22678-00811BX-1007446R	Biopsy	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-093-22412-00624BX-1007391R	Biopsy	DiscoverySet	29	22412	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0029-093-22678-00813BX-1007448R	Biopsy	DiscoverySet	29	22678	59.6	White	Female	Patient has smoking history	Y	LC History - Other	N	N	No	NA	47
+PCGA-01-0030-086-27868-00357BR-1007347R	Brush	DiscoverySet	30	27868	75.8	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	Yes	3	57
+PCGA-01-0030-089-27868-00358BX-1007527R	Biopsy	DiscoverySet	30	27868	75.8	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	Yes	3	57
+PCGA-01-0031-021-23830-00536BX-1007568R	Biopsy	DiscoverySet	31	23830	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-021-24061-00664BX-1007404R	Biopsy	DiscoverySet	31	24061	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-021-24726-01062BX-1031595R	Biopsy	DiscoverySet	31	24726	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-050-23830-00537BX-1007569R	Biopsy	DiscoverySet	31	23830	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-050-24061-00666BX-1007407R	Biopsy	DiscoverySet	31	24061	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-050-24285-00856BX-1007474R	Biopsy	DiscoverySet	31	24285	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-050-24726-01063BX-1031596R	Biopsy	DiscoverySet	31	24726	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-053-24061-00665BX-1007405R	Biopsy	DiscoverySet	31	24061	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-053-24285-00855BX-1007473R	Biopsy	DiscoverySet	31	24285	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-053-24726-01061BX-1031594R	Biopsy	DiscoverySet	31	24726	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-074-24285-00854BX-1007472R	Biopsy	DiscoverySet	31	24285	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-074-24726-01060BX-1031593R	Biopsy	DiscoverySet	31	24726	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-086-23830-00535BR-1007374R	Brush	DiscoverySet	31	23830	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-086-24061-00663BR-1007500R	Brush	DiscoverySet	31	24061	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-086-24285-00853BR-1007519R	Brush	DiscoverySet	31	24285	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0031-086-24726-01058BR-1031592R	Brush	DiscoverySet	31	24726	65.2	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	53
+PCGA-01-0032-086-24051-00543BR-1007376R	Brush	DiscoverySet	32	24051	65.8	Record states patient race unknown	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	40
+PCGA-01-0032-086-24226-00634BR-1007496R	Brush	DiscoverySet	32	24226	65.8	Record states patient race unknown	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	40
+PCGA-01-0032-088-24051-00544BX-1007572R	Biopsy	DiscoverySet	32	24051	65.8	Record states patient race unknown	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	40
+PCGA-01-0032-088-24226-00635BX-1007494R	Biopsy	DiscoverySet	32	24226	65.8	Record states patient race unknown	Male	Patient has smoking history	Y	LC History - Other	Y	Y	Yes	2	40
+PCGA-01-0033-043-20582-00972BR-1034012R	Brush	ValidationSet	33	20582	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-043-20864-01243BR-1034065R	Brush	ValidationSet	33	20864	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-043-21079-01367BR-1034060R	Brush	ValidationSet	33	21079	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-048-20582-00974BX-1034003R	Biopsy	ValidationSet	33	20582	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-048-20864-01248BX-1034111R	Biopsy	ValidationSet	33	20864	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-048-21079-01371BX-1034129R	Biopsy	ValidationSet	33	21079	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-050-20582-00977BX-1033976R	Biopsy	ValidationSet	33	20582	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-050-20864-01249BX-1034102R	Biopsy	ValidationSet	33	20864	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-061-20864-01246BX-1034047R	Biopsy	ValidationSet	33	20864	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-085-21079-01370BX-1034042R	Biopsy	ValidationSet	33	21079	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0033-092-21079-01369BX-1034051R	Biopsy	ValidationSet	33	21079	56.3	White	Female	Patient has smoking history	Y	LC History - LUSC	N	N	No	NA	40
+PCGA-01-0034-050-22969-00918BX-1033983R	Biopsy	ValidationSet	34	22969	62.9	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	30
+PCGA-01-0034-086-22969-00915BR-1033992R	Brush	ValidationSet	34	22969	62.9	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	30
+PCGA-01-0034-086-23331-01164BR-1034044R	Brush	ValidationSet	34	23331	62.9	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	Yes	2	30
+PCGA-01-0035-019-21168-01034BX-1034015R	Biopsy	ValidationSet	35	21168	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-019-21364-01259BX-1034057R	Biopsy	ValidationSet	35	21364	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-042-21168-01035BX-1034006R	Biopsy	ValidationSet	35	21168	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-042-21364-01260BX-1034048R	Biopsy	ValidationSet	35	21364	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-050-21168-01039BX-1033970R	Biopsy	ValidationSet	35	21168	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-061-21168-01037BX-1033988R	Biopsy	ValidationSet	35	21168	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-061-21364-01257BX-1034075R	Biopsy	ValidationSet	35	21364	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-074-21168-01036BX-1033997R	Biopsy	ValidationSet	35	21168	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-074-21364-01256BX-1034084R	Biopsy	ValidationSet	35	21364	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-086-21168-01032BR-1034024R	Brush	ValidationSet	35	21168	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-086-21364-01254BR-1034093R	Brush	ValidationSet	35	21364	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-093-21168-01038BX-1033979R	Biopsy	ValidationSet	35	21168	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0035-093-21364-01258BX-1034066R	Biopsy	ValidationSet	35	21364	57.9	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	32
+PCGA-01-0036-048-21975-00298BX-1033989R	Biopsy	ValidationSet	36	21975	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-048-22885-00913BX-1034010R	Biopsy	ValidationSet	36	22885	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-050-22885-00914BX-1034001R	Biopsy	ValidationSet	36	22885	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-050-23647-01405BX-1034122R	Biopsy	ValidationSet	36	23647	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-086-21975-00295BR-1034007R	Brush	ValidationSet	36	21975	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-086-22885-00909BR-1034028R	Brush	ValidationSet	36	22885	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-086-23647-01402BR-1034126R	Brush	ValidationSet	36	23647	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-089-21975-00297BX-1033998R	Biopsy	ValidationSet	36	21975	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-089-22885-00911BX-1034019R	Biopsy	ValidationSet	36	22885	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0036-089-23647-01404BX-1034124R	Biopsy	ValidationSet	36	23647	58.4	White	Male	Patient has smoking history	N	No LC History	N	Y	No	NA	43
+PCGA-01-0037-086-28409-00749BR-1033962R	Brush	ValidationSet	37	28409	76.2	White	Male	Patient has smoking history	Y	LC History - LUSC	N	Y	Yes	3	54
+PCGA-01-0037-089-27849-00344BX-1033971R	Biopsy	ValidationSet	37	27849	76.2	White	Male	Patient has smoking history	Y	LC History - LUSC	N	Y	Yes	3	54
+PCGA-01-0038-037-20756-00770BX-1033990R	Biopsy	ValidationSet	38	20756	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-037-21323-01075BX-1034079R	Biopsy	ValidationSet	38	21323	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-037-21699-01390BX-1034119R	Biopsy	ValidationSet	38	21699	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-048-21323-01076BX-1034070R	Biopsy	ValidationSet	38	21323	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-048-21699-01391BX-1034117R	Biopsy	ValidationSet	38	21699	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-050-20756-00771BX-1033981R	Biopsy	ValidationSet	38	20756	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-050-21323-01077BX-1034061R	Biopsy	ValidationSet	38	21323	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-050-21699-01392BX-1034116R	Biopsy	ValidationSet	38	21699	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-086-20756-00767BR-1033999R	Brush	ValidationSet	38	20756	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0038-086-21323-01072BR-1034088R	Brush	ValidationSet	38	21323	54.7	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	40
+PCGA-01-0039-066-19554-01003BX-1033995R	Biopsy	ValidationSet	39	19554	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0039-076-19554-01002BX-1034004R	Biopsy	ValidationSet	39	19554	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0039-076-19757-01220BX-1034100R	Biopsy	ValidationSet	39	19757	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0039-086-19554-01000BR-1034013R	Brush	ValidationSet	39	19554	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0039-086-19757-01218BR-1034109R	Brush	ValidationSet	39	19757	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0039-089-19554-01004BX-1033986R	Biopsy	ValidationSet	39	19554	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0039-093-19554-01005BX-1033977R	Biopsy	ValidationSet	39	19554	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0039-093-19757-01224BX-1034073R	Biopsy	ValidationSet	39	19757	53.5	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	NA	NA	39
+PCGA-01-0040-043-19895-01281BR-1034076R	Brush	ValidationSet	40	19895	49.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	40
+PCGA-01-0040-050-19895-01284BX-1034058R	Biopsy	ValidationSet	40	19895	49.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	40
+PCGA-01-0040-086-19706-01093BR-1034052R	Brush	ValidationSet	40	19706	49.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	40
+PCGA-01-0040-093-19706-01098BX-1034043R	Biopsy	ValidationSet	40	19706	49.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	40
+PCGA-01-0040-093-19895-01283BX-1034067R	Biopsy	ValidationSet	40	19895	49.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	No	NA	40
+PCGA-01-0041-050-21430-00796BX-1033954R	Biopsy	ValidationSet	41	21430	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-050-21703-00922BX-1033956R	Biopsy	ValidationSet	41	21703	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-050-22044-01183BX-1034090R	Biopsy	ValidationSet	41	22044	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-086-21430-00793BR-1033972R	Brush	ValidationSet	41	21430	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-086-21703-00920BR-1033965R	Brush	ValidationSet	41	21703	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-086-22044-01180BR-1034108R	Brush	ValidationSet	41	22044	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-093-21430-00795BX-1033963R	Biopsy	ValidationSet	41	21430	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-093-21703-00919BX-1033974R	Biopsy	ValidationSet	41	21703	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0041-093-22044-01182BX-1034099R	Biopsy	ValidationSet	41	22044	56.6	Black or African American	Male	Patient has smoking history	N	No LC History	Y	Y	No	NA	34
+PCGA-01-0042-010-23680-00906BX-1033964R	Biopsy	ValidationSet	42	23680	64.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	49
+PCGA-01-0042-010-23911-01028BX-1033960R	Biopsy	ValidationSet	42	23911	64.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	49
+PCGA-01-0042-048-23680-00907BX-1033955R	Biopsy	ValidationSet	42	23680	64.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	49
+PCGA-01-0042-048-23911-01029BX-1034033R	Biopsy	ValidationSet	42	23911	64.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	49
+PCGA-01-0042-086-23680-00904BR-1033973R	Brush	ValidationSet	42	23680	64.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	49
+PCGA-01-0042-086-23911-01023BR-1033969R	Brush	ValidationSet	42	23911	64.8	White	Male	Patient has smoking history	Y	LC History - LUSC	Y	Y	Yes	2	49
+PCGA-01-0043-037-21235-01043BX-1034106R	Biopsy	ValidationSet	43	21235	54.8	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	NA	NA	35
+PCGA-01-0043-037-21599-01350BX-1034069R	Biopsy	ValidationSet	43	21599	54.8	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	NA	NA	35
+PCGA-01-0043-043-21235-01040BR-1033961R	Brush	ValidationSet	43	21235	54.8	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	NA	NA	35
+PCGA-01-0043-043-21599-01347BR-1034087R	Brush	ValidationSet	43	21599	54.8	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	NA	NA	35
+PCGA-01-0043-085-21235-01044BX-1034097R	Biopsy	ValidationSet	43	21235	54.8	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	NA	NA	35
+PCGA-01-0043-085-21599-01349BX-1034078R	Biopsy	ValidationSet	43	21599	54.8	White	Female	Patient has smoking history	Y	LC History - Other	Y	N	NA	NA	35
+PCGA-01-0044-048-17646-44967BX-1033975R	Biopsy	ValidationSet	44	17646	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-048-17898-01132BX-1034080R	Biopsy	ValidationSet	44	17898	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-050-17646-44968BX-1033966R	Biopsy	ValidationSet	44	17646	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-050-17898-01133BX-1034071R	Biopsy	ValidationSet	44	17898	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-050-18295-01397BX-1034128R	Biopsy	ValidationSet	44	18295	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-070-16659-00293BX-1034016R	Biopsy	ValidationSet	44	16659	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-070-17646-44965BX-1033993R	Biopsy	ValidationSet	44	17646	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-070-17898-01130BX-1034098R	Biopsy	ValidationSet	44	17898	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-086-16659-00291BR-1034025R	Brush	ValidationSet	44	16659	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-086-17646-44963BR-1034002R	Brush	ValidationSet	44	17646	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-086-17898-01128BR-1034107R	Brush	ValidationSet	44	17898	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-086-18295-01393BR-1034115R	Brush	ValidationSet	44	18295	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-089-17646-44966BX-1033984R	Biopsy	ValidationSet	44	17646	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-089-17898-01131BX-1034089R	Biopsy	ValidationSet	44	17898	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0044-089-18295-01396BX-1034130R	Biopsy	ValidationSet	44	18295	45.5	Asian	Male	Patient has smoking history	N	No LC History	N	N	No	NA	48
+PCGA-01-0045-045-17021-00893BX-1033991R	Biopsy	ValidationSet	45	17021	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0045-045-17497-01239BX-1034083R	Biopsy	ValidationSet	45	17497	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0045-048-17021-00894BX-1033982R	Biopsy	ValidationSet	45	17021	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0045-048-17497-01241BX-1034074R	Biopsy	ValidationSet	45	17497	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0045-085-17021-00891BX-1034000R	Biopsy	ValidationSet	45	17021	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0045-085-17497-01238BX-1034092R	Biopsy	ValidationSet	45	17497	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0045-086-17021-00889BR-1034009R	Brush	ValidationSet	45	17021	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0045-086-17497-01236BR-1034101R	Brush	ValidationSet	45	17497	44.6	White	Female	Never smoked  	Y	LC History - Other	N	N	No	NA	0
+PCGA-01-0046-043-26739-00763BR-1034026R	Brush	ValidationSet	46	26739	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-047-26739-00766BX-1034008R	Biopsy	ValidationSet	46	26739	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-047-27551-01292BX-1034113R	Biopsy	ValidationSet	46	27551	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-050-27138-00953BX-1034011R	Biopsy	ValidationSet	46	27138	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-050-27551-01293BX-1034104R	Biopsy	ValidationSet	46	27551	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-086-27138-00950BR-1034029R	Brush	ValidationSet	46	27138	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-086-27551-01289BR-1034049R	Brush	ValidationSet	46	27551	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-089-26739-00765BX-1034017R	Biopsy	ValidationSet	46	26739	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0046-089-27138-00952BX-1034020R	Biopsy	ValidationSet	46	27138	73.2	White	Male	Patient has smoking history	Y	LC History - Other	Y	Y	No	NA	20
+PCGA-01-0047-037-19447-01216BX-1034045R	Biopsy	ValidationSet	47	19447	51.4	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	Yes	2	109
+PCGA-01-0047-037-19809-01411BX-1034118R	Biopsy	ValidationSet	47	19809	51.4	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	Yes	2	109
+PCGA-01-0047-050-19263-01022BX-1033978R	Biopsy	ValidationSet	47	19263	51.4	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	Yes	2	109
+PCGA-01-0047-086-19263-01019BR-1033996R	Brush	ValidationSet	47	19263	51.4	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	Yes	2	109
+PCGA-01-0047-086-19447-01214BR-1034054R	Brush	ValidationSet	47	19447	51.4	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	Yes	2	109
+PCGA-01-0047-086-19809-01409BR-1034120R	Brush	ValidationSet	47	19809	51.4	White	Female	Patient has smoking history	Y	LC History - Other	N	Y	Yes	2	109
+PCGA-01-0048-025-25305-48965BX-1034021R	Biopsy	ValidationSet	48	25305	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-061-25669-01273BX-1034103R	Biopsy	ValidationSet	48	25669	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-061-25835-01381BX-1034123R	Biopsy	ValidationSet	48	25835	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-086-25102-00880BR-1034027R	Brush	ValidationSet	48	25102	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-086-25305-48962BR-1033957R	Brush	ValidationSet	48	25305	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-086-25669-01271BR-1034112R	Brush	ValidationSet	48	25669	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-086-25835-01378BR-1034127R	Brush	ValidationSet	48	25835	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-093-25102-00882BX-1034018R	Biopsy	ValidationSet	48	25102	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0048-093-25835-01380BX-1034125R	Biopsy	ValidationSet	48	25835	68.7	White	Male	Patient has smoking history	N	No LC History	N	N	Yes	2	48
+PCGA-01-0049-010-23043-01187BX-1034072R	Biopsy	ValidationSet	49	23043	63	White	Male	Patient has smoking history	N	No LC History	N	N	No	NA	40
+PCGA-01-0049-050-23043-01188BX-1034063R	Biopsy	ValidationSet	49	23043	63	White	Male	Patient has smoking history	N	No LC History	N	N	No	NA	40
+PCGA-01-0049-050-23272-01344BX-1034096R	Biopsy	ValidationSet	49	23272	63	White	Male	Patient has smoking history	N	No LC History	N	N	No	NA	40
+PCGA-01-0049-086-23043-01185BR-1034081R	Brush	ValidationSet	49	23043	63	White	Male	Patient has smoking history	N	No LC History	N	N	No	NA	40
+PCGA-01-0049-086-23272-01339BR-1034114R	Brush	ValidationSet	49	23272	63	White	Male	Patient has smoking history	N	No LC History	N	N	No	NA	40
+PCGA-01-0050-050-23482-00998BX-1034031R	Biopsy	ValidationSet	50	23482	64.2	White	Male	Patient has smoking history	N	No LC History	N	Y	Yes	1	30
+PCGA-01-0050-050-23699-01235BX-1034110R	Biopsy	ValidationSet	50	23699	64.2	White	Male	Patient has smoking history	N	No LC History	N	Y	Yes	1	30
+PCGA-01-0050-084-23482-00997BX-1033958R	Biopsy	ValidationSet	50	23482	64.2	White	Male	Patient has smoking history	N	No LC History	N	Y	Yes	1	30
+PCGA-01-0050-086-23482-00995BR-1033967R	Brush	ValidationSet	50	23482	64.2	White	Male	Patient has smoking history	N	No LC History	N	Y	Yes	1	30
+PCGA-01-0050-086-23699-01226BR-1034055R	Brush	ValidationSet	50	23699	64.2	White	Male	Patient has smoking history	N	No LC History	N	Y	Yes	1	30
+PCGA-01-0051-086-22577-01160BR-1034062R	Brush	ValidationSet	51	22577	61.3	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	64
+PCGA-01-0051-086-22786-01331BR-1034095R	Brush	ValidationSet	51	22786	61.3	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	64
+PCGA-01-0051-089-22577-01162BX-1034053R	Biopsy	ValidationSet	51	22577	61.3	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	64
+PCGA-01-0051-089-22786-01334BX-1034086R	Biopsy	ValidationSet	51	22786	61.3	Black or African American	Female	Patient has smoking history	N	No LC History	N	Y	Yes	2	64
+PCGA-01-0052-036-20842-01018BX-1034005R	Biopsy	ValidationSet	52	20842	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-036-21157-01301BX-1034059R	Biopsy	ValidationSet	52	21157	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-048-20842-01017BX-1034014R	Biopsy	ValidationSet	52	20842	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-048-21157-01302BX-1034050R	Biopsy	ValidationSet	52	21157	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-050-20842-01015BX-1034023R	Biopsy	ValidationSet	52	20842	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-086-20842-01011BR-1033959R	Brush	ValidationSet	52	20842	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-086-21157-01294BR-1034077R	Brush	ValidationSet	52	21157	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-093-20842-01014BX-1034032R	Biopsy	ValidationSet	52	20842	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30
+PCGA-01-0052-093-21157-01299BX-1034068R	Biopsy	ValidationSet	52	21157	57	White	Female	Patient has smoking history	N	No LC History	Y	N	Yes	1	30

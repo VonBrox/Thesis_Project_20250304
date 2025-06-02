@@ -88,4 +88,214 @@ print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene 
 ```
 
 
+## Compare with study of irreversible expression changes in tumour-adjacent normal tissue
+```{r}
+
+# Read in Table 3 from Bosse et al 2012 ("Replicated probe sets upregulated by smoking and not returning to never-smoker levels within 10 years of smoking cessation in the discovery set and validated in at least one of the 2 replication sets")
+
+bosse_2012_table_3 <- read.table("../2_Gene_lists/tumor_adjacent_normal/22659451_bosse_2012_table_3.txt", header = TRUE)
+
+
+##LUAD_A1_TE
+print(c("Genes common to Bosse 2012 list of genes persistently upregulated in tumor-adjacent normal tissue 10 years after smoking cessation, and the LUAD-A1-TE list:", intersect(LUAD_A1_TE, bosse_2012_table_3$Gene_symbol)))
+##LUAD_A1_TE_A2
+print(c("Genes common to Bosse 2012 list of genes persistently upregulated in tumor-adjacent normal tissue 10 years after smoking cessation, and the LUAD-A1-TE-A2 list:", intersect(LUAD_A1_TE_A2, bosse_2012_table_3$Gene_symbol)))
+
+
+##LUSC_A1_TE
+print(c("Genes common to Bosse 2012 list of genes persistently upregulated in tumor-adjacent normal tissue 10 years after smoking cessation, and LUSC_A1_TE:", intersect(LUSC_A1_TE, bosse_2012_table_3$Gene_symbol)))
+##LUSC_A1_TE_A2
+print(c("Genes common to Bosse 2012 list of genes persistently upregulated in tumor-adjacent normal tissue 10 years after smoking cessation, and LUSC_A1_TE_A2:", intersect(LUSC_A1_TE_A2, bosse_2012_table_3$Gene_symbol)))
+```
+
+
+## Compare linked gene lists with studies related to irreversible expression changes in airways
+```{r}
+
+## Chari et al 2007 (Lam lab SAGE study) ##
+
+raj_2007_irreversible_gene_list <- read.table("../2_Gene_lists/irreversible_expression_airways/17727719_raj_2007/17727719_raj_2007_irreversible_gene_list.txt")
+colnames(raj_2007_irreversible_gene_list) <- "Gene_Symbol"
+
+
+##LUAD_A1_TE
+print(c("Genes common to Chari 2007 irreversible gene list and LUAD_A1_TE: ", intersect(LUAD_A1_TE, raj_2007_irreversible_gene_list$Gene)))
+##LUAD_A1_TE_A2
+print(c("Genes common to Chari 2007 irreversible gene list and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, raj_2007_irreversible_gene_list$Gene)))
+
+##LUSC_A1_TE
+print(c("Genes common to Chari 2007 irreversible gene list and LUSC_A1_TE: ", intersect(LUSC_A1_TE, raj_2007_irreversible_gene_list$Gene)))
+##LUSC_A1_TE_A2
+print(c("Genes common to Chari 2007 irreversible gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, raj_2007_irreversible_gene_list$Gene)))
+
+
+## Barel et all 2023 (Cornell lab serial sampling study)
+barel_2023_irreversible_gene_list <- read.table("../2_Gene_lists/irreversible_expression_airways/37531632_barel_2023 /Table_2_truncated_37531632.txt", header = TRUE)
+
+##LUAD_A1_TE:
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE: ", intersect(LUAD_A1_TE, barel_2023_irreversible_gene_list$Gene)))
+##LUAD_A1_TE_A2:
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, barel_2023_irreversible_gene_list$Gene)))
+
+##LUSC_A1_TE:
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE: ", intersect(LUSC_A1_TE, barel_2023_irreversible_gene_list$Gene)))
+##LUSC_A1_TE_A2:
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, barel_2023_irreversible_gene_list$Gene)))
+
+## (For sake of completeness do the reference study later. Also make venn diagrams of this.)
+```
+
+2025/06/02
+
+# PMID 31015447
+
+## Investigating whether it is feasible to compare brushings from former smokers with and without cancer
+```{r}
+library(dplyr)
+
+# Read in the tables
+table_1_31015447 <- read.table("../2_Gene_lists/irreversible_expression_airways/31015447_2019/31015447_table_1.txt", sep = "\t", header = T)
+
+table_2_31015447 <- read.table("../2_Gene_lists/irreversible_expression_airways/31015447_2019/31015447_table_2.txt", sep = "\t", header = T)
+
+# Filter table 1 to brushings from either no cancer or LUSC
+table_1_31015447_LUSC_NC_brushings <- table_1_31015447 %>%
+  filter(SampleType == "Brush") %>%
+  filter(Previous.LUSC.History == c("LC History - LUSC","No LC History"))
+
+# Filter table 2 to former/never smoker brushings
+table_2_31015447_FS_NS_brushings <- table_2_31015447 %>%
+  filter(SampleType == "Brush") %>%
+  filter(Genomic_Smoking_Status == "Former/Never")
+
+```
+
+Just thinking about it, I don't think there is a way to deduce which of the no lung cancer samples are 'genomic' former smokers from the information here. So we might be hooped in this regard...
+
+Could simply note that there is an upregulation of module 8 genes that they reported to be upregulated in former smokers?
+
+The study above notes: " The Inflammatory subtype is predominated by PMLs from former smokers, but interestingly is not significantly enriched for dysplasia, despite similarly decreased expression of cilia-associated pathways, suggesting an abnormal epithelium. he Inflammatory subtype also shows increased expression of a gene module enriched for genes involved in inflammation and regulation of lymphocytes and leukocytes (Module 8). This gene module is also elevated in the Secretory subtype predominated by current smokers and increased expression of goblet cell markers. Interestingly, IL1B is part of this inflammation-related gene module, and inhibition of IL1B has recently been shown to reduce lung cancer incidence28."
+
+Maybe I can check on the module 8 genes and see if they are among the genes that ended up in LUSC_A1_TE_A2 (therefore asociated with former smoker airways).
+
+(I converted ENSEMBL IDs to gene symbols using DAVID online database)
+
+## Checking module 8 genes in LUSC_A1_TE_A2
+```{r}
+library(eulerr)
+
+# Read in genes with modules and conversion table
+table_3_31015447 <- read.table("../2_Gene_lists/irreversible_expression_airways/31015447_2019/31015447_table_3.txt", sep = "\t", header = T)
+
+table_3_31015447_gene_conversion_table <- read.table("../2_Gene_lists/irreversible_expression_airways/31015447_2019/31015477_table_3_gene_conversion.txt", sep = "\t", header = T)
+
+# Join the ensembl IDs to the matching gene names
+table_3_31015447_gene_names <- table_3_31015447 %>%
+  full_join(table_3_31015447_gene_conversion_table, by = "EnsemblID")
+
+# Select module 8
+table_3_31015447_module_8 <- table_3_31015447_gene_names %>%
+  filter(Gene.Module.Number == 8)
+
+# Get the gene names (removing NA values)
+module_8_genes_31015447 <- table_3_31015447_module_8$Gene[!is.na(table_3_31015447_module_8$Gene)]
+
+# Check overlaps with the LUSC lists
+##LUSC_A1_TE:
+print(c("Genes common to module 8 from 2019 study (PMID 31015447) and LUSC_A1_TE: ", intersect(LUSC_A1_TE, module_8_genes_31015447)))
+##LUSC_A1_TE_A2:
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, module_8_genes_31015447)))
+
+# Plot a euler/venn diagram for these
+LUSC_A1_TE_mod8_31015447_gene_sets <- euler(list("LUSC-A1-TE" = LUSC_A1_TE, "module 8 genes (PMID 31015447)" = module_8_genes_31015447))
+
+plot(main = "Shared genes with module 8 (PMID 31015447)",
+     LUSC_A1_TE_mod8_31015447_gene_sets,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+```
+
+Maybe it would make a lot more sense to look at these module 8 genes in TCGA-LUSC of former smokers? Anyway, there you are. Quite a few overlap with LUSC_A1_TE but none with LUSC_A1_TE_A2.
+
+STRING shows that this list is really enriched for immune related stuff:
+https://version-12-0.string-db.org/cgi/network?networkId=bLP09oa886uo
+
+
+# Cell line studies
+
+## PMID: 18694499
+This study looks at cell lines exposed to cigarette smoke and then which ones persist over different timepoints up to 24 hours.
+```{r}
+library(openxlsx)
+library(dplyr)
+
+sheet_names <- getSheetNames("../2_Gene_lists/cell_lines/18694499/18694499_S1.xlsx")
+df_list <- lapply(sheet_names, function(s) read.xlsx("../2_Gene_lists/cell_lines/18694499/18694499_S1.xlsx", sheet = s))
+names(df_list) <- sheet_names
+
+# Right now I'm, particularly interested in the 24 hr ones since this is the longest time interval
+
+## 24 hr upregulated
+up_24h_18694499 <- df_list[["24h up"]]$Gene_Symbol
+
+## 24 hr downregulated 
+down_24h_18694499 <- df_list[["24h down"]]$Gene_Symbol 
+
+# Checking against LUSC (since these are epithelial cells)
+print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE: ", intersect(LUSC_A1_TE, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, up_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE: ", intersect(LUSC_A1_TE, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, down_24h_18694499)))
+
+
+```
+
+## PMID 21095227
+Chronically exposed cell lines to smoke for a month
+```{r}
+# Read in tables
+up_21095227_S2 <- read.table("../2_Gene_lists/cell_lines/21095227/21095227_S2.txt", sep = "\t", header = T)
+down_21095227_S3 <- read.table("../2_Gene_lists/cell_lines/21095227/21095227_S3.txt", sep = "\t", header = T)
+
+# Checking against LUSC (since these are epithelial cells)
+# Upregulated after 1 month exposure:
+print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUSC_A1_TE: ", intersect(LUSC_A1_TE, up_21095227_S2$Gene.Symbol)))
+print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, up_21095227_S2$Gene.Symbol)))
+print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, up_21095227_S2$Gene.Symbol)))
+
+# Downregulated after 1 month exposure:
+print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUSC_A1_TE: ", intersect(LUSC_A1_TE, down_21095227_S3$Gene_Symbol)))
+print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, down_21095227_S3$Gene_Symbol)))
+print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, down_21095227_S3$Gene_Symbol)))
+
+```
+
+
+Note: I haven't been paying attention to sign for the genes of interest here. I should really be checking on that, it could indicate a reversal event as well since some are up and then down later...
+
+# Vanessa's darkolivegreen module (associated with LUAD, LUSC, and former smoker airways!(?))
+```{r}
+vanessa_darkolivegreen_module_20250602 <- readLines("../2_Gene_lists/vanessa_darkolivegreen_module_20250602.txt")
+
+# LUAD
+print(c("Genes common to Vanessa's darkolivegreen module and LUAD_A1_TE: ", intersect(LUAD_A1_TE, vanessa_darkolivegreen_module_20250602)))
+print(c("Genes common to Vanessa's darkolivegreen module and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, vanessa_darkolivegreen_module_20250602)))
+
+# LUSC
+print(c("Genes common to Vanessa's darkolivegreen module and LUSC_A1_TE: ", intersect(LUSC_A1_TE, vanessa_darkolivegreen_module_20250602)))
+print(c("Genes common to Vanessa's darkolivegreen module and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, vanessa_darkolivegreen_module_20250602)))
+
+
+```
+
+STRING link for the LUSC ones:
+https://version-12-0.string-db.org/cgi/network?networkId=b8Kfbonk01Wz
+
+This might be kinda self-selecting though since she got these partly by investigating TCGA. And if they don't carry on to the FS list then it might have limited info? Interesting anyway.
+
 
