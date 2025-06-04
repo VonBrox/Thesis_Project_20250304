@@ -12,19 +12,20 @@ These scripts analyse the output "linked genes" and "persistent linked genes" fr
 
 2025/01/03: I am deciding to remove GSE14633 because it only has 20 samples and does not factor into any of the SMD calculations.
 
-2025/05/14: I am now using the genes that were filtered using my new "sequential filtering method" in the order A1-TE and A1-TE-A2, for LUAD
+2025/05/14: I am now using the genes that were filtered using my new "sequential filtering method" in the order A1-TE and A1-TE-A2, for LUSC
+
+2025/06/03: In this version of the script I am only using the "validation" datasets A3-A5 for most things, not A1 and A2. 
 
 # Making a combined table to rank genes of interest and compare studies
 
 ### Read in the genes of interest
 ```{r}
 
-# Read in LUAD-A1-TE
-LUAD_A1_TE <- read.table('../../2_Outputs/4_Linked_genes/LUAD_A1_TE_20250514.txt', header = TRUE)
+# Read in LUSC-A1-TE
+LUSC_A1_TE <- read.table('../../2_Outputs/4_Linked_genes/LUSC_A1_TE_20250514.txt', header = TRUE)
 
-# Read in LUAD-A1-TE-A2
-LUAD_A1_TE_A2 <- read.table('../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.txt', header = TRUE)
-
+# Read in LUSC-A1-TE-A2
+LUSC_A1_TE_A2 <- read.table('../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_20250514.txt', header = TRUE)
 
 ```
 
@@ -34,7 +35,7 @@ LUAD_A1_TE_A2 <- read.table('../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_202505
 
 GSE4302_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE4302_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 
-GSE7895_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE7895_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
+# GSE7895_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE7895_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 
 #GSE14633_CS_NS_GEO2R_limma_sig <- read.table("../2_Outputs/1_Airway_DEGs/GSE14633_CS_NS_GEO2R_limma_sig_20241114.txt", sep = '\t')
 #colnames(GSE14633_CS_NS_GEO2R_limma_sig)[2] <- "Gene.symbol" # Rename column for binding
@@ -49,10 +50,10 @@ GSE20257_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE2
 colnames(GSE20257_CS_NS_GEO2R_limma_sig) <- GSE20257_CS_NS_GEO2R_limma_sig[1,]
 GSE20257_CS_NS_GEO2R_limma_sig <- GSE20257_CS_NS_GEO2R_limma_sig[-1,]
 
-GSE63127_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_GEO2R_limma_sig_20241115.txt", sep = '\t')
-# For some reason I have to set the column names
-colnames(GSE63127_CS_NS_GEO2R_limma_sig) <- GSE63127_CS_NS_GEO2R_limma_sig[1,]
-GSE63127_CS_NS_GEO2R_limma_sig <- GSE63127_CS_NS_GEO2R_limma_sig[-1,]
+# GSE63127_CS_NS_GEO2R_limma_sig <- read.table("../../2_Outputs/1_Airway_DEGs/GSE63127_CS_NS_GEO2R_limma_sig_20241115.txt", sep = '\t')
+# # For some reason I have to set the column names
+# colnames(GSE63127_CS_NS_GEO2R_limma_sig) <- GSE63127_CS_NS_GEO2R_limma_sig[1,]
+# GSE63127_CS_NS_GEO2R_limma_sig <- GSE63127_CS_NS_GEO2R_limma_sig[-1,]
 
 ```
 
@@ -122,15 +123,9 @@ CS_NS_ranked_genes["rank_order"] <- rownames(CS_NS_ranked_genes)
 #head(CS_NS_ranked_genes, n = 20)
 
 # Save the output
-write.table(CS_NS_ranked_genes, "../2_Outputs/1_Airway_DEGs/CS_NS_GEO2R_limma_ranked_genes_20250514.txt", sep = '\t', row.names = FALSE, col.names = TRUE)
+# write.table(CS_NS_ranked_genes, "../2_Outputs/1_Airway_DEGs/CS_NS_GEO2R_limma_ranked_genes_20250514.txt", sep = '\t', row.names = FALSE, col.names = TRUE)
 
 # Extract the genes of interest and check their rank order
-
-LUAD_A1_TE_ranked_genes <- CS_NS_ranked_genes[CS_NS_ranked_genes$Gene.symbol %in% LUAD_A1_TE$Gene,]
-hist(as.numeric(LUAD_A1_TE_ranked_genes$rank_order), main = "LUAD_A1_TE genes", xlab = "Rank")
-
-LUAD_A1_TE_A2_ranked_genes <- CS_NS_ranked_genes[CS_NS_ranked_genes$Gene.symbol %in% LUAD_A1_TE_A2$Gene,]
-hist(as.numeric(LUAD_A1_TE_A2_ranked_genes$rank_order), main = "LUAD_A1_TE_A2 genes", xlab = "Rank")
 
 LUSC_A1_TE_ranked_genes <- CS_NS_ranked_genes[CS_NS_ranked_genes$Gene.symbol %in% LUSC_A1_TE$Gene,]
 hist(as.numeric(LUSC_A1_TE_ranked_genes$rank_order), main = "LUSC_A1_TE genes", xlab = "Rank")
@@ -142,68 +137,54 @@ hist(as.numeric(LUSC_A1_TE_A2_ranked_genes$rank_order), main = "LUSC_A1_TE_A2 ge
 
 ```
 
+
 ## Histograms showing numbers of genes occurring in multiple studies (overall genes and genes of interest)
 
 ```{r}
 
 # Histogram of number of studies every gene appears in
 hist(CS_NS_ranked_genes$num_studies, 
-     xlim = c(0.5, 5.5),  # Adjust x-axis limits slightly
-     ylim = c(0,6000),
-     breaks = seq(0.5, 5.5, by = 1),  # Shift breaks by 0.5
+     xlim = c(0.5, 3.5),  # Adjust x-axis limits slightly
+     ylim = c(0,5000),
+     breaks = seq(0.5, 3.5, by = 1),  # Shift breaks by 0.5
      main = "Number of CS/NS airway datasets all genes are significant in",
      xlab = "Number of datasets",
-     ylab = "Number of genes")
+     ylab = "Number of genes",
+     xaxt = "n")  # Suppress default x-axis
+# Add custom x-axis labels at 1, 2, 3
+axis(side = 1, at = c(1, 2, 3), labels = c("1", "2", "3"))
 
 # Filter the ranked genes to the genes of interest
-
-## LUAD_A1_TE
-CS_NS_ranked_genes_LUAD_A1_TE <- CS_NS_ranked_genes %>%
-  filter(Gene.symbol %in% LUAD_A1_TE$Gene)
-# Histogram of number of studies every "linked" gene appears in
-hist(CS_NS_ranked_genes_LUAD_A1_TE$num_studies, 
-     xlim = c(0.5, 5.5),  # Adjust x-axis limits slightly
-     #ylim = c(0,6000),
-     breaks = seq(0.5, 5.5, by = 1),  # Shift breaks by 0.5
-     main = "Number of CS/NS airway datasets LUAD-A1-TE genes are significant in",
-     xlab = "Number of datasets",
-     ylab = "Number of genes")
-
-## LUAD_A1_TE_A2
-CS_NS_ranked_genes_LUAD_A1_TE_A2 <- CS_NS_ranked_genes %>%
-  filter(Gene.symbol %in% LUAD_A1_TE_A2$Gene)
-# Histogram of number of studies every "linked" gene appears in
-hist(CS_NS_ranked_genes_LUAD_A1_TE_A2$num_studies, 
-     xlim = c(0.5, 5.5),  # Adjust x-axis limits slightly
-     #ylim = c(0,6000),
-     breaks = seq(0.5, 5.5, by = 1),  # Shift breaks by 0.5
-     main = "Number of CS/NS airway datasets LUAD-A1-TE-A2 genes are significant in",
-     xlab = "Number of datasets",
-     ylab = "Number of genes")
 
 ## LUSC_A1_TE
 CS_NS_ranked_genes_LUSC_A1_TE <- CS_NS_ranked_genes %>%
   filter(Gene.symbol %in% LUSC_A1_TE$Gene)
 # Histogram of number of studies every "linked" gene appears in
 hist(CS_NS_ranked_genes_LUSC_A1_TE$num_studies, 
-     xlim = c(0.5, 5.5),  # Adjust x-axis limits slightly
-     #ylim = c(0,6000),
-     breaks = seq(0.5, 5.5, by = 1),  # Shift breaks by 0.5
+     xlim = c(0.5, 3.5),  
+     breaks = seq(0.5, 3.5, by = 1),  
      main = "Number of CS/NS airway datasets LUSC-A1-TE genes are significant in",
      xlab = "Number of datasets",
-     ylab = "Number of genes")
+     ylab = "Number of genes",
+     xaxt = "n")  # Suppress default x-axis
+# Add custom x-axis labels at 1, 2, 3
+axis(side = 1, at = c(1, 2, 3), labels = c("1", "2", "3"))
 
 ## LUSC_A1_TE_A2
 CS_NS_ranked_genes_LUSC_A1_TE_A2 <- CS_NS_ranked_genes %>%
   filter(Gene.symbol %in% LUSC_A1_TE_A2$Gene)
 # Histogram of number of studies every "linked" gene appears in
 hist(CS_NS_ranked_genes_LUSC_A1_TE_A2$num_studies, 
-     xlim = c(0.5, 5.5),  # Adjust x-axis limits slightly
+     xlim = c(0.5, 3.5),  # Adjust x-axis limits slightly
      #ylim = c(0,6000),
-     breaks = seq(0.5, 5.5, by = 1),  # Shift breaks by 0.5
+     breaks = seq(0.5, 3.5, by = 1),  # Shift breaks by 0.5
      main = "Number of CS/NS airway datasets LUSC-A1-TE-A2 genes are significant in",
      xlab = "Number of datasets",
-     ylab = "Number of genes")
+     ylab = "Number of genes",
+     xaxt = "n")  # Suppress default x-axis
+# Add custom x-axis labels at 1, 2, 3
+axis(side = 1, at = c(1, 2, 3), labels = c("1", "2", "3"))
+
 
 ```
 
@@ -252,29 +233,30 @@ getMeanSD <- function(GSE_readcount_input, current_smoker_indexes, never_smoker_
 
 ### Read in the normalized read count information
 ```{r}
-GSE4302_expr_matrix  <- read.table("../2_Outputs/2_Airway_expression/GSE4302_expr_matrix_20241115.txt", header = T)
-GSE4302_sstat_data   <- read.table("../2_Outputs/2_Airway_expression/GSE4302_sstat_data.txt", header = T)
-GSE4302_gene_symbol  <- read.table("../2_Outputs/2_Airway_expression/GSE4302_gene_symbol.txt", header = T)
 
-GSE7895_expr_matrix  <- read.table("../2_Outputs/2_Airway_expression/GSE7895_expr_matrix_20241115.txt", header = T)
-GSE7895_sstat_data   <- read.table("../2_Outputs/2_Airway_expression/GSE7895_sstat_data.txt", header = T)
-GSE7895_gene_symbol  <- read.table("../2_Outputs/2_Airway_expression/GSE7895_gene_symbol.txt", header = T)
+GSE4302_expr_matrix  <- read.table("../../2_Outputs/2_Airway_expression/GSE4302_expr_matrix_20241115.txt", header = T)
+GSE4302_sstat_data   <- read.table("../../2_Outputs/2_Airway_expression/GSE4302_sstat_data.txt", header = T)
+GSE4302_gene_symbol  <- read.table("../../2_Outputs/2_Airway_expression/GSE4302_gene_symbol.txt", header = T)
+
+# GSE7895_expr_matrix  <- read.table("../2_Outputs/2_Airway_expression/GSE7895_expr_matrix_20241115.txt", header = T)
+# GSE7895_sstat_data   <- read.table("../2_Outputs/2_Airway_expression/GSE7895_sstat_data.txt", header = T)
+# GSE7895_gene_symbol  <- read.table("../2_Outputs/2_Airway_expression/GSE7895_gene_symbol.txt", header = T)
 
 # GSE14633_expr_matrix <- read.table("../2_Outputs/2_Airway_expression/GSE14633_expr_matrix_20241115.txt", header = T)
 # GSE14633_sstat_data  <- read.table("../2_Outputs/2_Airway_expression/GSE14633_sstat_data.txt", header = T)
 # GSE14633_gene_symbol <- read.table("../2_Outputs/2_Airway_expression/GSE14633_gene_symbol.txt", header = T)
 
-GSE19027_expr_matrix <- read.table("../2_Outputs/2_Airway_expression/GSE19027_expr_matrix_20241115.txt", header = T)
-GSE19027_sstat_data  <- read.table("../2_Outputs/2_Airway_expression/GSE19027_sstat_data.txt", header = T)
-GSE19027_gene_symbol <- read.table("../2_Outputs/2_Airway_expression/GSE19027_gene_symbol.txt", header = T)
+GSE19027_expr_matrix <- read.table("../../2_Outputs/2_Airway_expression/GSE19027_expr_matrix_20241115.txt", header = T)
+GSE19027_sstat_data  <- read.table("../../2_Outputs/2_Airway_expression/GSE19027_sstat_data.txt", header = T)
+GSE19027_gene_symbol <- read.table("../../2_Outputs/2_Airway_expression/GSE19027_gene_symbol.txt", header = T)
 
-GSE20257_expr_matrix <- read.table("../2_Outputs/2_Airway_expression/GSE20257_expr_matrix_20241115.txt", header = T)
-GSE20257_sstat_data  <- read.table("../2_Outputs/2_Airway_expression/GSE20257_sstat_data.txt", header = T)
-GSE20257_gene_symbol <- read.table("../2_Outputs/2_Airway_expression/GSE20257_gene_symbol.txt", header = T)
+GSE20257_expr_matrix <- read.table("../../2_Outputs/2_Airway_expression/GSE20257_expr_matrix_20241115.txt", header = T)
+GSE20257_sstat_data  <- read.table("../../2_Outputs/2_Airway_expression/GSE20257_sstat_data.txt", header = T)
+GSE20257_gene_symbol <- read.table("../../2_Outputs/2_Airway_expression/GSE20257_gene_symbol.txt", header = T)
 
-GSE63127_expr_matrix <- read.table("../2_Outputs/2_Airway_expression/GSE63127_expr_matrix_20241118.txt", header = T)
-GSE63127_sstat_data  <- read.table("../2_Outputs/2_Airway_expression/GSE63127_sstat_data.txt", header = T)
-GSE63127_gene_symbol  <- read.table("../2_Outputs/2_Airway_expression/GSE63127_gene_symbol.txt", header = T)
+# GSE63127_expr_matrix <- read.table("../2_Outputs/2_Airway_expression/GSE63127_expr_matrix_20241118.txt", header = T)
+# GSE63127_sstat_data  <- read.table("../2_Outputs/2_Airway_expression/GSE63127_sstat_data.txt", header = T)
+# GSE63127_gene_symbol  <- read.table("../2_Outputs/2_Airway_expression/GSE63127_gene_symbol.txt", header = T)
 
 ```
 
@@ -296,11 +278,11 @@ GSE4302_CS_NS_mean_SD <- cbind(GEO_ID = "GSE4302", GSE4302_CS_NS_mean_SD)
 GSE4302_CS_NS_mean_SD$Gene <- GSE4302_gene_symbol$x # Add gene symbol column
 
 # GSE7895
-GSE7895_current_smoker_indexes <- which(GSE7895_sstat_data[1]=="current_smoker")
-GSE7895_never_smoker_indexes   <- which(GSE7895_sstat_data[1]=="never_smoker")
-GSE7895_CS_NS_mean_SD <- getMeanSD(GSE7895_expr_matrix, GSE7895_current_smoker_indexes, GSE7895_never_smoker_indexes)
-GSE7895_CS_NS_mean_SD <- cbind(GEO_ID = "GSE7895", GSE7895_CS_NS_mean_SD)
-GSE7895_CS_NS_mean_SD$Gene <- GSE7895_gene_symbol$x
+# GSE7895_current_smoker_indexes <- which(GSE7895_sstat_data[1]=="current_smoker")
+# GSE7895_never_smoker_indexes   <- which(GSE7895_sstat_data[1]=="never_smoker")
+# GSE7895_CS_NS_mean_SD <- getMeanSD(GSE7895_expr_matrix, GSE7895_current_smoker_indexes, GSE7895_never_smoker_indexes)
+# GSE7895_CS_NS_mean_SD <- cbind(GEO_ID = "GSE7895", GSE7895_CS_NS_mean_SD)
+# GSE7895_CS_NS_mean_SD$Gene <- GSE7895_gene_symbol$x
 
 # GSE19027
 GSE19027_current_smoker_indexes <- which(GSE19027_sstat_data[1]=="current_smoker")
@@ -318,24 +300,29 @@ GSE20257_CS_NS_mean_SD <- cbind(GEO_ID = "GSE20257", GSE20257_CS_NS_mean_SD)
 GSE20257_CS_NS_mean_SD$Gene <- GSE20257_gene_symbol$x
 
 # GSE63127
-GSE63127_current_smoker_indexes <- which(GSE63127_sstat_data[1]=="smoker")
-GSE63127_never_smoker_indexes   <- which(GSE63127_sstat_data[1]=="non.smoker")
-GSE63127_CS_NS_mean_SD <- getMeanSD(GSE63127_expr_matrix, GSE63127_current_smoker_indexes, GSE63127_never_smoker_indexes)
-GSE63127_CS_NS_mean_SD <- cbind(GEO_ID = "GSE63127", GSE63127_CS_NS_mean_SD)
-GSE63127_CS_NS_mean_SD$Gene <- GSE63127_gene_symbol$x
+# GSE63127_current_smoker_indexes <- which(GSE63127_sstat_data[1]=="smoker")
+# GSE63127_never_smoker_indexes   <- which(GSE63127_sstat_data[1]=="non.smoker")
+# GSE63127_CS_NS_mean_SD <- getMeanSD(GSE63127_expr_matrix, GSE63127_current_smoker_indexes, GSE63127_never_smoker_indexes)
+# GSE63127_CS_NS_mean_SD <- cbind(GEO_ID = "GSE63127", GSE63127_CS_NS_mean_SD)
+# GSE63127_CS_NS_mean_SD$Gene <- GSE63127_gene_symbol$x
 
 ```
 
 ### Apply getMeanSD function to the persistent linked gene list to generate a table of SMD values
-### 2025/05/14: For now I will use LUAD-A1-TE
+### 2025/05/14: For now I will use LUSC-A1-TE
 ```{r}
 library(meta)
 
 ## Use the persistent linked genes list as the input genes list
-gene_list <- LUAD_A1_TE
+gene_list <- LUSC_A1_TE
 
 ## Put the dataframes in a list
-dataframe_list <- list( GSE4302_CS_NS_mean_SD, GSE7895_CS_NS_mean_SD, GSE19027_CS_NS_mean_SD, GSE20257_CS_NS_mean_SD, GSE63127_CS_NS_mean_SD)
+dataframe_list <- list(GSE4302_CS_NS_mean_SD, 
+                       # GSE7895_CS_NS_mean_SD,
+                       # GSE63127_CS_NS_mean_SD,
+                       GSE19027_CS_NS_mean_SD, 
+                       GSE20257_CS_NS_mean_SD 
+                       )
 
 
 # Make a dataframe as a template that will hold the values for each gene as input to SMD calculation
@@ -350,7 +337,7 @@ CS_NS_SMD_input_template <- data.frame(
 	  Never_smoker_SD = numeric(0)
 	)
 # Make a dataframe that will have all the SMD output values
-LUAD_A1_TE_SMD_summary <- data.frame(
+LUSC_A1_TE_SMD_summary <- data.frame(
   GEO_ID = character(0),
   gene = character(0),
   ID = character(0),
@@ -383,11 +370,12 @@ for (i in 1:nrow(gene_list)){ # For each gene on the gene list
     df_SMD_summary <- as.data.frame(t(c(GEO_ID = df_SMD_input[k,1], gene = gene_list$Gene[i], ID = df_SMD_input$ID[k], n_obs = sum(df_SMD_values$n.e, df_SMD_values$n.c), SMD = df_SMD_values$TE, CI_95_lower = df_SMD_values$lower, CI_95_upper =  df_SMD_values$upper, z_stat = df_SMD_values$statistic, p_value = df_SMD_values$pval, method = df_SMD_values$method.smd)))
   
   # Append results from this to the output dataframe
-    LUAD_A1_TE_SMD_summary <- rbind(LUAD_A1_TE_SMD_summary, df_SMD_summary)
+    LUSC_A1_TE_SMD_summary <- rbind(LUSC_A1_TE_SMD_summary, df_SMD_summary)
   }
 }
 
-head(LUAD_A1_TE_SMD_summary)
+head(LUSC_A1_TE_SMD_summary)
+
 ```
 
 ## Filter the SMD table to the probesets of interest (those that were selected in the DEGs calculations due to having lowest FDR)
@@ -395,10 +383,15 @@ head(LUAD_A1_TE_SMD_summary)
 
 ## Grab all the probe IDs of interest
 
-dataframe_DEGs_list <- list(GSE4302 = GSE4302_CS_NS_GEO2R_limma_sig, GSE63127 = GSE63127_CS_NS_GEO2R_limma_sig, GSE19027 = GSE19027_CS_NS_GEO2R_limma_sig, GSE20257 = GSE20257_CS_NS_GEO2R_limma_sig, GSE7895 = GSE7895_CS_NS_GEO2R_limma_sig)
+dataframe_DEGs_list <- list(
+  GSE4302 = GSE4302_CS_NS_GEO2R_limma_sig, 
+  # GSE63127 = GSE63127_CS_NS_GEO2R_limma_sig,
+  # GSE7895 = GSE7895_CS_NS_GEO2R_limma_sig,
+  GSE19027 = GSE19027_CS_NS_GEO2R_limma_sig, 
+  GSE20257 = GSE20257_CS_NS_GEO2R_limma_sig 
+  )
 
 GSE_probeset_gene <- data.frame(GSE = character(0), probeset = character(0), gene = character(0))
-
 
 ## I worked through the logic for this in my head and it is difficult to explain in words
 for (i in 1:length(dataframe_DEGs_list)) { # Iterate through all the dataframes of DEGs
@@ -418,22 +411,27 @@ for (i in 1:length(dataframe_DEGs_list)) { # Iterate through all the dataframes 
 colnames(GSE_probeset_gene) <- c("GEO_ID", "ID", "gene")
 
 # Now see if this works for filtering the main list
-LUAD_A1_TE_SMD_summary_ID_filter <- LUAD_A1_TE_SMD_summary %>%
+LUSC_A1_TE_SMD_summary_ID_filter <- LUSC_A1_TE_SMD_summary %>%
   semi_join(GSE_probeset_gene, by = c("GEO_ID", "gene", "ID"))
 
 ```
 
 ## Cumulative SMDs for each gene (overall summary for a gene, not separated by study)
-
 ```{r}
 
 library(meta)
 
-## Use LUAD_A1_TE as the input genes list
-gene_list <- LUAD_A1_TE
+## Use LUSC_A1_TE as the input genes list
+gene_list <- LUSC_A1_TE
 
 ## Put the dataframes in a list
-dataframe_list <- list(GSE4302 = GSE4302_CS_NS_mean_SD, GSE7895 = GSE7895_CS_NS_mean_SD, GSE19027 = GSE19027_CS_NS_mean_SD, GSE20257 = GSE20257_CS_NS_mean_SD, GSE63127 = GSE63127_CS_NS_mean_SD)
+dataframe_list <- list(
+  GSE4302 = GSE4302_CS_NS_mean_SD, 
+  # GSE7895 = GSE7895_CS_NS_mean_SD,
+  # GSE63127 = GSE63127_CS_NS_mean_SD,
+  GSE19027 = GSE19027_CS_NS_mean_SD, 
+  GSE20257 = GSE20257_CS_NS_mean_SD 
+  )
 
 # Make a dataframe as a template that will hold the values for each gene as input to SMD calculation
 CS_NS_SMD_input_template <- data.frame(
@@ -447,7 +445,7 @@ CS_NS_SMD_input_template <- data.frame(
 	  Never_smoker_SD = numeric(0)
 	)
 # Make a dataframe that will have all the SMD output values
-LUAD_A1_TE_SMD_summary_overall <- data.frame(
+LUSC_A1_TE_SMD_summary_overall <- data.frame(
   GEO_ID = character(0),
   gene = character(0),
   n_obs = numeric(0),
@@ -464,6 +462,7 @@ GSE_probeset_gene_for_join <- GSE_probeset_gene
 names(GSE_probeset_gene_for_join)[3] <- "Gene" 
 
 # Loop through the list and extract individual genes
+# Loop through the list and extract individual genes
 for (i in 1:nrow(gene_list)){ # For each gene on the gene list
   
   df_SMD_input <- CS_NS_SMD_input_template # Make a new dataframe for data to input into SMD
@@ -478,79 +477,80 @@ for (i in 1:nrow(gene_list)){ # For each gene on the gene list
   }
   
   # Input the resulting df into the SMD calculation function
-  df_SMD_values <- metacont(Current_smoker_count, Current_smoker_mean, Current_smoker_SD, Never_smoker_count, Never_smoker_mean, Never_smoker_SD, sm="SMD", data = df_SMD_input)
-  
-  
-  # Make a summary of the values
+  if(nrow(df_SMD_input)>0){
+    df_SMD_values <- metacont(Current_smoker_count, Current_smoker_mean, Current_smoker_SD, Never_smoker_count, Never_smoker_mean, Never_smoker_SD, sm="SMD", data = df_SMD_input)
+    
+    # Make a summary of the values
       df_SMD_summary_overall <- as.data.frame(t(c(gene = gene_list$Gene[i], n_studies = df_SMD_values$k, n_obs = sum(df_SMD_values$n.e.pooled, df_SMD_values$n.c.pooled), SMD_common= df_SMD_values$TE.common, CI_95_lower_common = df_SMD_values$lower.common, CI_95_upper_common =  df_SMD_values$upper.common, z_stat_common = df_SMD_values$statistic.common, p_value_common = df_SMD_values$pval.common, SMD_random= df_SMD_values$TE.random, CI_95_lower_random = df_SMD_values$lower.random, CI_95_upper_random =  df_SMD_values$upper.random, z_stat_random = df_SMD_values$statistic.random, p_value_random = df_SMD_values$pval.random, method = df_SMD_values$method.smd, Q = df_SMD_values$Q, Q_df = df_SMD_values$df.Q,  Q_pval = df_SMD_values$pval.Q)))
   
   # Append results from this to the output dataframe
-  LUAD_A1_TE_SMD_summary_overall <- rbind(LUAD_A1_TE_SMD_summary_overall, df_SMD_summary_overall)
+    LUSC_A1_TE_SMD_summary_overall <- rbind(LUSC_A1_TE_SMD_summary_overall, df_SMD_summary_overall)
+  }
   
 }
 
-head(LUAD_A1_TE_SMD_summary_overall)
+head(LUSC_A1_TE_SMD_summary_overall)
 
 # Save summary
-#write.table(LUAD_A1_TE_SMD_summary_overall, "../2_Outputs/LUAD_A1_TE_SMD_summary_overall_20250516.txt")
+#write.table(LUSC_A1_TE_SMD_summary_overall, "../2_Outputs/LUSC_A1_TE_SMD_summary_overall_20250516.txt")
 ```
+
+## Trying out some filtering on the meta-analysis summary
+```{r}
+
+LUSC_A1_TE_SMD_summary_overall_filtered <- LUSC_A1_TE_SMD_summary_overall %>%
+  filter(Q_pval > 0.05) %>% # not too much heterogeneity
+  filter(abs(as.numeric(SMD_random)) > 0.2) %>% # a low bar for filtering the absolute SMD
+  filter(n_studies > 1) # More than one study goes into the calculation
+
+# Trying BH correction on the pval.random
+LUSC_A1_TE_SMD_summary_overall_filtered$FDR_random <- p.adjust(as.numeric(LUSC_A1_TE_SMD_summary_overall_filtered$p_value_random), method = "BH")
+# The values are all still < 0.05
+
+```
+
 
 ## Forest plots
+### Making a single forest plot for a single example gene
+```{r}
 
-```{r, fig.width = 12, fig.height = 5}
+df_SMD_input <- NULL
+gene <- "GPX2"
 
-## For now will just use the gene list of LUAD-A1-TE-A2 genes since the other list is too large
-
-gene_list <- LUAD_A1_TE_A2
-
-for (i in 1:nrow(gene_list)){
-
-  # i <- 3 # Change i to change the gene, or make a loop to check all the genes
-  
-  df_SMD_input <- CS_NS_SMD_input_template # Make a new dataframe for data to input into SMD
-    
-  for (j in 1:length(dataframe_list)){ # For each dataframe in the list of dataframes
-    df <- dataframe_list[[j]] # Extract dataframe j
-    df_gene_j <- df[df$Gene==gene_list[i,]$Gene,]
-    df_gene_j <- df_gene_j %>%
-      semi_join(GSE_probeset_gene_for_join, by = c("GEO_ID", "Gene", "ID")) # Filtering to probesets of interest from DEGs
-    # Append the row with the gene of interest to the SMD input dataframe
-    df_SMD_input <- rbind(df_SMD_input, df_gene_j)
-  }
-    
-  # Input the resulting df into the SMD calculation function
-  df_SMD_values <- metacont(Current_smoker_count, Current_smoker_mean, Current_smoker_SD, Never_smoker_count, Never_smoker_mean, Never_smoker_SD, sm="SMD", data = df_SMD_input, studlab = GEO_ID)
-      
-  # Make a forest plot of the results if the P value is less than 0.05
-  if (!is.na(df_SMD_values$pval.Q) && df_SMD_values$pval.Q < 0.05){
-    df_SMD_forest <- forest(df_SMD_values, smlab = paste0(gene_list$Gene[i], " SMD forest plot"))
-  }
-  
-  # Assign a label with the name of the gene to the plot
-  # file_name <- paste0(gene_list[i], "_SMD_forest")
-  # assign(file_name, df_SMD_forest)
-
+for (j in 1:length(dataframe_list)){ # For each dataframe in the list of dataframes
+  df <- dataframe_list[[j]] # Extract dataframe j
+  df_gene_j <- df[df$Gene==gene,]
+  df_gene_j <- df_gene_j %>%
+  semi_join(GSE_probeset_gene_for_join, by = c("GEO_ID", "Gene", "ID")) # Filtering to probesets of interest from DEGs
+  # Append the row with the gene of interest to the SMD input dataframe
+  df_SMD_input <- rbind(df_SMD_input, df_gene_j)
 }
+    
+ # Input the resulting df into the SMD calculation function
+df_SMD_values <- metacont(Current_smoker_count, Current_smoker_mean, Current_smoker_SD, Never_smoker_count, Never_smoker_mean, Never_smoker_SD, sm="SMD", data = df_SMD_input, studlab = GEO_ID)
+      
+# Make a forest plot!
+df_SMD_forest <- forest(df_SMD_values,
+                        common = FALSE,
+                        random = TRUE,
+                        test.overall.random = TRUE,
+                        smlab = paste0(gene, " SMD"),
+                        overall = TRUE,          # Show overall summary (random-effects here)
+                        overall.hetstat = FALSE  # Don't print Q/I² next to summary
+                        )
 
 ```
 
 
-
-2024/11/19 and 2024/12/05: So 6 of those 27 persistent linked genes have significant cumulative SMD across the airway datasets (p < 0.05)
-
-2024/11/20: Today I could do the same process with the linked genes that are not necessarily persistent, and I could also make boxplots for genes of interest. I will start off doing boxplots of the 6 of 27 persistent linked genes that came out as having significant cumulative SMD.
-
-## Boxplots of persistent linked genes with significant cumulative SMD across datasets
+## Making boxplots (per-gene)
 
 ### Formatting the expression matrixes for the boxplots
 ```{r}
 
-# So I want to have separate dataframes for the 5 GEO IDs, containing a column for the gene name, the expression data, and the group membership information.
+# So I want to have separate dataframes for the 3 GEO IDs, containing a column for the gene name, the expression data, and the group membership information.
 
-
-# Make a list of the genes of interest (persistent linked genes with significant cumulative SMD) for the boxplots
-genes_of_interest <- c("AKR1B10", "LMO2", "MAOB")
-
+# Could just do 1 gene of interest, or multiple.
+genes_of_interest <- "GPX2"
 
 ### GSE4302 ###
 GSE4302_expr_matrix_gene <- cbind(gene = GSE4302_gene_symbol$x, GSE4302_expr_matrix)
@@ -563,15 +563,15 @@ GSE4302_CS_NS_expr_matrix_genes_of_interest <- GSE4302_expr_matrix_gene %>%
   filter(rownames(.) %in% GSE4302_gene_probe_of_interest$ID)
 
 
-### GSE7895 ###
-GSE7895_expr_matrix_gene <- cbind(gene = GSE7895_gene_symbol$x, GSE7895_expr_matrix)
-
-GSE7895_gene_probe_of_interest <- GSE7895_CS_NS_GEO2R_limma_sig %>%
-  filter(Gene.symbol %in% genes_of_interest) %>%
-  select(Gene.symbol, ID)
-
-GSE7895_CS_NS_expr_matrix_genes_of_interest <- GSE7895_expr_matrix_gene %>%
-  filter(rownames(.) %in% GSE7895_gene_probe_of_interest$ID)
+# ### GSE7895 ###
+# GSE7895_expr_matrix_gene <- cbind(gene = GSE7895_gene_symbol$x, GSE7895_expr_matrix)
+# 
+# GSE7895_gene_probe_of_interest <- GSE7895_CS_NS_GEO2R_limma_sig %>%
+#   filter(Gene.symbol %in% genes_of_interest) %>%
+#   select(Gene.symbol, ID)
+# 
+# GSE7895_CS_NS_expr_matrix_genes_of_interest <- GSE7895_expr_matrix_gene %>%
+#   filter(rownames(.) %in% GSE7895_gene_probe_of_interest$ID)
 
 
 # GSE19027
@@ -596,15 +596,15 @@ GSE20257_CS_NS_expr_matrix_genes_of_interest <- GSE20257_expr_matrix_gene %>%
   filter(rownames(.) %in% GSE20257_gene_probe_of_interest$ID)
 
 
-# GSE63127
-GSE63127_expr_matrix_gene <- cbind(gene = GSE63127_gene_symbol$x, GSE63127_expr_matrix)
-
-GSE63127_gene_probe_of_interest <- GSE63127_CS_NS_GEO2R_limma_sig %>%
-  filter(Gene.symbol %in% genes_of_interest) %>%
-  select(Gene.symbol, ID)
-
-GSE63127_CS_NS_expr_matrix_genes_of_interest <- GSE63127_expr_matrix_gene %>%
-  filter(rownames(.) %in% GSE63127_gene_probe_of_interest$ID)
+# # GSE63127
+# GSE63127_expr_matrix_gene <- cbind(gene = GSE63127_gene_symbol$x, GSE63127_expr_matrix)
+# 
+# GSE63127_gene_probe_of_interest <- GSE63127_CS_NS_GEO2R_limma_sig %>%
+#   filter(Gene.symbol %in% genes_of_interest) %>%
+#   select(Gene.symbol, ID)
+# 
+# GSE63127_CS_NS_expr_matrix_genes_of_interest <- GSE63127_expr_matrix_gene %>%
+#   filter(rownames(.) %in% GSE63127_gene_probe_of_interest$ID)
 ```
 
 ### Facet-wrapping boxplots for each gene of interest in all datasets
@@ -614,14 +614,29 @@ library(ggplot2)
 library(tidyr)
 
 ## Put the dataframes in a list
-df_list_goi <- list(GGSE4302 = GSE4302_CS_NS_expr_matrix_genes_of_interest, GSE7895 = GSE7895_CS_NS_expr_matrix_genes_of_interest, GSE19027 = GSE19027_CS_NS_expr_matrix_genes_of_interest, GSE20257 = GSE20257_CS_NS_expr_matrix_genes_of_interest, GSE63127 = GSE63127_CS_NS_expr_matrix_genes_of_interest)
+df_list_goi <- list(A3 = GSE4302_CS_NS_expr_matrix_genes_of_interest, 
+                    #GSE7895 = GSE7895_CS_NS_expr_matrix_genes_of_interest, 
+                    A4 = GSE19027_CS_NS_expr_matrix_genes_of_interest, 
+                    A5 = GSE20257_CS_NS_expr_matrix_genes_of_interest 
+                    #GSE63127 = GSE63127_CS_NS_expr_matrix_genes_of_interest
+                    )
 
 ## Put the indexes into lists
-current_smoker_indexes <- list(GSE4302_csi = GSE4302_current_smoker_indexes, GSE7895_csi = GSE7895_current_smoker_indexes, GSE19027_csi = GSE19027_current_smoker_indexes, GSE20257_csi = GSE20257_current_smoker_indexes, GSE63127_csi = GSE63127_current_smoker_indexes)
+current_smoker_indexes <- list(GSE4302_csi = GSE4302_current_smoker_indexes, 
+                               #GSE7895_csi = GSE7895_current_smoker_indexes, 
+                               GSE19027_csi = GSE19027_current_smoker_indexes, 
+                               GSE20257_csi = GSE20257_current_smoker_indexes 
+                               #GSE63127_csi = GSE63127_current_smoker_indexes
+                               )
 
-never_smoker_indexes <- list(GSE4302_nsi = GSE4302_never_smoker_indexes, GSE7895_nsi = GSE7895_never_smoker_indexes, GSE19027_nsi = GSE19027_never_smoker_indexes, GSE20257_nsi = GSE20257_never_smoker_indexes, GSE63127_nsi = GSE63127_never_smoker_indexes)
+never_smoker_indexes <- list(GSE4302_nsi = GSE4302_never_smoker_indexes, 
+                             #GSE7895_nsi = GSE7895_never_smoker_indexes, 
+                             GSE19027_nsi = GSE19027_never_smoker_indexes, 
+                             GSE20257_nsi = GSE20257_never_smoker_indexes 
+                             #GSE63127_nsi = GSE63127_never_smoker_indexes
+                             )
 
-# Set current gene of interest (make a loop eventually)
+# Make boxplots for gene of interest (just could do one at a time)
 
 for (i in 1:length(genes_of_interest)){
   
@@ -680,7 +695,7 @@ for (i in 1:length(genes_of_interest)){
         minor_breaks = NULL) + 
       labs(title = paste0(curr_gene, ": Current vs Never Smokers expression"),
              # x = "Group", 
-             y = "Expression") +
+             y = "Expression (probe intensity)") +
       theme(legend.position = "none") + 
       scale_fill_manual(values = c("current_smokers" ="cadetblue3", "never_smokers" = "indianred2")) +  # Set custom colors
       theme(
@@ -689,11 +704,9 @@ for (i in 1:length(genes_of_interest)){
         legend.key = element_rect(fill = "white", color = "white"),  # Make the legend boxes white with black border
         axis.text.x = element_blank(),  # Remove x-axis labels
         # panel.grid.major.x = element_blank(),  # Remove major gridlines
-        panel.grid.minor = element_blank()   # Remove minor gridlines
+        panel.grid.minor = element_blank(),   # Remove minor gridlines
+        panel.border = element_rect(color = "black", fill = NA, linewidth = 0.3) #add borders
        )
     print(boxplot)
 }
 ```
-
-
-
