@@ -100,6 +100,40 @@ length(LUSC_A1_TE_A2_unique)
 
 ```
 
+## Comparing the genes resulting from the SMD meta analysis (3.2, 3.3)
+```{r}
+library(eulerr)
+
+## Read in the gene lists
+LUAD_A1_TE_SMD_summary_overall_filtered_genes <- readLines("../../2_Outputs/LUAD_A1_TE_SMD_summary_overall_filtered_genes.txt")
+LUSC_A1_TE_SMD_summary_overall_filtered_genes <- readLines("../../2_Outputs/LUSC_A1_TE_SMD_summary_overall_filtered_genes.txt")
+
+SMD_meta_analysis_genes <- euler(list("LUAD (SMD meta-analysis)" = unique(LUAD_A1_TE_SMD_summary_overall_filtered_genes), "LUSC (SMD meta-analysis" = unique(LUSC_A1_TE_SMD_summary_overall_filtered_genes)))
+
+plot(main = "SMD meta-analysis genes",
+     SMD_meta_analysis_genes,
+     quantities = TRUE,  # Show counts in regions
+     fills = c("red", "blue", "green"),  
+     alpha = 0.5, 
+     edges = TRUE)
+
+
+# Shared between LUAD and LUSC meta analysis genes
+SMD_meta_shared <- intersect(LUAD_A1_TE_SMD_summary_overall_filtered_genes, LUSC_A1_TE_SMD_summary_overall_filtered_genes)
+# Pathways shared: https://maayanlab.cloud/Enrichr/enrich?dataset=81c21d6319be95a21dea10e8df76ec5f
+
+# Unique to LUAD
+LUAD_SMD_meta_unique <- setdiff(LUAD_A1_TE_SMD_summary_overall_filtered_genes, LUSC_A1_TE_SMD_summary_overall_filtered_genes)
+# PAthways for LUAD: https://maayanlab.cloud/Enrichr/enrich?dataset=052df690b890326b1ce8b8247886a780
+
+# Unique to LUSC
+LUSC_SMD_meta_unique <- setdiff(LUSC_A1_TE_SMD_summary_overall_filtered_genes, LUAD_A1_TE_SMD_summary_overall_filtered_genes)
+# Pathways for LUSC: https://maayanlab.cloud/Enrichr/enrich?dataset=873b696ac486eecf36b86b451cbe6159
+
+```
+
+
+#####
 
 
 # 3. Compare former vs. never smoker tumor methylation as another point of interest for the analysis.
@@ -463,6 +497,9 @@ legend("topright",
 
 
 So far it doesn't look like there is much of a trend happening here. I could also try hierarchical clustering, and maybe also try straight differential analysis and gene comparison instead. Also, maybe the thing that Carl DeBoer suggested which is looking at the "loads" of the genes in the PCA?
+
+
+
 
 
 ##4. Explore the statistical significance of overlapping genes and give a detailed report of the results and their implications.
