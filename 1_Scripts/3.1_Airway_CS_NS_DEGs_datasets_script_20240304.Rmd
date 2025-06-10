@@ -99,6 +99,11 @@ gset <- gset[ ,sel]
 
 gset <- gset[complete.cases(exprs(gset)), ] # skip missing values
 
+
+
+samples_GSE4302 <- strsplit("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX100X0X000XXX000X000X0XXX001110001100000001111101101110", "")[[1]]
+length(samples_GSE4302=="X")
+
 ```
 
 ## Checks and normalization
@@ -831,6 +836,10 @@ gset <- gset[ ,sel]
 
 gset <- gset[complete.cases(exprs(gset)), ] # skip missing values (I am doing this early on -- should check that's okay)
 length(sml) # 30 samples
+
+samples_GSE19027 <- strsplit("11000000X1XX011X11111XXXXXXXXXXXX111111XX11XXXXXX1X1010XXXXX", "")[[1]]
+length(samples_GSE19027=="X")
+
 ```
 
 ## Check for normalization with histogram and boxplot
@@ -1080,6 +1089,9 @@ sml <- sml[sel]
 gset <- gset[ ,sel]
 
 gset <- gset[complete.cases(exprs(gset)), ] # skip missing values
+
+
+length(strsplit("XXXXXXXXXXXXXXXXX1100000000XXXXXXXXXXX11111111000011111XXXXXXX0000000000011111111111111111100010010011XXXX1100011000011111111111X000001","")[[1]]=="X")
 
 ```
 

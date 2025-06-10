@@ -108,9 +108,9 @@ library(eulerr)
 LUAD_A1_TE_SMD_summary_overall_filtered_genes <- readLines("../../2_Outputs/LUAD_A1_TE_SMD_summary_overall_filtered_genes.txt")
 LUSC_A1_TE_SMD_summary_overall_filtered_genes <- readLines("../../2_Outputs/LUSC_A1_TE_SMD_summary_overall_filtered_genes.txt")
 
-SMD_meta_analysis_genes <- euler(list("LUAD (SMD meta-analysis)" = unique(LUAD_A1_TE_SMD_summary_overall_filtered_genes), "LUSC (SMD meta-analysis" = unique(LUSC_A1_TE_SMD_summary_overall_filtered_genes)))
+SMD_meta_analysis_genes <- euler(list("LUAD-A1-TE (SMD)" = unique(LUAD_A1_TE_SMD_summary_overall_filtered_genes), "LUSC-A1-TE (SMD)" = unique(LUSC_A1_TE_SMD_summary_overall_filtered_genes)))
 
-plot(main = "SMD meta-analysis genes",
+plot(main = "SMD meta-analysis of A1-TE genes",
      SMD_meta_analysis_genes,
      quantities = TRUE,  # Show counts in regions
      fills = c("red", "blue", "green"),  

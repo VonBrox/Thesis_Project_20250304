@@ -24,7 +24,7 @@ library(dplyr)
 
 ## Read in the linked genes of interest
 ```{r}
-A1_TE_TM_linked_genes <- read.table("../2_Outputs/6_Linked_genes/A1_TE_TM_linked_genes_0.01_0.25_0.001_0.75_0.01_0.25_20250101.txt", sep = ' ')
+A1_TE_TM_linked_genes <- read.table("../../2_Outputs/6_Linked_genes/A1_TE_TM_linked_genes_0.01_0.25_0.001_0.75_0.01_0.25_20250101.txt", sep = ' ')
 
 A1_TE_TM_A2_persistent_linked_genes <- read.table("../2_Outputs/6_Linked_genes/A1_TE_TM_A2_persistent_linked_genes_0.01_0.25_0.001_0.75_0.01_0.25_20250101.txt", sep = ' ')
 ```
@@ -100,7 +100,8 @@ former_smokers <- former_smokers[!is.na(former_smokers$bcr_patient_barcode),] # 
 former_smokers <- former_smokers[former_smokers$bcr_patient_barcode != c("TCGA-05-4245", "TCGA-67-3776", "TCGA-MP-A4T2"),] # Removing some values because they are not in the counts data
 
 # Testing with particular genes of interest
-genes_of_interest <- A1_TE_TM_A2_persistent_linked_genes$Gene
+#genes_of_interest <- A1_TE_TM_A2_persistent_linked_genes$Gene
+genes_of_interest <- "S100P"
 
 for (gene in genes_of_interest){
   
@@ -133,11 +134,11 @@ for (gene in genes_of_interest){
   # P-value
   p_value <- surv_pvalue(fit, data = former_smokers_high_low_goi)$pval
   
-  if (p_value <= 0.05) {
+ # if (p_value <= 0.05) {
     # Plot survival curves
     ggsp <- ggsurvplot(fit, data = former_smokers_high_low_goi, pval = TRUE, title = paste0("Former smokers ", gene_of_interest))
     print(ggsp)
-  }
+ # }
 }
 
 ## 2024/12/04: Significant genes found: TCN1 (0.045), RBP4 (0.017), S100P (0.048), GALNT6 (0.048). Of these, S100P is also "persistent linked".

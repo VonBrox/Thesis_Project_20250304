@@ -128,7 +128,7 @@ CS_NS_ranked_genes["rank_order"] <- rownames(CS_NS_ranked_genes)
 # Extract the genes of interest and check their rank order
 
 LUAD_A1_TE_ranked_genes <- CS_NS_ranked_genes[CS_NS_ranked_genes$Gene.symbol %in% LUAD_A1_TE$Gene,]
-hist(as.numeric(LUAD_A1_TE_ranked_genes$rank_order), main = "LUAD_A1_TE genes", xlab = "Rank")
+hist(as.numeric(LUAD_A1_TE_ranked_genes$rank_order), main = "LUAD_A1_TE genes", xlab = "Rank", ylim = c(0,80))
 
 LUAD_A1_TE_A2_ranked_genes <- CS_NS_ranked_genes[CS_NS_ranked_genes$Gene.symbol %in% LUAD_A1_TE_A2$Gene,]
 hist(as.numeric(LUAD_A1_TE_A2_ranked_genes$rank_order), main = "LUAD_A1_TE_A2 genes", xlab = "Rank")
@@ -382,7 +382,6 @@ head(LUAD_A1_TE_SMD_summary)
 ```{r}
 
 ## Grab all the probe IDs of interest
-
 dataframe_DEGs_list <- list(
   GSE4302 = GSE4302_CS_NS_GEO2R_limma_sig, 
   # GSE63127 = GSE63127_CS_NS_GEO2R_limma_sig,
@@ -493,6 +492,7 @@ head(LUAD_A1_TE_SMD_summary_overall)
 
 # Save summary
 #write.table(LUAD_A1_TE_SMD_summary_overall, "../2_Outputs/LUAD_A1_TE_SMD_summary_overall_20250516.txt")
+
 ```
 
 ## Trying out some filtering on the meta-analysis summary
@@ -506,6 +506,9 @@ LUAD_A1_TE_SMD_summary_overall_filtered <- LUAD_A1_TE_SMD_summary_overall %>%
 # Trying BH correction on the pval.random
 LUAD_A1_TE_SMD_summary_overall_filtered$FDR_random <- p.adjust(as.numeric(LUAD_A1_TE_SMD_summary_overall_filtered$p_value_random), method = "BH")
 # The values are all still < 0.05
+
+## ENRICHR link:
+## https://maayanlab.cloud/Enrichr/enrich?dataset=a1a24eb2bd3d8e61489e14732d4966c6
 
 ```
 
@@ -534,7 +537,7 @@ df_SMD_forest <- forest(df_SMD_values,
                         common = FALSE,
                         random = TRUE,
                         test.overall.random = TRUE,
-                        smlab = paste0(gene, " SMD"),
+                        smlab = paste0(gene, " SMD forest plot"),
                         overall = TRUE,          # Show overall summary (random-effects here)
                         overall.hetstat = FALSE  # Don't print Q/I² next to summary
                         )
@@ -695,7 +698,7 @@ for (i in 1:length(genes_of_interest)){
         minor_breaks = NULL) + 
       labs(title = paste0(curr_gene, ": Current vs Never Smokers expression"),
              # x = "Group", 
-             y = "Expression") +
+             y = "Expression (RMA probe intensity)") +
       theme(legend.position = "none") + 
       scale_fill_manual(values = c("current_smokers" ="cadetblue3", "never_smokers" = "indianred2")) +  # Set custom colors
       theme(

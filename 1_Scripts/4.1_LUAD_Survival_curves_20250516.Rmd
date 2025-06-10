@@ -100,7 +100,8 @@ former_smokers <- former_smokers[!is.na(former_smokers$bcr_patient_barcode),] # 
 former_smokers <- former_smokers[former_smokers$bcr_patient_barcode != c("TCGA-05-4245", "TCGA-67-3776", "TCGA-MP-A4T2"),] # Removing some values because they are not in the counts data
 
 # Testing with particular genes of interest
-genes_of_interest <- LUAD_A1_TE_A2$Gene
+#genes_of_interest <- LUAD_A1_TE_A2$Gene
+genes_of_interest <- "S100P"
 
 for (gene in genes_of_interest){
   
@@ -133,13 +134,13 @@ for (gene in genes_of_interest){
   # P-value
   p_value <- surv_pvalue(fit, data = former_smokers_high_low_goi)$pval
   
-  if (p_value <= 0.05) {
+#  if (p_value <= 0.05) {
     # Plot survival curves
     png(paste0("/Users/liambrockley/Desktop/Former_Smokers_Project/2_Outputs/", gene_of_interest, "_survival_plot.png"), width = 1600, height = 1200, res = 300) # Set up the plot to be printed
     ggsp <- ggsurvplot(fit, data = former_smokers_high_low_goi, pval = TRUE, title = paste0("LUAD Former smokers ", gene_of_interest))
     print(ggsp)
     dev.off()
-  }
+#  }
 }
 
 ## 2025/05/22: Now it seems to only be INPP4B

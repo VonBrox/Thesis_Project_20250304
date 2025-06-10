@@ -58,6 +58,10 @@ groups <- make.names(c("Non-smoker","Smoker"))
 levels(gs) <- groups
 gset$group <- gs
 
+# Checking how many samples were excluded
+A1_samples <- strsplit("X00100011111X00000000000X00000X000000000000X000X00XX00X0XXXXXXXXX1111111111111111111111X111X11111111XXXX1XXXXXXXXXXXXXXXXXXXXXXXX00100000001010011111101110111110011111001110011101011111001110101100011111111111111111111111111111111", "")[[1]]
+length(A1_samples[A1_samples=="X"])
+
 ```
 
 ## 1.2 Quality control checks and normalization 
