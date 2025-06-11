@@ -204,8 +204,9 @@ nrow(LUAD_A1_TE_A2_TM)
 
 LUAD_A1_TE_A2_TM$Gene
 
-## Save gene list
+## Save 
 #writeLines(LUAD_A1_TE_A2_TM$Gene, "../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_TM_genes_20250528.txt")
+write.table(LUAD_A1_TE_A2_TM, "../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_TM_20250610.txt")
 
 ```
 

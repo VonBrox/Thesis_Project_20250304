@@ -308,7 +308,7 @@ GSE20257_CS_NS_mean_SD$Gene <- GSE20257_gene_symbol$x
 
 ```
 
-### Apply getMeanSD function to the persistent linked gene list to generate a table of SMD values
+### Apply getMeanSD function to the gene list to generate a table of SMD values
 ### 2025/05/14: For now I will use LUSC-A1-TE
 ```{r}
 library(meta)
@@ -489,23 +489,27 @@ for (i in 1:nrow(gene_list)){ # For each gene on the gene list
   
 }
 
+## Add FDR column
+LUSC_A1_TE_SMD_summary_overall$FDR_random <- p.adjust(as.numeric(LUSC_A1_TE_SMD_summary_overall$p_value_random), method = "BH")
+
 head(LUSC_A1_TE_SMD_summary_overall)
 
 # Save summary
-#write.table(LUSC_A1_TE_SMD_summary_overall, "../2_Outputs/LUSC_A1_TE_SMD_summary_overall_20250516.txt")
+write.table(LUSC_A1_TE_SMD_summary_overall, "../../2_Outputs/6_Meta_analysis/LUSC_A1_TE_SMD_summary_overall_20250611.txt")
 ```
 
 ## Trying out some filtering on the meta-analysis summary
 ```{r}
 
-LUSC_A1_TE_SMD_summary_overall_filtered <- LUSC_A1_TE_SMD_summary_overall %>%
-  filter(Q_pval > 0.05) %>% # not too much heterogeneity
-  filter(abs(as.numeric(SMD_random)) > 0.2) %>% # a low bar for filtering the absolute SMD
-  filter(n_studies > 1) # More than one study goes into the calculation
+# LUSC_A1_TE_SMD_summary_overall_filtered <- LUSC_A1_TE_SMD_summary_overall %>%
+#   filter(Q_pval > 0.05) %>% # not too much heterogeneity
+#   filter(abs(as.numeric(SMD_random)) > 0.2) %>% # a low bar for filtering the absolute SMD
+#   filter(n_studies > 1) # More than one study goes into the calculation
 
 # Trying BH correction on the pval.random
-LUSC_A1_TE_SMD_summary_overall_filtered$FDR_random <- p.adjust(as.numeric(LUSC_A1_TE_SMD_summary_overall_filtered$p_value_random), method = "BH")
-# The values are all still < 0.05
+LUSC_A1_TE_SMD_summary_overall_filtered <- LUSC_A1_TE_SMD_summary_overall %>%
+  filter(FDR_random <= 0.05)
+
 
 ```
 

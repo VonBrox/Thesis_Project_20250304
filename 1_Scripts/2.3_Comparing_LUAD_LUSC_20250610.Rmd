@@ -27,11 +27,12 @@ This is up to the committee. When I change the lists of genes of interest it wil
 # LUAD 
 LUAD_A1_TE <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_20250514.txt")
 LUAD_A1_TE_A2 <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.txt")
+LUAD_A1_TE_A2_TM <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_TM_20250610.txt")
 
 # LUSC
 LUSC_A1_TE <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_20250514.txt")
-
 LUSC_A1_TE_A2 <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_20250514.txt")
+LUSC_A1_TE_A2_TM <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_TM_20250610.txt")
 
 ```
 
@@ -39,6 +40,20 @@ LUSC_A1_TE_A2 <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_202505
 ## Compare the gene lists to each other with euler/"venn" diagrams
 ```{r}
 library(eulerr)
+
+## First just checking upregulated vs downregulated genes in everything
+
+nrow(LUAD_A1_TE[sign(LUAD_A1_TE$log2FC_A1)=="1",])
+nrow(LUAD_A1_TE[sign(LUAD_A1_TE$log2FC_A1)=="-1",])
+nrow(LUAD_A1_TE_A2[sign(LUAD_A1_TE_A2$log2FC_A1)=="1",])
+nrow(LUAD_A1_TE_A2[sign(LUAD_A1_TE_A2$log2FC_A1)=="-1",])
+
+nrow(LUSC_A1_TE[sign(LUSC_A1_TE$log2FC_A1)=="1",])
+nrow(LUSC_A1_TE[sign(LUSC_A1_TE$log2FC_A1)=="-1",])
+nrow(LUSC_A1_TE_A2[sign(LUSC_A1_TE_A2$log2FC_A1)=="1",])
+nrow(LUSC_A1_TE_A2[sign(LUSC_A1_TE_A2$log2FC_A1)=="-1",])
+
+### First just comparing all gene names
 
 # A1_TE gene comparison between LUAD and LUSC
 A1_TE_gene_sets <- euler(list("LUAD-A1-TE" = unique(LUAD_A1_TE$Gene), "LUSC-A1-TE" = unique(LUSC_A1_TE$Gene)))
@@ -61,7 +76,44 @@ plot(main = "A1-TE-A2 genes",
      alpha = 0.5, 
      edges = TRUE)
 
+
+
 ```
+
+
+## Checking signs
+```{r}
+## Now checking whether sign is the same
+
+#Narrowing it down to the shared genes
+LUAD_LUSC_A1_TE_shared <- LUAD_A1_TE %>%
+  inner_join(., LUSC_A1_TE, by = "Gene", suffix = c("_LUAD", "_LUSC"))
+
+#Make a column to state sign status
+LUAD_LUSC_A1_TE_shared$sign_LUAD <- sign(LUAD_LUSC_A1_TE_shared$log2FC_A1_LUAD)
+LUAD_LUSC_A1_TE_shared$sign_LUSC <- sign(LUAD_LUSC_A1_TE_shared$log2FC_A1_LUSC)
+LUAD_LUSC_A1_TE_shared$signs_match <- LUAD_LUSC_A1_TE_shared$sign_LUAD == LUAD_LUSC_A1_TE_shared$sign_LUSC
+## All signs match
+
+# Checking how many up/down-regulated in shared genes
+nrow(LUAD_LUSC_A1_TE_shared[LUAD_LUSC_A1_TE_shared$sign_LUAD=="1",])
+nrow(LUAD_LUSC_A1_TE_shared[LUAD_LUSC_A1_TE_shared$sign_LUAD=="-1",])
+
+## Checking the unique genes
+LUAD_A1_TE_unique <- LUAD_A1_TE[!(LUAD_A1_TE$Gene %in% LUSC_A1_TE$Gene),]
+nrow(LUAD_A1_TE_unique[sign(LUAD_A1_TE_unique$log2FC_A1)=="1",])
+nrow(LUAD_A1_TE_unique[sign(LUAD_A1_TE_unique$log2FC_A1)=="-1",])
+
+LUSC_A1_TE_unique <- LUSC_A1_TE[!(LUSC_A1_TE$Gene %in% LUSC_A1_TE$Gene),]
+nrow(LUSC_A1_TE_unique[sign(LUSC_A1_TE_unique$log2FC_A1)=="1",])
+nrow(LUSC_A1_TE_unique[sign(LUSC_A1_TE_unique$log2FC_A1)=="-1",])
+
+## Checking signs for the methylatgion genes
+nrow(LUAD_A1_TE_A2_TM[sign(LUAD_A1_TE_A2_TM$log2FC_TM)=="1",])
+nrow(LUSC_A1_TE_A2_TM[sign(LUSC_A1_TE_A2_TM$log2FC_TM)=="1",])
+```
+
+
 
 
 ## Take a look at pathways for the genes that are common or different here
@@ -104,8 +156,8 @@ length(LUSC_A1_TE_A2_unique)
 library(eulerr)
 
 ## Read in the gene lists
-LUAD_A1_TE_SMD_summary_overall_filtered_genes <- readLines("../../2_Outputs/LUAD_A1_TE_SMD_summary_overall_filtered_genes.txt")
-LUSC_A1_TE_SMD_summary_overall_filtered_genes <- readLines("../../2_Outputs/LUSC_A1_TE_SMD_summary_overall_filtered_genes.txt")
+LUAD_A1_TE_SMD_summary_overall <- read.table("../../2_Outputs/6_Meta_analysis/LUAD_A1_TE_SMD_summary_overall_20250611.txt")
+
 
 SMD_meta_analysis_genes <- euler(list("LUAD-A1-TE (SMD)" = unique(LUAD_A1_TE_SMD_summary_overall_filtered_genes), "LUSC-A1-TE (SMD)" = unique(LUSC_A1_TE_SMD_summary_overall_filtered_genes)))
 

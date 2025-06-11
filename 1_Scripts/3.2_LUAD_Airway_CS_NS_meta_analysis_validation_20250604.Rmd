@@ -308,7 +308,7 @@ GSE20257_CS_NS_mean_SD$Gene <- GSE20257_gene_symbol$x
 
 ```
 
-### Apply getMeanSD function to the persistent linked gene list to generate a table of SMD values
+### Apply getMeanSD function to thegene list to generate a table of SMD values
 ### 2025/05/14: For now I will use LUAD-A1-TE
 ```{r}
 library(meta)
@@ -490,25 +490,34 @@ for (i in 1:nrow(gene_list)){ # For each gene on the gene list
 
 head(LUAD_A1_TE_SMD_summary_overall)
 
+# Trying BH correction on the pval.random
+LUAD_A1_TE_SMD_summary_overall$FDR_random <- p.adjust(as.numeric(LUAD_A1_TE_SMD_summary_overall$p_value_random), method = "BH")
+
 # Save summary
-#write.table(LUAD_A1_TE_SMD_summary_overall, "../2_Outputs/LUAD_A1_TE_SMD_summary_overall_20250516.txt")
+write.table(LUAD_A1_TE_SMD_summary_overall, "../../2_Outputs/6_Meta_analysis/LUAD_A1_TE_SMD_summary_overall_20250611.txt")
 
 ```
 
 ## Trying out some filtering on the meta-analysis summary
 ```{r}
 
-LUAD_A1_TE_SMD_summary_overall_filtered <- LUAD_A1_TE_SMD_summary_overall %>%
-  filter(Q_pval > 0.05) %>% # not too much heterogeneity
-  filter(abs(as.numeric(SMD_random)) > 0.2) %>% # a low bar for filtering the absolute SMD
-  filter(n_studies > 1) # More than one study goes into the calculation
+# Read in table if necessary
+LUAD_A1_TE_SMD_summary_overall <- read.table("../../2_Outputs/6_Meta_analysis/LUAD_A1_TE_SMD_summary_overall_20250611.txt")
+#write.table(LUAD_A1_TE_SMD_summary_overall, "../2_Outputs/LUAD_A1_TE_SMD_summary_overall_20250516.txt")
 
-# Trying BH correction on the pval.random
-LUAD_A1_TE_SMD_summary_overall_filtered$FDR_random <- p.adjust(as.numeric(LUAD_A1_TE_SMD_summary_overall_filtered$p_value_random), method = "BH")
-# The values are all still < 0.05
+# LUAD_A1_TE_SMD_summary_overall_filtered <- LUAD_A1_TE_SMD_summary_overall %>%
+#   filter(Q_pval > 0.05) %>% # not too much heterogeneity
+#   filter(abs(as.numeric(SMD_random)) > 0.2) %>% # a low bar for filtering the absolute SMD
+#   filter(n_studies > 1) # More than one study goes into the calculation
 
 ## ENRICHR link:
 ## https://maayanlab.cloud/Enrichr/enrich?dataset=a1a24eb2bd3d8e61489e14732d4966c6
+
+# Trying out just filtering FDR
+LUAD_A1_TE_SMD_summary_overall_filtered <- LUAD_A1_TE_SMD_summary_overall %>%
+  filter(FDR_random <= 0.05)
+#ENRICHR link: https://maayanlab.cloud/Enrichr/enrich?dataset=37b93ca2a5d4a7436d8c19e4ae7a24ae
+
 
 ```
 

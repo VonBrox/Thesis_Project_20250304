@@ -11,14 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Read in lists of genes of interest
 ```{r}
 ## LUAD
-LUAD_A1_TE <- readLines("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_genes_20250514.txt")
-LUAD_A1_TE_A2 <- readLines("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_genes_20250514.txt")
-LUAD_A1_TE_A2_TM <- readLines("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_TM_genes_20250528.txt")
+LUAD_A1_TE <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_20250514.txt", header = T)
+LUAD_A1_TE_A2 <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.txt", header = T)
+LUAD_A1_TE_A2_TM <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_TM_20250610.txt", header = T)
 
 ## LUSC
-LUSC_A1_TE <- readLines("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_genes_20250514.txt")
-LUSC_A1_TE_A2 <- readLines("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_genes_20250514.txt")
-LUSC_A1_TE_A2_TM <- readLines("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_TM_genes_20250528.txt")
+LUSC_A1_TE <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_20250514.txt", header = T)
+LUSC_A1_TE_A2 <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_20250514.txt", header = T)
+LUSC_A1_TE_A2_TM <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_TM_20250610.txt", header = T)
 
 ```
 
@@ -44,22 +44,40 @@ up_24h_18694499 <- df_list[["24h up"]]$Gene_Symbol
 down_24h_18694499 <- df_list[["24h down"]]$Gene_Symbol 
 
 # Checking against LUAD
-print(c("Genes common to upregulated 24 hr cell line genes and LUAD_A1_TE: ", intersect(LUAD_A1_TE, up_24h_18694499)))
-print(c("Genes common to upregulated 24 hr cell line genes and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, up_24h_18694499)))
-print(c("Genes common to upregulated 24 hr cell line genes and LUAD_A1_TE_A2_TM: ", intersect(LUAD_A1_TE_A2_TM, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUAD_A1_TE: ", intersect(LUAD_A1_TE$Gene, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2$Gene, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUAD_A1_TE_A2_TM: ", intersect(LUAD_A1_TE_A2_TM$Gene, up_24h_18694499)))
+## Double checking the signs
+LUAD_A1_TE_up_24h_18694499 <- LUAD_A1_TE %>%
+  filter(Gene %in% up_24h_18694499)
+# All are indeed up
 
-print(c("Genes common to downregulated 24 hr cell line genes and LUAD_A1_TE: ", intersect(LUAD_A1_TE, down_24h_18694499)))
-print(c("Genes common to downregulated 24 hr cell line genes and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, down_24h_18694499)))
-print(c("Genes common to downregulated 24 hr cell line genes and LUAD_A1_TE_A2_TM: ", intersect(LUAD_A1_TE_A2_TM, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUAD_A1_TE: ", intersect(LUAD_A1_TE$Gene, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2$Gene, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUAD_A1_TE_A2_TM: ", intersect(LUAD_A1_TE_A2_TM$Gene, down_24h_18694499)))
+## Double checking the signs
+LUAD_A1_TE_down_24h_18694499 <- LUAD_A1_TE %>%
+  filter(Gene %in% down_24h_18694499)
+# This one is up
+
 
 # Checking against LUSC
-print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE: ", intersect(LUSC_A1_TE, up_24h_18694499)))
-print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, up_24h_18694499)))
-print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE: ", intersect(LUSC_A1_TE$Gene, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2$Gene, up_24h_18694499)))
+print(c("Genes common to upregulated 24 hr cell line genes and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM$Gene, up_24h_18694499)))
+## Double checking the signs
+LUSC_A1_TE_up_24h_18694499 <- LUSC_A1_TE %>%
+  filter(Gene %in% up_24h_18694499)
 
-print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE: ", intersect(LUSC_A1_TE, down_24h_18694499)))
-print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, down_24h_18694499)))
-print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE: ", intersect(LUSC_A1_TE$Gene, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2$Gene, down_24h_18694499)))
+print(c("Genes common to downregulated 24 hr cell line genes and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM$Gene, down_24h_18694499)))
+## Double checking the signs
+LUSC_A1_TE_down_24h_18694499 <- LUSC_A1_TE %>%
+  filter(Gene %in% down_24h_18694499)
+LUSC_A1_TE_down_A2_24h_18694499 <- LUSC_A1_TE_A2 %>%
+  filter(Gene %in% down_24h_18694499)
+
 
 
 
@@ -74,25 +92,45 @@ down_21095227_S3 <- read.table("../2_Gene_lists/cell_lines/21095227/21095227_S3.
 
 # Checking against LUAD
 # Upregulated after 1 month exposure:
-print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUAD_A1_TE: ", intersect(LUAD_A1_TE, up_21095227_S2$Gene.Symbol)))
-print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, up_21095227_S2$Gene.Symbol)))
-print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUAD_A1_TE_A2_TM: ", intersect(LUAD_A1_TE_A2_TM, up_21095227_S2$Gene.Symbol)))
+print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUAD_A1_TE: ", intersect(LUAD_A1_TE$Gene, up_21095227_S2$Gene.Symbol)))
+print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2$Gene, up_21095227_S2$Gene.Symbol)))
+print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUAD_A1_TE_A2_TM: ", intersect(LUAD_A1_TE_A2_TM$Gene, up_21095227_S2$Gene.Symbol)))
+## Double checking signs
+LUAD_A1_TE_up_21095227_S2 <- LUAD_A1_TE %>%
+  filter(Gene %in% up_21095227_S2$Gene.Symbol)
+LUAD_A1_TE_A2_up_21095227_S2 <- LUAD_A1_TE_A2 %>%
+  filter(Gene %in% up_21095227_S2$Gene.Symbol)
 
 # Downregulated after 1 month exposure:
 print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUAD_A1_TE: ", intersect(LUAD_A1_TE, down_21095227_S3$Gene_Symbol)))
 print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, down_21095227_S3$Gene_Symbol)))
 print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUAD_A1_TE_A2_TM: ", intersect(LUAD_A1_TE_A2_TM, down_21095227_S3$Gene_Symbol)))
+## Double checking signs
+LUAD_A1_TE_down_21095227_S3 <- LUAD_A1_TE %>%
+  filter(Gene %in% down_21095227_S3$Gene_Symbol)
+LUAD_A1_TE_A2_down_21095227_S3 <- LUAD_A1_TE_A2 %>%
+  filter(Gene %in% down_21095227_S3$Gene_Symbol)
 
 # Checking against LUSC
 # Upregulated after 1 month exposure:
 print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUSC_A1_TE: ", intersect(LUSC_A1_TE, up_21095227_S2$Gene.Symbol)))
 print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, up_21095227_S2$Gene.Symbol)))
 print(c("Genes common to upregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, up_21095227_S2$Gene.Symbol)))
+## Double checking signs
+LUSC_A1_TE_up_21095227_S2 <- LUSC_A1_TE %>%
+  filter(Gene %in% up_21095227_S2$Gene.Symbol)
+LUSC_A1_TE_A2_up_21095227_S2 <- LUSC_A1_TE_A2 %>%
+  filter(Gene %in% up_21095227_S2$Gene.Symbol)
 
 # Downregulated after 1 month exposure:
 print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUSC_A1_TE: ", intersect(LUSC_A1_TE, down_21095227_S3$Gene_Symbol)))
 print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, down_21095227_S3$Gene_Symbol)))
 print(c("Genes common to downregulated genes in 1 month exposure to smoke and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, down_21095227_S3$Gene_Symbol)))
+## Double checking signs
+LUSC_A1_TE_down_21095227_S3 <- LUSC_A1_TE %>%
+  filter(Gene %in% down_21095227_S3$Gene_Symbol)
+LUSC_A1_TE_A2_down_21095227_S3 <- LUSC_A1_TE_A2 %>%
+  filter(Gene %in% down_21095227_S3$Gene_Symbol)
 
 ```
 
@@ -124,7 +162,7 @@ length(unique(S1_28898697_15m$gene))
 
 ## Study 4: PMID 20689807
 
-My plan: Take the genes that are significant in NS vs SC, and not significant in NS vs SNC. These will be the genes specific to smokers with cancer. I will define it by FDR <= 0.05 Then I will check these genes against the genes of interest.
+My plan: Take the genes that are significant in SC vs NS, and not significant in SNC vs NS. These will be the genes specific to smokers with cancer. I will define it by FDR <= 0.05 Then I will check these genes against the genes of interest.
 
 ```{r}
 ## Read in the table
@@ -142,23 +180,43 @@ S1_20689807_SNC_NS <- S1_20689807 %>%
 S1_20689807_SC_NS_specific <- S1_20689807_SC_NS %>%
   filter(!gene %in% S1_20689807_SNC_NS$gene)
 
+## Add a column to show whether the gene is upregulated or downregulated in smokers with cancer (positive will be upregulated)
+S1_20689807_SC_NS_specific$sign <- sign(S1_20689807_SC_NS_specific$avg_expr_SC - S1_20689807_SC_NS_specific$avg_expr_NS)
+
 ## Now check against the genes of interest
 
 ## Compare with LUAD
-paste0("PMID 20689807 list and LUAD_A1_TE: ", length(intersect(LUAD_A1_TE, S1_20689807_SC_NS_specific$gene)))
-writeLines(intersect(LUAD_A1_TE, S1_20689807_SC_NS_specific$gene))
-paste0("PMID 20689807 list and LUAD_A1_TE_A2: ", length(intersect(LUAD_A1_TE_A2, S1_20689807_SC_NS_specific$gene)))
-writeLines(intersect(LUAD_A1_TE_A2, S1_20689807_SC_NS_specific$gene))
-paste0("PMID 20689807 list and LUAD_A1_TE_A2_TM: ", length(intersect(LUAD_A1_TE_A2_TM, S1_20689807_SC_NS_specific$gene)))
-writeLines(intersect(LUAD_A1_TE_A2_TM, S1_20689807_SC_NS_specific$gene))
+paste0("PMID 20689807 list and LUAD_A1_TE: ", length(intersect(LUAD_A1_TE$Gene, S1_20689807_SC_NS_specific$gene)))
+writeLines(intersect(LUAD_A1_TE$Gene, S1_20689807_SC_NS_specific$gene))
+paste0("PMID 20689807 list and LUAD_A1_TE_A2: ", length(intersect(LUAD_A1_TE_A2$Gene, S1_20689807_SC_NS_specific$gene)))
+writeLines(intersect(LUAD_A1_TE_A2$Gene, S1_20689807_SC_NS_specific$gene))
+paste0("PMID 20689807 list and LUAD_A1_TE_A2_TM: ", length(intersect(LUAD_A1_TE_A2_TM$Gene, S1_20689807_SC_NS_specific$gene)))
+writeLines(intersect(LUAD_A1_TE_A2_TM$Gene, S1_20689807_SC_NS_specific$gene))
+
+## Checking signs
+colnames(S1_20689807_SC_NS_specific)[9] <- "Gene"
+LUAD_A1_TE_S1_20689807_SC_NS_specific <- LUAD_A1_TE %>%
+  inner_join(S1_20689807_SC_NS_specific, by = "Gene")
+LUAD_A1_TE_S1_20689807_SC_NS_specific$signs_match <- sign(LUAD_A1_TE_S1_20689807_SC_NS_specific$log2FC_A1) == LUAD_A1_TE_S1_20689807_SC_NS_specific$sign
+LUAD_A1_TE_A2_S1_20689807_SC_NS_specific <- LUAD_A1_TE_S1_20689807_SC_NS_specific %>%
+  filter(Gene %in% LUAD_A1_TE_A2$Gene)
+
+
 
 ## Compare with LUSC
-paste0("PMID 20689807 list and LUSC_A1_TE: ", length(intersect(LUSC_A1_TE, S1_20689807_SC_NS_specific$gene)))
-writeLines(intersect(LUSC_A1_TE, S1_20689807_SC_NS_specific$gene))
-paste0("PMID 20689807 list and LUSC_A1_TE_A2: ", length(intersect(LUSC_A1_TE_A2, S1_20689807_SC_NS_specific$gene)))
-writeLines(intersect(LUSC_A1_TE_A2, S1_20689807_SC_NS_specific$gene))
-paste0("PMID 20689807 list and LUSC_A1_TE_A2_TM: ", length(intersect(LUSC_A1_TE_A2_TM, S1_20689807_SC_NS_specific$gene)))
-writeLines(intersect(LUSC_A1_TE_A2_TM, S1_20689807_SC_NS_specific$gene))
+paste0("PMID 20689807 list and LUSC_A1_TE: ", length(intersect(LUSC_A1_TE$Gene, S1_20689807_SC_NS_specific$gene)))
+writeLines(intersect(LUSC_A1_TE$Gene, S1_20689807_SC_NS_specific$gene))
+paste0("PMID 20689807 list and LUSC_A1_TE_A2: ", length(intersect(LUSC_A1_TE_A2$Gene, S1_20689807_SC_NS_specific$gene)))
+writeLines(intersect(LUSC_A1_TE_A2$Gene, S1_20689807_SC_NS_specific$gene))
+paste0("PMID 20689807 list and LUSC_A1_TE_A2_TM: ", length(intersect(LUSC_A1_TE_A2_TM$Gene, S1_20689807_SC_NS_specific$gene)))
+writeLines(intersect(LUSC_A1_TE_A2_TM$Gene, S1_20689807_SC_NS_specific$gene))
+
+## Check signs
+LUSC_A1_TE_S1_20689807_SC_NS_specific <- LUSC_A1_TE %>%
+  inner_join(S1_20689807_SC_NS_specific, by = "Gene")
+LUSC_A1_TE_S1_20689807_SC_NS_specific$signs_match <- sign(LUSC_A1_TE_S1_20689807_SC_NS_specific$log2FC_A1) == LUSC_A1_TE_S1_20689807_SC_NS_specific$sign
+LUSC_A1_TE_A2_S1_20689807_SC_NS_specific <- LUSC_A1_TE_S1_20689807_SC_NS_specific %>%
+  filter(Gene %in% LUSC_A1_TE_A2$Gene)
 
 ```
 
@@ -220,18 +278,18 @@ module_8_genes_31015447 <- table_3_31015447_module_8$Gene[!is.na(table_3_3101544
 
 # LUAD
 ##LUAD_A1_TE:
-print(c("Genes common to module 8 from 2019 study (PMID 31015447) and LUAD_A1_TE: ", intersect(LUAD_A1_TE, module_8_genes_31015447)))
+print(c("Genes common to module 8 from 2019 study (PMID 31015447) and LUAD_A1_TE: ", intersect(LUAD_A1_TE$Gene, module_8_genes_31015447)))
 ##LUAD_A1_TE_A2:
-print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, module_8_genes_31015447)))
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2$Gene, module_8_genes_31015447)))
 
 # LUSC
 ##LUSC_A1_TE:
-print(c("Genes common to module 8 from 2019 study (PMID 31015447) and LUSC_A1_TE: ", intersect(LUSC_A1_TE, module_8_genes_31015447)))
+print(c("Genes common to module 8 from 2019 study (PMID 31015447) and LUSC_A1_TE: ", intersect(LUSC_A1_TE$Gene, module_8_genes_31015447)))
 ##LUSC_A1_TE_A2:
-print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, module_8_genes_31015447)))
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2$Gene, module_8_genes_31015447)))
 
 # Plot a euler/venn diagram for these
-LUSC_A1_TE_mod8_31015447_gene_sets <- euler(list("LUSC-A1-TE" = LUSC_A1_TE, "module 8 genes (PMID 31015447)" = module_8_genes_31015447))
+LUSC_A1_TE_mod8_31015447_gene_sets <- euler(list("LUSC-A1-TE" = LUSC_A1_TE$Gene, "module 8 genes (PMID 31015447)" = module_8_genes_31015447))
 
 plot(main = "Shared genes with module 8 (PMID 31015447)",
      LUSC_A1_TE_mod8_31015447_gene_sets,
@@ -250,15 +308,15 @@ Serial sampling of small airways over 1 year of smoking cessation
 barel_2023_irreversible_gene_list <- read.table("../2_Gene_lists/irreversible_expression_airways/37531632_barel_2023 /Table_2_truncated_37531632.txt", header = TRUE)
 
 ##LUAD_A1_TE:
-print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE: ", intersect(LUAD_A1_TE, barel_2023_irreversible_gene_list$Gene)))
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE: ", intersect(LUAD_A1_TE$Gene, barel_2023_irreversible_gene_list$Gene)))
 ##LUAD_A1_TE_A2:
-print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2, barel_2023_irreversible_gene_list$Gene)))
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUAD_A1_TE_A2: ", intersect(LUAD_A1_TE_A2$Gene, barel_2023_irreversible_gene_list$Gene)))
 
 ##LUSC_A1_TE:
 print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE: "))
-writeLines(intersect(LUSC_A1_TE, barel_2023_irreversible_gene_list$Gene))
+writeLines(intersect(LUSC_A1_TE$Gene, barel_2023_irreversible_gene_list$Gene))
 ##LUSC_A1_TE_A2:
-print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, barel_2023_irreversible_gene_list$Gene)))
+print(c("Genes common to Barel 2023 serial sampling irreversible gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2$Gene, barel_2023_irreversible_gene_list$Gene)))
 
 ```
 
@@ -269,33 +327,49 @@ print(c("Genes common to Barel 2023 serial sampling irreversible gene list and L
 
 Buro_2013_25_hypermethylated <- read.table("../2_Gene_lists/methylation_airways/23842454/23842454_Buro_2013_25_hypermethylated.txt")
 
-print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE:", intersect(LUAD_A1_TE, Buro_2013_25_hypermethylated$V1)))
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE:", intersect(LUAD_A1_TE$Gene, Buro_2013_25_hypermethylated$V1)))
 ## 2 hits, checking next layer
-print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE_A2:", intersect(LUAD_A1_TE_A2, Buro_2013_25_hypermethylated$V1)))
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE_A2:", intersect(LUAD_A1_TE_A2$Gene, Buro_2013_25_hypermethylated$V1)))
 # 1 hit, checking next layer
-print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE_A2_TM:", intersect(LUAD_A1_TE_A2_TM, Buro_2013_25_hypermethylated$V1)))
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUAD_A1_TE_A2_TM:", intersect(LUAD_A1_TE_A2_TM$Gene, Buro_2013_25_hypermethylated$V1)))
 # No hit
+## Checking signs
+colnames(Buro_2013_25_hypermethylated)[1] <- "Gene"
+LUAD_A1_TE_Buro_2013_25_hypermethylated <- LUAD_A1_TE %>%
+  inner_join(Buro_2013_25_hypermethylated, by = "Gene")
 
-print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE: ", intersect(LUSC_A1_TE, Buro_2013_25_hypermethylated$V1)))
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE: ", intersect(LUSC_A1_TE$Gene, Buro_2013_25_hypermethylated$V1)))
 ## 2 hits, checking next layer
-print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2, Buro_2013_25_hypermethylated$V1)))
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE_A2: ", intersect(LUSC_A1_TE_A2$Gene, Buro_2013_25_hypermethylated$V1)))
 # 1 hit, next layer
-print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM, Buro_2013_25_hypermethylated$V1)))
+print(c("Genes common to Buro-Auriemma smoking-related hypermethylated gene list and LUSC_A1_TE_A2_TM: ", intersect(LUSC_A1_TE_A2_TM$Gene, Buro_2013_25_hypermethylated$V1)))
 # No hits
+## Checking signs
+LUSC_A1_TE_Buro_2013_25_hypermethylated <- LUSC_A1_TE %>%
+  inner_join(Buro_2013_25_hypermethylated, by = "Gene")
+LUSC_A1_TE_A2_Buro_2013_25_hypermethylated <- LUSC_A1_TE_A2 %>%
+  inner_join(Buro_2013_25_hypermethylated, by = "Gene")
 
 ###
 
 Buro_2013_25_hypomethylated <- read.table("../2_Gene_lists/methylation_airways/23842454/23842454_Buro_2013_25_hypomethylated.txt")
 
-print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUAD_A1_TE:", intersect(LUAD_A1_TE, Buro_2013_25_hypomethylated$V1)))
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUAD_A1_TE:", intersect(LUAD_A1_TE$Gene, Buro_2013_25_hypomethylated$V1)))
 # 1 hit, next layer
-print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUAD_A1_TE_A2:", intersect(LUAD_A1_TE_A2, Buro_2013_25_hypomethylated$V1)))
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUAD_A1_TE_A2:", intersect(LUAD_A1_TE_A2$Gene, Buro_2013_25_hypomethylated$V1)))
 # No hits
 
-print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUSC_A1_TE:", intersect(LUSC_A1_TE, Buro_2013_25_hypomethylated$V1)))
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUSC_A1_TE:", intersect(LUSC_A1_TE$Gene, Buro_2013_25_hypomethylated$V1)))
 # 3 hits
-print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUSC_A1_TE_A2:", intersect(LUSC_A1_TE_A2, Buro_2013_25_hypomethylated$V1)))
+print(c("Genes common to Buro-Auriemma 2013 smoking-related hypomethylated gene list and LUSC_A1_TE_A2:", intersect(LUSC_A1_TE_A2$Gene, Buro_2013_25_hypomethylated$V1)))
 # No hits
+
+## Checking signs
+colnames(Buro_2013_25_hypomethylated)[1]<-"Gene"
+LUSC_A1_TE_Buro_2013_25_hypomethylated <- LUSC_A1_TE %>%
+  inner_join(Buro_2013_25_hypomethylated, by = "Gene")
+LUSC_A1_TE_A2_Buro_2013_25_hypomethylated <- LUSC_A1_TE_A2 %>%
+  inner_join(Buro_2013_25_hypomethylated, by = "Gene")
 ```
 
 ###

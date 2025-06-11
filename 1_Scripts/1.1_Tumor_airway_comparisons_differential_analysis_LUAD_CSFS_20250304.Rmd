@@ -1252,7 +1252,7 @@ TCGA_LUAD_limma_DMG <- TCGA_LUAD_DMG
 nrow(TCGA_LUAD_limma_DMG)
 
 ### Saving output
-write.table(TCGA_LUAD_limma_DMG, "../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt", sep = '\t')
+#write.table(TCGA_LUAD_limma_DMG, "../../2_Outputs/5_Tumor_DMGs/TCGA_LUAD_limma_DMG_CSFS_20250307.txt", sep = '\t')
 
 ```
 
