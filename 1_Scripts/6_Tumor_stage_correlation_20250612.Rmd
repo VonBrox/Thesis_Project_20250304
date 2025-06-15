@@ -1,0 +1,548 @@
+---
+title: "Tumor_stage_correlation"
+output: html_document
+date: "2025-06-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+I want to check the genes of interest for tumor stage correlation to particularly see if any are associated with early stage tumors.
+
+## Load libraries
+```{r}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+```
+
+
+## Read in genes of interest
+```{r}
+LUAD_A1_TE <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_20250514.txt")
+LUAD_A1_TE_A2<- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_20250514.txt")
+LUAD_A1_TE_A2_TM <- read.table("../../2_Outputs/4_Linked_genes/LUAD_A1_TE_A2_TM_20250610.txt")
+
+LUSC_A1_TE <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_20250514.txt")
+LUSC_A1_TE_A2 <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_20250514.txt")
+LUSC_A1_TE_A2_TM <- read.table("../../2_Outputs/4_Linked_genes/LUSC_A1_TE_A2_TM_20250610.txt")
+```
+
+# LUAD
+
+## Download clinical data
+```{r}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+
+query_clinical <- GDCquery(
+  project = "TCGA-LUAD",
+  data.category = "Clinical",
+  data.type = "Clinical Supplement"
+)
+
+# Check the available files
+query_clinical$results[[1]] %>% head()
+
+## I see that some are not BCR XML files, so I will try to remove these
+query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
+  filter(data_format == "BCR XML")
+
+## Download data
+GDCdownload(query_clinical, directory = "../../GDC_data")
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient", directory = "../../GDC_data")
+
+head(clinical_data)
+```
+
+### Download expression data
+```{r}
+query <- GDCquery(project = "TCGA-LUAD",
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  sample.type = "Primary Tumor",
+                  workflow.type = "STAR - Counts")
+
+GDCdownload(query, directory = "../../GDC_data")
+
+data <- GDCprepare(query, directory = "../../GDC_data")
+
+counts <- as.data.frame(assay(data))  # Extracting the count matrix (these are supposedly raw counts)
+head(counts)  # Viewing the first few rows (genes) and columns (samples)
+
+gene_info <- as.data.frame(rowData(data))
+head(gene_info)  # Preview the first few genes and their annotations
+
+sample_info <- as.data.frame(colData(data))
+head(sample_info)  # Preview sample metadata
+
+```
+
+## Match clinical to expression data
+```{r}
+library(edgeR)
+
+# Filter out lowly expressed genes
+keep <- filterByExpr(counts)
+counts_filtered <- counts[keep, ]
+
+# Make sure sample barcodes match clinical format
+colnames(counts_filtered) <- substr(colnames(counts_filtered), 1, 12) ## Confirm what this does
+
+# Keep only matching samples in both data sets
+matching_samples <- intersect(colnames(counts_filtered), clinical_data$bcr_patient_barcode)
+counts_filtered <- counts_filtered[, matching_samples]
+clinical_data <- clinical_data[clinical_data$bcr_patient_barcode %in% matching_samples, ]
+
+# Order both the same
+clinical_data <- clinical_data[match(colnames(counts_filtered), clinical_data$bcr_patient_barcode), ]
+stopifnot(all(colnames(counts_filtered) == clinical_data$bcr_patient_barcode))
+
+# Seems there are still 8 extra samples in the counts data, so remove those
+samples_to_remove <- setdiff(colnames(counts_filtered), clinical_data$bcr_patient_barcode)
+counts_filtered <- counts_filtered %>%
+  select(-all_of(samples_to_remove))
+
+```
+
+## Normalize raw counts (logCPM for correlation)
+```{r}
+dge <- DGEList(counts = counts_filtered)
+dge <- calcNormFactors(dge)
+logCPM <- cpm(dge, log = TRUE)
+
+## Store this LUAD specific logCPM
+LUAD_logCPM <- logCPM
+```
+
+## Clean and parse tumor stage
+```{r}
+stage <- clinical_data$stage_event_pathologic_stage
+stage_clean <- gsub("stage ", "", tolower(stage))
+stage_clean <- factor(stage_clean, 
+                      levels = c("i", "ia", "ib", "ii", "iia", "iib", 
+                                 "iii", "iiia", "iiib", "iiic", "iv"),
+                      ordered = TRUE)
+
+# Drop samples with missing stage
+valid_idx <- which(!is.na(stage_clean))
+logCPM <- logCPM[, valid_idx]
+stage_clean <- stage_clean[valid_idx]
+clinical_data <- clinical_data[valid_idx, ]
+
+# Store this LUAD specific stage info and clinical data
+LUAD_stage_clean <- stage_clean
+LUAD_clinical_data <- clinical_data
+```
+
+## Correlate gene expression with tumor stage
+```{r}
+logCPM <- LUAD_logCPM
+stage_clean <- LUAD_stage_clean
+clinical_data <- LUAD_clinical_data
+
+genes_of_interest <- LUAD_A1_TE$Gene
+
+results <- data.frame(Gene = character(), SpearmanRho = numeric(), p_value = numeric())
+
+for (gene in genes_of_interest) {
+  gene_id <- rownames(gene_info)[gene_info$gene_name == gene]
+  if (length(gene_id) == 0 || !(gene_id %in% rownames(logCPM))) next
+  
+  expr <- as.numeric(logCPM[gene_id, ])
+  cor_test <- cor.test(expr, as.numeric(stage_clean), method = "spearman")
+  
+  results <- rbind(results, data.frame(
+    Gene = gene,
+    SpearmanRho = cor_test$estimate,
+    p_value = cor_test$p.value
+  ))
+}
+
+# Adjust p-values
+results$FDR <- p.adjust(results$p_value, method = "BH")
+
+## Give better label 
+LUAD_A1_TE_tumor_stage_spearman <- results
+
+## Add column for log2FC in the original A1_TE list
+LUAD_A1_TE_tumor_stage_spearman <- LUAD_A1_TE_tumor_stage_spearman %>%
+  left_join(., LUAD_A1_TE[,c("Gene", "log2FC_A1")], by = "Gene")
+
+# save (unfiltered) results
+
+#write.table(LUAD_A1_TE_tumor_stage_spearman, "../../2_Outputs/LUAD_A1_TE_tumor_stage_spearman_20250613.txt")
+
+```
+
+## Filtering and checking results
+```{r}
+
+## Filter results for FDR <= 0.05
+LUAD_A1_TE_tumor_stage_spearman_filtered <- LUAD_A1_TE_tumor_stage_spearman[LUAD_A1_TE_tumor_stage_spearman$FDR<=0.05,]
+
+
+## Check which of these genes were in LUAD_A1_TE_A2
+LUAD_A1_TE_A2_tumor_stage_spearman_filtered <- LUAD_A1_TE_tumor_stage_spearman_filtered %>%
+  filter(Gene %in% LUAD_A1_TE_A2$Gene)
+
+## Check which of these genes were in LUAD_A1_TE_A2_TM
+LUAD_A1_TE_A2_TM_tumor_stage_spearman_filtered <- LUAD_A1_TE_tumor_stage_spearman_filtered %>%
+  filter(Gene %in% LUAD_A1_TE_A2_TM$Gene)
+
+
+# Now I am wondering specifically about genes that are be more highly expressed in early tumors (so negative rho) but with higher expression in smoker airways and tumor vs normal (so positive log2FC_A1). I would postulate that maybe these genes could be important in the carcinogenesis process but not in the later tumor progression. Of course there are other possibilities and genes with other signs could be important too.
+LUAD_A1_TE_tumor_stage_spearman_filtered_down_up <- LUAD_A1_TE_tumor_stage_spearman_filtered %>%
+  filter(sign(SpearmanRho) == -1) %>%
+  filter(sign(log2FC_A1) == 1)
+# These don't seem to be in any common pathways, so maybe a red herring, idk.
+
+# I think you could tell similar stories about genes with any combination of those signs, so I will check the other combinations.
+LUAD_A1_TE_tumor_stage_spearman_filtered_up_down <- LUAD_A1_TE_tumor_stage_spearman_filtered %>%
+  filter(sign(SpearmanRho) == 1) %>%
+  filter(sign(log2FC_A1) == -1)
+
+LUAD_A1_TE_tumor_stage_spearman_filtered_up_up <- LUAD_A1_TE_tumor_stage_spearman_filtered %>%
+  filter(sign(SpearmanRho) == 1) %>%
+  filter(sign(log2FC_A1) == 1)
+
+LUAD_A1_TE_tumor_stage_spearman_filtered_down_down <- LUAD_A1_TE_tumor_stage_spearman_filtered %>%
+  filter(sign(SpearmanRho) == -1) %>%
+  filter(sign(log2FC_A1) == -1)
+
+```
+
+
+Now I want to try plotting some of the genes that are really significant and have negative correlation. Those are the ones we would say might be associated with early cancer / carcinogenesis, which is why we would see them in airways of people who do not yet have cancer. (I also try plotting some other guys.)
+
+## Plot expression by tumor stage
+```{r}
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+logCPM <- LUAD_logCPM
+stage_clean <- LUAD_stage_clean
+clinical_data <- LUAD_clinical_data
+
+# Pick one or more genes of interest to plot
+#genes_to_plot <- c("FCRL2","TTC16","CLNK") # Highly negatively correlated ones
+#genes_to_plot <- c("GMDS", "NQO1") ## In TM and both positive rho/positive A1 log2FC
+genes_to_plot <- "SLC2A1" # The one with lowest p value by far
+
+plot_data <- data.frame()
+label_data <- data.frame()
+
+for (gene in genes_to_plot) {
+  gene_id <- rownames(gene_info)[gene_info$gene_name == gene]
+  if (length(gene_id) == 0 || !(gene_id %in% rownames(logCPM))) next
+  
+  df_plot <- data.frame(
+    Expression = as.numeric(logCPM[gene_id, ]),
+    Stage = stage_clean,
+    Gene = gene
+  )
+  
+  df_labels <- LUAD_A1_TE_tumor_stage_spearman[LUAD_A1_TE_tumor_stage_spearman$Gene ==gene, ]
+  
+  plot_data <- rbind(plot_data, df_plot)
+  label_data <- rbind(label_data, df_labels)
+}
+
+# Add numeric stage to plot_data
+plot_data$Stage_num <- as.numeric(plot_data$Stage)
+
+## Plot boxplots with trendline
+ggplot(plot_data, aes(x = Stage, y = Expression)) +
+  geom_boxplot(outlier.shape = NA, fill = "lightblue", color = "black", width = 0.6) +
+  geom_jitter(width = 0.2, alpha = 0.4, size = 1) +
+  geom_smooth(aes(x = Stage_num, y = Expression), method = "lm", color = "black", se = TRUE, inherit.aes = FALSE) +
+  facet_wrap(~ Gene, scales = "free_y") +
+  
+  geom_text(
+    data = label_data,
+    aes(label = paste0("rho = ", round(SpearmanRho, 2),
+                       "\np = ", signif(p_value, 2),
+                       "\nFDR = ", signif(FDR, 2))),
+    x = Inf, y = Inf, hjust = 1.1, vjust = 1.1, inherit.aes = FALSE,
+    size = 3.5
+  ) +
+  
+  labs(title = "Expression by Tumor Stage with Trendline",
+       x = "Tumor Stage", y = "logCPM Expression") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+## Violin plot version just for a try
+
+
+ggplot(plot_data, aes(x = Stage, y = Expression)) +
+  geom_violin(fill = "lightblue", color = "black", width = 0.9, scale = "width") +
+  geom_jitter(width = 0.2, alpha = 0.4, size = 1) +
+  geom_smooth(aes(x = Stage_num, y = Expression), method = "lm", color = "black", se = TRUE, inherit.aes = FALSE) +
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  geom_text(
+    data = label_data,
+    aes(label = paste0("rho = ", round(SpearmanRho, 2),
+                       "\np = ", signif(p_value, 2),
+                       "\nFDR = ", signif(FDR, 2))),
+    x = Inf, y = Inf, hjust = 1.1, vjust = 1.1, inherit.aes = FALSE,
+    size = 3.5
+  ) +
+
+  labs(title = "Expression by Tumor Stage (Violin) with Trendline",
+       x = "Tumor Stage", y = "logCPM Expression") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
+
+
+
+
+
+
+####################
+
+
+
+
+
+## LUSC
+
+## Download clinical data
+```{r}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+
+query_clinical <- GDCquery(
+  project = "TCGA-LUSC",
+  data.category = "Clinical",
+  data.type = "Clinical Supplement"
+)
+
+# Check the available files
+query_clinical$results[[1]] %>% head()
+
+## I see that some are not BCR XML files, so I will try to remove these
+query_clinical$results[[1]] <- query_clinical$results[[1]] %>%
+  filter(data_format == "BCR XML")
+
+## Download data
+GDCdownload(query_clinical, directory = "../../GDC_data")
+clinical_data <- GDCprepare_clinic(query_clinical, clinical.info = "patient", directory = "../../GDC_data")
+
+head(clinical_data)
+```
+
+### Download expression data
+```{r}
+query <- GDCquery(project = "TCGA-LUSC",
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  sample.type = "Primary Tumor",
+                  workflow.type = "STAR - Counts")
+
+GDCdownload(query, directory = "../../GDC_data")
+
+data <- GDCprepare(query, directory = "../../GDC_data")
+
+counts <- as.data.frame(assay(data))  # Extracting the count matrix (these are supposedly raw counts)
+head(counts)  # Viewing the first few rows (genes) and columns (samples)
+
+gene_info <- as.data.frame(rowData(data))
+head(gene_info)  # Preview the first few genes and their annotations
+
+sample_info <- as.data.frame(colData(data))
+head(sample_info)  # Preview sample metadata
+
+```
+
+## Match clinical to expression data
+```{r}
+library(edgeR)
+
+# Filter out lowly expressed genes
+keep <- filterByExpr(counts)
+counts_filtered <- counts[keep, ]
+
+# Make sure sample barcodes match clinical format
+colnames(counts_filtered) <- substr(colnames(counts_filtered), 1, 12) ## Confirm what this does
+
+# Keep only matching samples in both data sets
+matching_samples <- intersect(colnames(counts_filtered), clinical_data$bcr_patient_barcode)
+counts_filtered <- counts_filtered[, matching_samples]
+clinical_data <- clinical_data[clinical_data$bcr_patient_barcode %in% matching_samples, ]
+
+# Order both the same
+clinical_data <- clinical_data[match(colnames(counts_filtered), clinical_data$bcr_patient_barcode), ]
+stopifnot(all(colnames(counts_filtered) == clinical_data$bcr_patient_barcode))
+
+# Seems there are still 8 extra samples in the counts data, so remove those
+samples_to_remove <- setdiff(colnames(counts_filtered), clinical_data$bcr_patient_barcode)
+counts_filtered <- counts_filtered %>%
+  select(-all_of(samples_to_remove))
+
+```
+
+## Normalize raw counts (logCPM for correlation)
+```{r}
+dge <- DGEList(counts = counts_filtered)
+dge <- calcNormFactors(dge)
+logCPM <- cpm(dge, log = TRUE)
+
+# Store as lusc specific
+LUSC_logCPM <- logCPM
+```
+
+## Clean and parse tumor stage
+```{r}
+stage <- clinical_data$stage_event_pathologic_stage
+stage_clean <- gsub("stage ", "", tolower(stage))
+stage_clean <- factor(stage_clean, 
+                      levels = c("i", "ia", "ib", "ii", "iia", "iib", 
+                                 "iii", "iiia", "iiib", "iiic", "iv"),
+                      ordered = TRUE)
+
+# Drop samples with missing stage
+valid_idx <- which(!is.na(stage_clean))
+logCPM <- logCPM[, valid_idx]
+stage_clean <- stage_clean[valid_idx]
+clinical_data <- clinical_data[valid_idx, ]
+
+# store as lusc specific
+LUSC_stage_clean <- stage_clean
+LUSC_clinical_data <- clinical_data
+```
+
+## Correlate gene expression with tumor stage
+```{r}
+stage_clean <- LUSC_stage_clean
+clinical_data <- LUSC_clinical_data
+logCPM <- LUSC_logCPM
+
+genes_of_interest <- LUSC_A1_TE$Gene
+
+results <- data.frame(Gene = character(), SpearmanRho = numeric(), p_value = numeric())
+
+for (gene in genes_of_interest) {
+  gene_id <- rownames(gene_info)[gene_info$gene_name == gene]
+  if (length(gene_id) == 0 || !(gene_id %in% rownames(logCPM))) next
+  
+  expr <- as.numeric(logCPM[gene_id, ])
+  cor_test <- cor.test(expr, as.numeric(stage_clean), method = "spearman")
+  
+  results <- rbind(results, data.frame(
+    Gene = gene,
+    SpearmanRho = cor_test$estimate,
+    p_value = cor_test$p.value
+  ))
+}
+
+## Add column for log2FC in the original A1_TE list
+LUSC_A1_TE_tumor_stage_spearman <- LUSC_A1_TE_tumor_stage_spearman %>%
+  left_join(., LUSC_A1_TE[,c("Gene", "log2FC_A1")], by = "Gene")
+
+# save (unfiltered) results
+#write.table(LUSC_A1_TE_tumor_stage_spearman, "../../2_Outputs/LUSC_A1_TE_tumor_stage_spearman_20250613.txt")
+
+```
+
+## Filtering and checking results
+```{r}
+
+## Filter results for FDR <= 0.05
+LUSC_A1_TE_tumor_stage_spearman_filtered <- LUSC_A1_TE_tumor_stage_spearman[LUSC_A1_TE_tumor_stage_spearman$FDR<=0.05,]
+
+
+## Check which of these genes were in LUSC_A1_TE_A2
+LUSC_A1_TE_A2_tumor_stage_spearman_filtered <- LUSC_A1_TE_tumor_stage_spearman_filtered %>%
+  filter(Gene %in% LUSC_A1_TE_A2$Gene)
+
+## None of the other checks I did for LUAD are worth doing because it is such a small list 
+
+## Actually, maybe of note: MTHFD2 and PYCR1 are the only genes with positive rho for tumor stage and positive log2FC in LUSC_A1_TE,
+## and these have a common function: https://version-12-0.string-db.org/cgi/network?networkId=b99p5bXvGXGo
+
+## And a really interesting paper that mentions them in conjunction related to tumorgenesis:
+## PMID: 24451681
+## Also maybe neat: PMID: 34121323
+
+```
+
+
+Now I want to try plotting some of the genes that are of interest
+
+## Plot expression by tumor stage
+```{r}
+
+stage_clean <- LUSC_stage_clean
+clinical_data <- LUSC_clinical_data
+logCPM <- LUSC_logCPM
+
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Pick one or more genes of interest to plot
+genes_to_plot <- c("MTHFD2", "PYCR1")
+
+plot_data <- data.frame()
+label_data <- data.frame()
+
+for (gene in genes_to_plot) {
+  gene_id <- rownames(gene_info)[gene_info$gene_name == gene]
+  if (length(gene_id) == 0 || !(gene_id %in% rownames(logCPM))) next
+  
+  df_plot <- data.frame(
+    Expression = as.numeric(logCPM[gene_id, ]),
+    Stage = stage_clean,
+    Gene = gene
+  )
+  
+  df_labels <- LUSC_A1_TE_tumor_stage_spearman[LUSC_A1_TE_tumor_stage_spearman$Gene ==gene, ]
+  
+  plot_data <- rbind(plot_data, df_plot)
+  label_data <- rbind(label_data, df_labels)
+}
+
+# Add numeric stage to plot_data
+plot_data$Stage_num <- as.numeric(plot_data$Stage)
+
+## Plot boxplots with trendline
+ggplot(plot_data, aes(x = Stage, y = Expression)) +
+  geom_boxplot(outlier.shape = NA, fill = "lightblue", color = "black", width = 0.6) +
+  geom_jitter(width = 0.2, alpha = 0.4, size = 1) +
+  geom_smooth(aes(x = Stage_num, y = Expression), method = "lm", color = "black", se = TRUE, inherit.aes = FALSE) +
+  facet_wrap(~ Gene, scales = "free_y") +
+  
+  geom_text(
+    data = label_data,
+    aes(label = paste0("rho = ", round(SpearmanRho, 2),
+                       "\np = ", signif(p_value, 2),
+                       "\nFDR = ", signif(FDR, 2))),
+    x = Inf, y = Inf, hjust = 1.1, vjust = 1.1, inherit.aes = FALSE,
+    size = 3.5
+  ) +
+  
+  labs(title = "Expression by Tumor Stage with Trendline",
+       x = "Tumor Stage", y = "logCPM Expression") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+It seems strange that there are so many fewer genes here than with LUAD. I checked the FDR math and it's working properly. I guess that's just the way it is.
+
+
+
+
+
